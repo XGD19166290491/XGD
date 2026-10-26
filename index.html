@@ -31,6 +31,10 @@ body{font-family:'Noto Sans SC','Microsoft YaHei',system-ui,sans-serif;backgroun
 .calc-card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 6px 24px rgba(11,61,145,.06);margin-top:-18px;position:relative;padding:22px 22px 26px;margin-bottom:20px}
 .sec-title{font-size:15px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
 .sec-title .dot{width:8px;height:8px;border-radius:50%;background:var(--orange);display:inline-block}
+.track-box{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.track-box textarea{width:100%;box-sizing:border-box;border:1px solid #c9d6ea;border-radius:8px;padding:10px 12px;font-size:14px;resize:vertical;min-height:56px;font-family:inherit}
+.track-row{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;align-items:center}
+.track-tip{font-size:12px;color:#6b7a8d}
 
 .countries{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
 .country-btn{border:2px solid var(--line);background:#f8fafd;border-radius:12px;padding:14px 8px;text-align:center;cursor:pointer;transition:.15s;font-family:inherit}
@@ -268,6 +272,24 @@ footer .sep{opacity:.35}
   <div class="ref">
     <div class="sec-title" style="font-size:16px"><span class="dot"></span>三国全渠道参考价格（2026年10月25号执行）</div>
     <div class="grid-ref" id="refGrid"></div>
+  </div>
+
+  <div class="calc-card" style="margin-top:16px">
+    <div class="sec-title" style="font-size:16px"><span class="dot"></span>包裹查询（输入单号看轨迹）</div>
+    <div class="track-box">
+      <textarea id="trackNo" rows="2" placeholder="请输入包裹单号，多个单号请用回车键分隔"></textarea>
+      <div class="track-row">
+        <button class="btn btn-parse" onclick="doTrack()">查询轨迹</button>
+        <span class="track-tip">结果在新窗口打开 · 也可直接访问 http://47.119.168.22/ 查询</span>
+      </div>
+    </div>
+    <form id="trackForm" method="post" action="http://www.xgd56.com/cgi-bin/GInfo.dll" target="_blank" style="display:none">
+      <input type="hidden" name="MfcISAPICommand" value="EmmisTrack">
+      <input type="hidden" name="w" value="szxgd56">
+      <input type="hidden" name="ntype" value="1000">
+      <input type="hidden" name="cmodel" value="track">
+      <input type="hidden" name="cno" id="trackCno">
+    </form>
   </div>
 </div>
 
@@ -562,6 +584,14 @@ function renderRefs(){
     card.innerHTML = html;
     g.appendChild(card);
   });
+}
+
+/* ===== 包裹查询（跳转公司查询系统） ===== */
+function doTrack(){
+  var cno = document.getElementById('trackNo').value.trim();
+  if(!cno){ alert('请输入包裹单号'); return; }
+  document.getElementById('trackCno').value = cno;
+  document.getElementById('trackForm').submit();
 }
 
 /* ===== 多批货物 ===== */
