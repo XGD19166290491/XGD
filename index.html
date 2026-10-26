@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -145,7 +145,7 @@ footer .sep{opacity:.35}
     <h1>新港大东南亚专线 · 运费速算器</h1>
     <p>马来西亚（西马+东马）/ 新加坡 / 菲律宾 全渠道报价，含普货·敏感·特货，支持多批货物录入与表格导入，自动计算计费重量、超长超重附加费与总运费。</p>
     <div class="tags">
-      <span>马来空运低至15元/kg</span><span>马来海派530元/方起</span><span>菲律宾包税专线</span><span>新加坡空运2-5天</span>
+      <span>马来空运低至16.5元/kg</span><span>马来海派550元/方起</span><span>菲律宾包税专线</span><span>新加坡空运2-5天</span>
     </div>
   </div>
 </div>
@@ -257,19 +257,11 @@ footer .sep{opacity:.35}
         <tr><td class="k">参考时效</td><td class="v" id="rEta">—</td></tr>
       </table>
       <div class="note-line" id="rNote">计算结果为估算参考，最终以我司客服确认为准。</div>
-      <div class="cta" id="rCta" style="display:none;margin-top:12px;background:#f2f7ff;border:1px solid #c9ddf5;border-radius:10px;padding:12px 14px">
-        <div style="font-size:15px;font-weight:700;color:#1c3f8f">算好了！参考价约 <span id="ctaPrice" style="color:#e04f16;font-size:18px">0</span> 元</div>
-        <div style="font-size:12px;color:#5b6f8f;margin:4px 0 10px">最终以客服确认为准，可调渠道 / 议价</div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
-          <a href="tel:19166290491" style="background:#1c3f8f;color:#fff;padding:8px 16px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600">电话 19166290491</a>
-          <button onclick="showWx()" style="background:#0fa958;color:#fff;border:none;padding:8px 16px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer">扫码加微信报价</button>
-        </div>
-      </div>
     </div>
   </div>
 
   <div class="ref">
-    <div class="sec-title" style="font-size:16px"><span class="dot"></span>三国全渠道参考价格（2026年8月1号执行）</div>
+    <div class="sec-title" style="font-size:16px"><span class="dot"></span>三国全渠道参考价格（2026年10月25号执行）</div>
     <div class="grid-ref" id="refGrid"></div>
   </div>
 </div>
@@ -300,55 +292,49 @@ var PRICE = {
     channels: [
       /* ===== 西马空运 ===== */
       { id:'MY-A1', name:'普货经济快线', grp:'空运', cat:'普货', type:'air', eta:'4-7天', tag:'限456邮编', yiwu:0.6,
-        tiers:[{max:30,p:17},{max:100,p:17},{max:500,p:16},{max:Infinity,p:15}],
+        tiers:[{max:30,p:17.5},{max:100,p:17.5},{max:500,p:17},{max:Infinity,p:16.5}],
         free:true,
         noWood:true,
-        sur:{air:{w:60,l:120,h:70,notAccept:'单件超60kg或纸箱超120*70*70cm不接，请走MY-A2或海运'}},
-        note:'双清包税到门·除6000分半泡·义乌+0.6/kg·仅限456开头邮编·不接木箱木架航空箱·单件≤60kg、纸箱尺寸≤120*70*70cm' },
+        sur:{air:{w:60,lims:{L:120,W:70,H:70},notAccept:'单件超60kg或纸箱超120*70*70cm不接，请走MY-A2或海运'}},
+        note:'双清包税到门·除6000分半泡·义乌+0.6/kg·仅限456开头邮编·不接木箱木架航空箱' },
       { id:'MY-A2', name:'西马普货', grp:'空运', cat:'普货', type:'air', eta:'4-6天', yiwu:0.6,
-        tiers:[{max:10,first:33,add:19},{max:30,p:18.5},{max:100,p:18},{max:500,p:18},{max:Infinity,p:17}],
+        tiers:[{max:10,first:33,add:19},{max:30,p:19},{max:100,p:19},{max:500,p:18.5},{max:Infinity,p:18}],
         free:true,
         woodAdd:1,
-        sur:{air:{w:68,l:120,bh:80,h:80,fee:150,per:'票'}},
+        sur:{air:{w:68,lims:{L:120,W:80,H:80},l2:160,fee:150,per:'票'}},
         note:'双清包税到门·除6000分半泡·木箱木架航空箱+1/kg·可接一般贸易报关件' },
       { id:'MY-A3', name:'西马敏货', grp:'空运', cat:'敏感', type:'air', eta:'3-6天', tag:'限456邮编', yiwu:0.6,
-        tiers:[{max:30,p:25},{max:100,p:24},{max:500,p:23.5},{max:Infinity,p:23}],
-        free:true,
+        tiers:[{max:30,p:25},{max:100,p:25},{max:500,p:25},{max:Infinity,p:24}],
         note:'非品牌、带电带磁、3C电子·双清包税·除6000分半泡·仅限456邮编·香港交仓减1元/kg（香港登记费350港币+停车费100港币）' },
       { id:'MY-A4', name:'西马敏感', grp:'空运', cat:'敏感', type:'air', eta:'4-6天', yiwu:0.6,
         tiers:[{max:10,first:38,add:29},{max:30,p:27},{max:100,p:26.5},{max:500,p:25.5},{max:Infinity,p:25}],
-        free:true,
-        note:'西马敏感货·双清包税·除6000分半泡·香港交仓减1元/kg（香港仓库登记费350港币+停车费100港币）·品名限制以价格表为准，出货前请先与客服确认 19166290491' },
+        note:'西马敏感货·双清包税·除6000分半泡·品名限制以价格表为准，出货前请先与客服确认 19166290491' },
       { id:'MY-A5', name:'西马特货', grp:'空运', cat:'特货', type:'air', eta:'4-6天', yiwu:0.6,
         tiers:[{max:10,first:40,add:29},{max:30,p:28},{max:100,p:27},{max:500,p:26.5},{max:Infinity,p:26}],
-        free:true,
         note:'一线品牌、保健品、化妆品·手机清关费+10/台、电池+2/个·出货前请确认' },
       /* ===== 东马空运（不分泡，按实重） ===== */
       { id:'MYE-1', name:'东马市区普货', grp:'东马空运', cat:'普货', type:'air', yiwu:0.6, eta:'3-7天', tag:'巴士自提3-5天/快递6-7天',
         tiers:[{max:10,p:43},{max:20,p:42},{max:Infinity,p:46}],
-        fixedActual:true, topIfWood:true, topIfHeavy:true,
-        sur:{air:{w:60,l:120,bh:70,h:70,fee:200,per:'票'}},
-        note:'东马不分泡按实重计费·单件超60kg或尺寸超120*70*70cm加收200元/票·单件超80kg需如实报关缴税·沙巴不接·含木箱木架/批量单一品名/单件>25kg/单边>50cm走20.1kg+档' },
+        fixedActual:true,
+        sur:{air:{w:60,lims:{L:120,W:70,H:70},fee:200,per:'票'}},
+        note:'东马不分泡按实重计费·单件超60kg或尺寸超120*70*70cm加收200元/票·沙巴不接·含木箱木架/批量单一品名/单件>25kg/单边>50cm走20.1kg+档' },
       { id:'MYE-2', name:'东马市区敏感', grp:'东马空运', cat:'敏感', type:'air', yiwu:0.6, eta:'3-7天',
         tiers:[{max:10,p:49},{max:20,p:48},{max:Infinity,p:47}],
-        fixedActual:true, topIfWood:true, topIfHeavy:true,
-        sur:{air:{w:60,l:120,bh:70,h:70,fee:200,per:'票'}},
-        note:'东马不分泡按实重计费·单件超60kg或尺寸超120*70*70cm加收200元/票·单件超80kg需如实报关缴税·沙巴不接·出货前请确认' },
+        fixedActual:true,
+        note:'东马不分泡按实重计费·沙巴不接·出货前请确认' },
       { id:'MYE-3', name:'东马偏远普货', grp:'东马空运', cat:'普货', type:'air', yiwu:0.6, eta:'3-7天', tag:'含美里/诗巫/民都鲁',
         tiers:[{max:10,p:50},{max:20,p:45},{max:Infinity,p:48}],
-        fixedActual:true, topIfWood:true, topIfHeavy:true,
-        sur:{air:{w:60,l:120,bh:70,h:70,fee:200,per:'票'}},
-        note:'东马不分泡按实重计费·单件超60kg或尺寸超120*70*70cm加收200元/票·单件超80kg需如实报关缴税·含美里、诗巫、民都鲁等城镇·沙巴不接' },
+        fixedActual:true,
+        note:'东马不分泡按实重计费·含美里、诗巫、民都鲁等城镇·沙巴不接' },
       { id:'MYE-4', name:'东马偏远敏感', grp:'东马空运', cat:'敏感', type:'air', yiwu:0.6, eta:'3-7天',
         tiers:[{max:10,p:52},{max:20,p:50},{max:Infinity,p:49}],
-        fixedActual:true, topIfWood:true, topIfHeavy:true,
-        sur:{air:{w:60,l:120,bh:70,h:70,fee:200,per:'票'}},
-        note:'东马不分泡按实重计费·单件超60kg或尺寸超120*70*70cm加收200元/票·单件超80kg需如实报关缴税·含美里、诗巫、民都鲁等城镇·沙巴不接' },
+        fixedActual:true,
+        note:'东马不分泡按实重计费·含美里、诗巫、民都鲁等城镇·沙巴不接' },
       /* ===== 西马海运 ===== */
       { id:'MY-S1', name:'吉隆坡/雪兰莪', grp:'海运', cat:'普货', type:'sea', eta:'12-18天', tag:'456邮编自营派送', yiwu:60,
-        price:530, price5:530, wood:600, minCbm:0.3,
+        price:550, price5:550, wood:600, minCbm:0.3,
         sur:{sea:{w:500,fee:100,w2:1500,fee2:200}},
-        note:'普货530/方·5.1方+530/方·木箱木架600/方·0.3方起·义乌+60/方·每方限500kg·单件超500kg加收100/件、超1.5吨加200/件（自提或专车派送免收）·单边超2米或单件超1.5吨派送费另确认·XGD自营车限高2.1米·超大件收件人自备叉车·参考邮编07000/13600/39000/39100/39010/39200/69000/81600/75350' },
+        note:'普货550/方·5.1方+550/方·木箱木架600/方·0.3方起·义乌+60/方·每方限500kg' },
       { id:'MY-S2', name:'吉隆坡/雪兰莪敏感', grp:'海运', cat:'敏感', type:'sea', yiwu:60, eta:'12-18天',
         price:600, price5:580, wood:620, minCbm:0.3,
         sur:{sea:{w:500,fee:100,w2:1500,fee2:200}},
@@ -373,93 +359,92 @@ var PRICE = {
       { id:'MY-S8', name:'西马海运小包包税', grp:'海运小包', cat:'普/敏', type:'parcel', yiwu:1, eta:'10-12天', tag:'含税派送',
         first:12, add:7, bulk:6.5, bulkFrom:10.1,
         fixedFull:true,
-        note:'首重12+续重7·10.1kg+按6.5/kg·三边/6000按泡重（全泡）·一票一件·单件≤30kg·需提供中英文装箱单+发票·手机/平板/食品/电池/液体/粉末等敏货单独咨询' },
+        note:'首重12+续重7·10.1kg+按6.5/kg·三边/6000按泡重（全泡）·一票一件·单件≤30kg·含税派送·义乌+1/kg' },
       /* ===== 东马海运 ===== */
       { id:'MYE-S1', name:'东马古晋普货', grp:'东马海运', cat:'普货', type:'sea', yiwu:60, eta:'约20天', tag:'1方起·不含派送',
         price:900, minCbm:1,
-        note:'900/方·1方起·价格不含派送费（派送另单询）·沙捞越林梦/老越无派送服务·建材/钢铁/大理石/陶瓷/马桶等按敏感（不接电池）' },
+        note:'900/方·1方起·价格不含派送费（派送另单询）·沙捞越林梦/老越无派送服务' },
       { id:'MYE-S2', name:'东马古晋敏感', grp:'东马海运', cat:'敏感', type:'sea', yiwu:60, eta:'约20天',
         price:950, minCbm:1,
         note:'950/方·1方起·不含派送费·建材/钢铁/大理石/陶瓷/马桶等按敏感（不接电池）' },
       { id:'MYE-S3', name:'东马沙巴普货', grp:'东马海运', cat:'普货', type:'sea', yiwu:60, eta:'约20天',
         price:1000, minCbm:1,
-        note:'1000/方·1方起·不含派送费·不接电池' },
+        note:'1000/方·1方起·不含派送费' },
       { id:'MYE-S4', name:'东马沙巴敏感', grp:'东马海运', cat:'敏感', type:'sea', yiwu:60, eta:'约20天',
         price:1100, minCbm:1,
-        note:'1100/方·1方起·不含派送费·不接电池' }
+        note:'1100/方·1方起·不含派送费' }
     ]
   },
   SG: {
     name: '新加坡', en: 'Singapore',
     channels: [
       { id:'SG-A1', name:'空运普货', grp:'空运', cat:'普货', type:'air', yiwu:0.6, eta:'2-5天',
-        tiers:[{max:10,first:38,add:18},{max:50,p:17},{max:100,p:17},{max:300,p:16.5},{max:500,p:16},{max:Infinity,p:15}],
-        woodAdd:1,
-        sur:{air:{w:100,l:180,consult:'单件超100kg或双边超180*100*100cm需提前咨询派送附加费',q:{w:200,l:280,d:'单件超200kg或双边超280*100*100cm，出货前需查询方可出货'}}},
-        note:'双清到门·不包税·除6000分半泡·木箱木架托盘+1/kg·货值超400新币GST按9%另计+文件报关费70新币/票·不接FBA亚马逊·单件超100kg或双边超180*100*100cm需提前咨询（派送费另计）' },
+        tiers:[{max:10,first:38,add:20},{max:50,p:20},{max:100,p:18.5},{max:300,p:17.5},{max:500,p:16.5},{max:Infinity,p:16}],
+        woodAdd:2,
+        sur:{air:{w:100,l:180,consult:'单件超100kg或双边超180*100*100cm需提前咨询派送附加费'}},
+        note:'双清到门·不包税·除6000分半泡·木箱木架托盘+2/kg·货值超400新币GST按9%另计' },
       { id:'SG-A2', name:'空运敏感货', grp:'空运', cat:'敏感', type:'air', yiwu:0.6, eta:'3-5天',
         tiers:[{max:10,first:45,add:25},{max:50,p:23.5},{max:100,p:23.5},{max:300,p:23.5},{max:500,p:22.5},{max:Infinity,p:22}],
-        sur:{air:{w:100,l:180,consult:'单件超100kg或双边超180*100*100cm需提前咨询派送附加费',q:{w:200,l:280,d:'单件超200kg或双边超280*100*100cm，出货前需查询方可出货'}}},
-        note:'不接电子烟·可接受不超功率的内置电池货物·不包税·货值超400新币GST9%另计·不接FBA亚马逊' },
+        sur:{air:{w:100,l:180,consult:'单件超100kg或双边超180*100*100cm需提前咨询派送附加费'}},
+        note:'不接电子烟·可接受不超功率的内置电池货物·不包税·货值超400新币GST9%另计' },
       { id:'SG-A3', name:'空运特货', grp:'空运', cat:'特货', type:'air', yiwu:0.6, eta:'3-5天',
         tiers:[{max:10,first:48,add:28},{max:50,p:25},{max:100,p:25},{max:300,p:25},{max:500,p:24},{max:Infinity,p:24}],
-        sur:{air:{w:100,l:180,consult:'单件超100kg或双边超180*100*100cm需提前咨询派送附加费',q:{w:200,l:280,d:'单件超200kg或双边超280*100*100cm，出货前需查询方可出货'}}},
-        note:'真空包装干货食品、化妆品、保健品、少量液体、F牌、电池等·粉末不接·不包税·GST9%另计·不接FBA亚马逊·食品/化妆品无进口许可需食品许可证SGD80/份且每票总重≤5kg·家电须一级能耗（批量出口需先注册）' },
+        sur:{air:{w:100,l:180,consult:'单件超100kg或双边超180*100*100cm需提前咨询派送附加费'}},
+        note:'真空包装干货食品、化妆品、保健品、少量液体、F牌、电池等·粉末不接·不包税·GST9%另计' },
       { id:'SG-S1', name:'海运普货', grp:'海运', cat:'普货', type:'sea', yiwu:60, eta:'12-20天',
-        seaTiers:[{max:0.3,p:220},{max:0.6,p:280},{max:Infinity,p:310}], kgPerCbm:500,
-        note:'分段计价：0.1-0.3方220/方、0.4-0.6方280/方、0.7方+310/方·含派送·不包税，GST9%另计·拒收粉末/液体/香烟/药品/酒类' },
+        seaTiers:[{max:0.3,p:220},{max:0.6,p:280},{max:Infinity,p:330}],
+        note:'分段计价：0.1-0.3方220/方、0.4-0.6方280/方、0.7方+330/方·含派送·不包税，GST9%另计' },
       { id:'SG-S2', name:'海运敏感', grp:'海运', cat:'敏感', type:'sea', yiwu:60, eta:'12-20天',
-        seaTiers:[{max:0.3,p:250},{max:0.6,p:300},{max:Infinity,p:330}], kgPerCbm:500,
-        note:'敏感250/300/330分段·含派送·不包税，GST9%另计·拒收粉末/液体/香烟/药品/酒类' },
+        seaTiers:[{max:0.3,p:250},{max:0.6,p:300},{max:Infinity,p:350}],
+        note:'敏感250/300/350分段·含派送·不包税，GST9%另计' },
       { id:'SG-S3', name:'海运一般贸易', grp:'海运', cat:'报关', type:'sea', yiwu:60, eta:'单询',
-        price:450, minCbm:1, kgPerCbm:500,
-        note:'深圳交仓450/方、广州交仓500/方·1方起·国内报关费500/票·无提单费·不包税' },
+        price:450, minCbm:1,
+        note:'深圳交仓450/方、广州交仓500/方·1方起·国内报关费500/票·不包税' },
       { id:'SG-S4', name:'海运特快小包', grp:'海运小包', cat:'普/敏', type:'parcel', yiwu:1, eta:'8-10天', tag:'货值1000RMB内包税',
         parcelTiers:[{max:6,p:80,flat:true},{max:10,p:10},{max:Infinity,p:9}],
         fixedFull:true,
-        note:'6kg内80/票·6.1-10kg按10元/kg·11kg+按9元/kg·材积除6000取大（全泡）·一票≤2件、≤0.3方、单件≤1.2m·单件≤30kg超标准按大包出·接报关件（报关费500元/票）·不接亚马逊·货值超1000RMB税费发件人付·拒收粉末/液体/香烟/药品/酒类' }
+        note:'6kg内80/票·6.1-10kg按10元/kg·11kg+按9元/kg·材积除6000取大（全泡）·一票≤2件、≤0.3方、单件≤1.2m·不接亚马逊·货值超1000RMB税费发件人付·义乌+1/kg' }
     ]
   },
   PH: {
     name: '菲律宾', en: 'Philippines',
     channels: [
-      { id:'PH-A1', name:'空运普货', grp:'空运', cat:'普货', type:'air', yiwu:0.6, eta:'3-5天', tag:'马尼拉市区包派送',
+      { id:'PH-A1', name:'空运普货', grp:'空运', cat:'普货', type:'air', yiwu:0.6, eta:'3-6天', tag:'马尼拉市区包派送',
         tiers:[{max:10,first:55,add:40},{max:50,p:25},{max:100,p:24.5},{max:300,p:24},{max:Infinity,p:23.5}],
         woodAdd:2,
-        sur:{air:{w:68,l:120,bh:80,h:80,fee:150,per:'件',stack:true}},
-        note:'双清包税到门·除6000分半泡·木箱木架+2/kg·单件超68kg或尺寸超120*80*80cm加收150元/件（超长超重可叠加），超限需木箱/木架包装+打合叶+铁条绑带+卡板脚·后端默认JNT派送（单件≤30kg、单边≤150cm、三边≤300cm、材积/3500≤50kg，超出只能物流转运或自提）·送公共仓（含lazada/shopee）+200元/票·医疗物资+10元/kg·马尼拉外单件≤30kg、单边≤150cm、三边≤300cm，超出请车派送实报实销或自提' },
-      { id:'PH-A2', name:'空运敏感', grp:'空运', cat:'敏感', type:'air', yiwu:0.6, eta:'3-5天', tag:'F牌、带电',
+        sur:{air:{w:68,lims:{L:120,W:80,H:80},fee:150,per:'件'}},
+        note:'双清包税到门·除6000分半泡·木箱木架+2/kg·单件超68kg或尺寸超120*80*80cm加收150元/件（超长超重可叠加）·马尼拉外单件≤30kg、单边≤150cm' },
+      { id:'PH-A2', name:'空运敏感', grp:'空运', cat:'敏感', type:'air', yiwu:0.6, eta:'3-6天', tag:'F牌、带电',
         tiers:[{max:10,first:62,add:50},{max:50,p:34},{max:100,p:33},{max:300,p:32},{max:Infinity,p:31}],
-        sur:{air:{w:68,l:120,bh:80,h:80,fee:150,per:'件',stack:true}},
-        note:'F牌、带电·双清包税·除6000分半泡·拉拉莫派送/其他默认JNT·单件超68kg或尺寸超120*80*80cm加收150元/件（超长超重可叠加），超限需木箱/木架包装+打合叶+铁条绑带+卡板脚·送公共仓（含lazada/shopee）+200元/票·马尼拉外单件≤30kg、单边≤150cm、三边≤300cm，超出请车派送实报实销或自提' },
-      { id:'PH-A3', name:'空运特货', grp:'空运', cat:'特货', type:'air', yiwu:0.6, eta:'3-5天', tag:'液体、食品',
+        sur:{air:{w:68,lims:{L:120,W:80,H:80},fee:150,per:'件'}},
+        note:'F牌、带电·双清包税·除6000分半泡·拉拉莫派送/其他默认JNT·单件超68kg或超120*80*80cm加收150元/件（超长超重可叠加）' },
+      { id:'PH-A3', name:'空运特货', grp:'空运', cat:'特货', type:'air', yiwu:0.6, eta:'3-6天', tag:'液体、食品',
         tiers:[{max:10,first:65,add:50},{max:50,p:36},{max:100,p:35},{max:300,p:35},{max:Infinity,p:34}],
-        sur:{air:{w:68,l:120,bh:80,h:80,fee:150,per:'件',stack:true}},
-        note:'液体、食品·双清包税·除6000分半泡·单件超68kg或尺寸超120*80*80cm加收150元/件（超长超重可叠加），超限需木箱/木架包装+打合叶+铁条绑带+卡板脚·送公共仓（含lazada/shopee）+200元/票·马尼拉外单件≤30kg、单边≤150cm、三边≤300cm，超出请车派送实报实销或自提' },
-      { id:'PH-A4', name:'空运特敏', grp:'空运', cat:'特敏', type:'air', yiwu:0.6, eta:'3-5天', tag:'手机/笔记本',
+        sur:{air:{w:68,lims:{L:120,W:80,H:80},fee:150,per:'件'}},
+        note:'液体、食品·双清包税·除6000分半泡·单件超68kg或超120*80*80cm加收150元/件（超长超重可叠加）' },
+      { id:'PH-A4', name:'空运特敏', grp:'空运', cat:'特敏', type:'air', yiwu:0.6, eta:'3-6天', tag:'手机/笔记本',
         tiers:[{max:Infinity,p:55}], addPerPcs:10,
-        sur:{air:{w:68,l:120,bh:80,h:80,fee:150,per:'件',stack:true}},
-        note:'手机55/kg+附加10/台·笔记本55/kg+附加10/台·不分品牌·单件超68kg或尺寸超120*80*80cm加收150元/件（超长超重可叠加）·送公共仓+200元/票' },
+        note:'手机55/kg+附加10/台·笔记本55/kg+附加10/台·不分品牌' },
       { id:'PH-S1', name:'海运普货', grp:'海运', cat:'普货', type:'sea', eta:'12-15天', tag:'马尼拉市区包派送', yiwu:60,
-        price:700, minCbm:0.5, stepCbm:0.1, kgPerCbm:500,
-        sur:{sea:{w:250,l:200,fee:100,w2:500,l2:300,fee2:600,per2:'票'}},
-        note:'普货700/方·0.5方起、0.1方进位·义乌+60/方·无电磁无牌小家电/衣帽/箱包/瓷砖/塑料玻璃制品·单件超250kg或单边超200cm加收100元/件·特大特重超500kg或单边超300cm为600元/票·马尼拉省内<1方派送100元/票或自提' },
+        price:700, minCbm:0.5, stepCbm:0.1,
+        sur:{sea:{w:250,l:200,fee:100}},
+        note:'普货700/方·0.5方起、0.1方进位·义乌+60/方·无电磁无牌小家电/衣帽/箱包/瓷砖/塑料玻璃制品·马尼拉省内1方以下派送100元/票（或自提）' },
       { id:'PH-S2', name:'海运敏感', grp:'海运', cat:'敏感', type:'sea', eta:'12-15天', yiwu:60,
-        price:780, minCbm:0.5, stepCbm:0.1, kgPerCbm:500,
-        sur:{sea:{w:250,l:200,fee:100,w2:500,l2:300,fee2:600,per2:'票'}},
-        note:'敏感780/方·家具/非危小内电/电线电缆/显示屏/大家电/普通小机器/竹木制品/铜铝材/高货值·单件超250kg或单边超200cm加收100元/件·特大特重（单件超500kg或单边超300cm）600元/票' },
+        price:780, minCbm:0.5, stepCbm:0.1,
+        sur:{sea:{w:250,l:200,fee:100}},
+        note:'敏感780/方·家具/非危小内电/电线电缆/显示屏/大家电/普通小机器/竹木制品/铜铝材/高货值' },
       { id:'PH-S3', name:'海运特货', grp:'海运', cat:'特货', type:'sea', eta:'12-15天', yiwu:60,
-        price:880, minCbm:0.5, stepCbm:0.1, kgPerCbm:500,
-        sur:{sea:{w:250,l:200,fee:100,w2:500,l2:300,fee2:600,per2:'票'}},
-        note:'特货880/方·F牌/食品/化妆品/电钻/太阳能灯/大功率内电（需非危报告）/手表/电子手表/淘宝集件·单件超250kg或单边超200cm加收100元/件·特大特重（单件超500kg或单边超300cm）600元/票' },
+        price:880, minCbm:0.5, stepCbm:0.1,
+        sur:{sea:{w:250,l:200,fee:100}},
+        note:'特货880/方·F牌/食品/化妆品/电钻/太阳能灯/大功率内电（需非危报告）/手表/电子手表/淘宝集件' },
       { id:'PH-S4', name:'海运特货（医疗/液体/大机器）', grp:'海运', cat:'特货', type:'sea', eta:'12-15天', yiwu:60,
-        price:1100, minCbm:0.5, stepCbm:0.1, kgPerCbm:500,
-        sur:{sea:{w:250,l:200,fee:100,w2:500,l2:300,fee2:600,per2:'票'}},
-        note:'特货1100/方·医疗类产品/纯液体类/大机器设备·单件超250kg或单边超200cm加收100元/件·特大特重（单件超500kg或单边超300cm）600元/票' },
+        price:1100, minCbm:0.5, stepCbm:0.1,
+        sur:{sea:{w:250,l:200,fee:100}},
+        note:'特货1100/方·医疗类产品/纯液体类/大机器设备' },
       { id:'PH-S5', name:'海运手机/平板', grp:'海运', cat:'特敏', type:'sea', eta:'12-15天', yiwu:60,
-        price:1250, minCbm:0.5, stepCbm:0.1, addPerPcs:10, kgPerCbm:500,
-        sur:{sea:{w:250,l:200,fee:100,w2:500,l2:300,fee2:600,per2:'票'}},
-        note:'1250/方+10/台·不分品牌、不分全套/单机头、不分新旧·单件超250kg或单边超200cm加收100元/件·特大特重（单件超500kg或单边超300cm）600元/票' },
+        price:1250, minCbm:0.5, stepCbm:0.1, addPerPcs:10,
+        sur:{sea:{w:250,l:200,fee:100}},
+        note:'1250/方+10/台·不分品牌、不分全套/单机头、不分新旧' },
       { id:'PH-S6', name:'宿务/达沃普货', grp:'整柜/单询', cat:'普货', type:'quote', eta:'单询',
         price:null,
         note:'宿务/达沃地区海运单询·普货（无电磁无牌/无牌家电/3C类）·1方起·不接报关件' },
@@ -476,13 +461,13 @@ var pack = 'carton';
 var refs = {
   MY: [
     ['西马空运', [
-      ['MY-A1 经济快线(普)', '17/17/16/15 元/kg'],['MY-A2 西马普货', '首33续19→17'],['MY-A3 敏货', '25/24/23.5/23'],['MY-A4 西马敏感', '首38续29→25'],['MY-A5 特货', '首40续29→26']
+      ['MY-A1 经济快线(普)', '17.5/17.5/17/16.5 元/kg'],['MY-A2 西马普货', '首33续19→18'],['MY-A3 敏货', '25/25/25/24'],['MY-A4 西马敏感', '首38续29→25'],['MY-A5 特货', '首40续29→26']
     ]],
     ['东马空运（不分泡）', [
       ['MYE-1 市区普货', '43/42/46 元/kg'],['MYE-2 市区敏感', '49/48/47'],['MYE-3 偏远普货', '50/45/48'],['MYE-4 偏远敏感', '52/50/49']
     ]],
     ['海派·吉隆坡/雪兰莪', [
-      ['MY-S1 普货', '530 元/方'],['MY-S2 敏感', '600 元/方'],['木箱木架', '600/620 元/方'],['0.3方起', '12-18天']
+      ['MY-S1 普货', '550 元/方'],['MY-S2 敏感', '600 元/方'],['木箱木架', '600/620 元/方'],['0.3方起', '12-18天']
     ]],
     ['海派·外省/外坡', [
       ['MY-S3 普货', '610 元/方'],['MY-S4 敏感', '630 元/方'],['5.1方+', '590/610 元/方'],['15-20天', '']
@@ -496,10 +481,10 @@ var refs = {
   ],
   SG: [
     ['空运（不包税）', [
-      ['SG-A1 普货', '首38续18→15'],['SG-A2 敏感', '首45续25→22'],['SG-A3 特货', '首48续28→24'],['GST 9%', '超400新币另计']
+      ['SG-A1 普货', '首38续20→16'],['SG-A2 敏感', '首45续25→22'],['SG-A3 特货', '首48续28→24'],['GST 9%', '超400新币另计']
     ]],
     ['海运（不包税）', [
-      ['SG-S1 普货', '220/280/310 分段'],['SG-S2 敏感', '250/300/330'],['SG-S3 一般贸易', '450 元/方起'],['SG-S4 特快小包', '6kg内80/票·11kg+ 9元/kg']
+      ['SG-S1 普货', '220/280/330 分段'],['SG-S2 敏感', '250/300/350'],['SG-S3 一般贸易', '450 元/方起'],['SG-S4 特快小包', '6kg内80/票·11kg+ 9元/kg']
     ]]
   ],
   PH: [
@@ -528,7 +513,7 @@ function renderChannels(){
     groups[g].forEach(function(ch){
       var b = document.createElement('button');
       b.className = 'ch-btn' + (ch.id === curCh.id ? ' active' : '');
-      b.innerHTML = '<div class="t"><span style="font-size:11px;color:#7f93b8;font-weight:500">' + ch.id + '</span> <b>' + ch.name + '</b></div><div class="m">' +
+      b.innerHTML = '<div class="t">' + ch.id + ' ' + ch.name + '</div><div class="m">' +
         (ch.cat ? '[' + ch.cat + '] ' : '') + ch.eta + (ch.tag ? ' · ' + ch.tag : '') + '</div>';
       b.onclick = function(){ selectChannel(ch, b); };
       grid.appendChild(b);
@@ -596,8 +581,7 @@ function renderBatches(){
   }
 }
 function mkField(label, i, key, unit, val){
-  var v = (val === undefined || val === null || val === 0) ? '' : val;
-  return '<div class="field"><label>' + label + '</label><div class="unit-wrap"><input type="number" min="0.1" step="0.1" data-b="' + i + '" data-k="' + key + '" value="' + v + '"><span class="u">' + unit + '</span></div></div>';
+  return '<div class="field"><label>' + label + '</label><div class="unit-wrap"><input type="number" min="0.1" step="0.1" data-b="' + i + '" data-k="' + key + '" value="' + val + '"><span class="u">' + unit + '</span></div></div>';
 }
 function bindBatchInputs(){
   document.getElementById('batchList').addEventListener('input', function(e){
@@ -606,7 +590,7 @@ function bindBatchInputs(){
       var b = parseInt(inp.getAttribute('data-b'), 10);
       var k = inp.getAttribute('data-k');
       var v = parseFloat(inp.value);
-      batches[b][k] = (inp.value.trim() === '' || isNaN(v)) ? 0 : v;
+      if(!isNaN(v)) batches[b][k] = v;
     }
   });
 }
@@ -690,22 +674,29 @@ function calcSurcharge(ch, batches){
   if(sur.air){
     var a = sur.air;
     var notOk = false, consult = false, reasons = [];
-    batches.forEach(function(b){
-      var maxSide = Math.max(b.L, b.W, b.H);
-      var hOver = a.h && b.H > a.h;
-      if(a.notAccept){
-        if(b.WT > a.w || maxSide > a.l || hOver) notOk = true;
-      } else if(a.consult || a.q){
-        var qOver = a.q && batches.some(function(b){ return b.WT > a.q.w || Math.max(b.L,b.W,b.H) > a.q.l; });
-        var cOver = b.WT > a.w || maxSide > a.l;
-        if(qOver){ list.push({t:'需查询', d:a.q.d, warn:true}); return {total:0, list:list}; }
-        if(cOver) consult = true;
+    function overMsg(b){
+      var ms = [];
+      if(a.w && b.WT > a.w) ms.push('单件实重' + b.WT + 'kg超' + a.w + 'kg');
+      if(a.lims){
+        if(b.L > a.lims.L) ms.push('长' + b.L + 'cm超' + a.lims.L + 'cm');
+        if(b.W > a.lims.W) ms.push('宽' + b.W + 'cm超' + a.lims.W + 'cm');
+        if(b.H > a.lims.H) ms.push('高' + b.H + 'cm超' + a.lims.H + 'cm');
       } else {
-        var r = [];
-        if(b.WT > a.w) r.push('单件实重' + b.WT + 'kg超' + a.w + 'kg');
-        if(maxSide > a.l) r.push('单边' + maxSide + 'cm超' + a.l + 'cm');
-        if(hOver) r.push('高度' + b.H + 'cm超' + a.h + 'cm');
-        if(r.length) reasons.push('第' + (batches.indexOf(b)+1) + '批：' + r.join('、'));
+        var maxSide = Math.max(b.L, b.W, b.H);
+        if(a.l && maxSide > a.l) ms.push('单边' + maxSide + 'cm超' + a.l + 'cm');
+        if(a.h && b.H > a.h) ms.push('高度' + b.H + 'cm超' + a.h + 'cm');
+      }
+      if(a.l2 && Math.max(b.L, b.W, b.H) > a.l2) ms.push('单边长' + Math.max(b.L, b.W, b.H) + 'cm超' + a.l2 + 'cm');
+      return ms;
+    }
+    batches.forEach(function(b){
+      var ms = overMsg(b);
+      if(a.notAccept){
+        if(ms.length) notOk = true;
+      } else if(a.consult){
+        if(ms.length) consult = true;
+      } else {
+        if(ms.length) reasons.push('第' + (batches.indexOf(b)+1) + '批：' + ms.join('、'));
       }
     });
     if(a.notAccept && notOk){
@@ -717,18 +708,12 @@ function calcSurcharge(ch, batches){
       return {total:0, list:list};
     }
     if(reasons.length){
-      var n = 0, nW = 0, nL = 0;
+      var n = 0;
       batches.forEach(function(b){
-        var maxSide = Math.max(b.L, b.W, b.H);
-        var overW = b.WT > a.w;
-        var overL = maxSide > a.l || (a.h && b.H > a.h) || (a.bh && b.W > a.bh);
-        if(overW || overL){
-          n += b.N;
-          if(a.stack){ if(overW) nW += b.N; if(overL) nL += b.N; }
-        }
+        if(overMsg(b).length) n += b.N;
       });
-      var fee = a.stack ? a.fee * (nW + nL) : a.fee * (a.per === '件' ? n : 1);
-      list.push({t:'超长/超重费', d:reasons.join('；') + '，加收' + a.fee + '元/' + a.per + (a.stack ? '（超长超重可叠加）' : ''), fee:fee});
+      var fee = a.fee * (a.per === '件' ? n : 1);
+      list.push({t:'超长/超重费', d:reasons.join('；') + '，加收' + a.fee + '元/' + a.per, fee:fee});
       total += fee;
     }
     return {total:total, list:list};
@@ -737,16 +722,21 @@ function calcSurcharge(ch, batches){
     var s = sur.sea;
     batches.forEach(function(b){
       var maxSide = Math.max(b.L, b.W, b.H);
-      var f = 0, tag = '';
-      if((s.w2 && b.WT > s.w2) || (s.l2 && maxSide > s.l2)){
-        var p2 = [];
-        if(s.w2 && b.WT > s.w2) p2.push('单件' + b.WT + 'kg超' + s.w2 + 'kg');
-        if(s.l2 && maxSide > s.l2) p2.push('单边' + maxSide + 'cm超' + s.l2 + 'cm');
-        f = s.fee2; tag = p2.join('或') + '，加收' + s.fee2 + '元/' + (s.per2 || '件');
+      if(b.WT > s.w){
+        var f = s.fee * b.N;
+        total += f;
+        list.push({t:'海运超重费', d:'单件' + b.WT + 'kg超' + s.w + 'kg，加收' + s.fee + '元/件×' + b.N + '件', fee:f});
       }
-      else if(s.w && b.WT > s.w){ f = s.fee; tag = '单件' + b.WT + 'kg超' + s.w + 'kg，加收' + s.fee + '元/件'; }
-      if(f === 0 && s.l && maxSide > s.l){ f = s.fee; tag = '单边' + maxSide + 'cm超' + s.l + 'cm，加收' + s.fee + '元/件'; }
-      if(f > 0){ var ff = (s.per2 === '票' && f === s.fee2) ? f : f * b.N; total += ff; list.push({t:'海运超重/超长费', d:tag + ((s.per2 === '票' && f === s.fee2) ? '（按票）' : '×' + b.N + '件'), fee:ff}); }
+      if(s.w2 && b.WT > s.w2){
+        var f2 = s.fee2 * b.N;
+        total += f2;
+        list.push({t:'海运超重费(2)', d:'单件' + b.WT + 'kg超' + s.w2 + 'kg，加收' + s.fee2 + '元/件×' + b.N + '件', fee:f2});
+      }
+      if(s.l && maxSide > s.l){
+        var fl = s.fee * b.N;
+        total += fl;
+        list.push({t:'海运超长费', d:'单边' + maxSide + 'cm超' + s.l + 'cm，加收' + s.fee + '元/件×' + b.N + '件', fee:fl});
+      }
     });
     return {total:total, list:list};
   }
@@ -850,43 +840,36 @@ function calc(){
       rateText = '全泡（泡重/实重取大）';
     }
     var kg = Math.ceil(charge);
-    var useTop = false;
-    if(ch.topIfWood && pack === 'wood') useTop = true;
-    if(ch.topIfHeavy){ batches.forEach(function(b){ if(b.WT > 25 || Math.max(b.L,b.W,b.H) > 50) useTop = true; }); }
-    base = useTop ? (ch.tiers[ch.tiers.length-1].p * kg) : (tierPrice(ch.tiers, kg) || 0);
+    base = tierPrice(ch.tiers, kg) || 0;
     if(ch.addPerPcs) base += ch.addPerPcs * totalN;
     if(pack === 'wood' && ch.woodAdd){
       base += ch.woodAdd * kg;
       rateText += '，木箱木架+' + ch.woodAdd + '元/kg×' + kg;
     }
     billText = kg + ' kg（计费重）';
-    rateText += useTop ? '，单价档：最高档' + ch.tiers[ch.tiers.length-1].p + '元/kg（特殊货按最高档）' : '，单价档：' + tierLabel(ch.tiers, kg);
-    rateText += (ch.addPerPcs ? '，附加' + ch.addPerPcs + '元/台×' + totalN + '台' : '');
+    rateText += '，单价档：' + tierLabel(ch.tiers, kg) + (ch.addPerPcs ? '，附加' + ch.addPerPcs + '元/台×' + totalN + '台' : '');
   }
   else if(ch.type === 'sea'){
     var billCbm;
-    var cbmEff = cbm;
-    var heavyNote = '';
-    if(ch.kgPerCbm && actual/500 > cbm){ cbmEff = actual/500; heavyNote = '（重货按1CBM=500kg折方）'; }
     if(ch.seaTiers){
       for(var i=0;i<ch.seaTiers.length;i++){
-        if(cbmEff <= ch.seaTiers[i].max){
-          billCbm = cbmEff;
-          base = ch.seaTiers[i].p * cbmEff;
-          rateText = ch.seaTiers[i].p + ' 元/方 × ' + fmt(cbmEff) + '方（分段计价）' + heavyNote;
+        if(cbm <= ch.seaTiers[i].max){
+          billCbm = cbm;
+          base = ch.seaTiers[i].p * cbm;
+          rateText = ch.seaTiers[i].p + ' 元/方 × ' + fmt(cbm) + '方（分段计价）';
           break;
         }
       }
     } else {
       var minC = ch.minCbm || 0.3;
       var step = ch.stepCbm || 0;
-      billCbm = Math.max(cbmEff, minC);
+      billCbm = Math.max(cbm, minC);
       if(step > 0) billCbm = Math.ceil(billCbm/step)*step;
       var unit = ch.price;
       if(ch.price5 && cbm > 5) unit = ch.price5;
       if(pack === 'wood' && ch.wood) unit = ch.wood;
       base = fmt(unit * billCbm);
-      rateText = unit + ' 元/方 × ' + fmt(billCbm) + '方' + heavyNote + (pack === 'wood' && ch.wood ? '（木箱木架价）' : '');
+      rateText = unit + ' 元/方 × ' + fmt(billCbm) + '方' + (pack === 'wood' && ch.wood ? '（木箱木架价）' : '');
     }
     if(ch.addPerPcs) base += ch.addPerPcs * totalN;
     billText = fmt(billCbm) + ' CBM（计费方数）';
@@ -899,36 +882,7 @@ function calc(){
     billText = wkg + ' kg（计费重·泡重/实重取大）';
   }
 
-  // ===== 小包渠道限制校验（超限不可走） =====
-  if(ch.type === 'parcel'){
-    var limP = [];
-    batches.forEach(function(b){
-      if(b.WT > 30) limP.push('单件' + b.WT + 'kg超30kg');
-      if(Math.max(b.L,b.W,b.H) > 120) limP.push('单边' + Math.max(b.L,b.W,b.H) + 'cm超120cm');
-    });
-    if(ch.id === 'MY-S8' && totalN > 1) limP.unshift('一票一件，本票' + totalN + '件');
-    if(ch.id === 'SG-S4'){
-      if(totalN > 2) limP.unshift('一票≤2件，本票' + totalN + '件');
-      if(cbm > 0.3) limP.push('体积' + fmt(cbm) + '方超0.3方');
-    }
-    if(limP.length){
-      sur.list.push({t:'超出小包限制，此票不可走', d:limP.join('；') + (ch.id === 'SG-S4' ? '，超30kg按大包出' : '') + '，请拆分或改走海运渠道', warn:true});
-    }
-  }
-
-  var zipFee = 0, zipTag = '';
-  var addrTxt = document.getElementById('fAddr').value.trim();
-  if(addrTxt){
-    var dz = detectZip(addrTxt);
-    if(dz && dz.c === 'MY'){
-      var zs = myZipSurcharge(dz.zip, ch.type);
-      if(zs){
-        if(ch.type === 'sea'){ zipFee = Math.round(zs.fee * billCbm * 100)/100; zipTag = '邮编 ' + dz.zip + '：' + zs.label + '（+' + zs.fee + '元/' + zs.unit + ' × ' + fmt(billCbm) + '方）'; }
-        else if(ch.type === 'air' || ch.type === 'parcel'){ var zkg = (ch.type === 'parcel') ? wkg : kg; zipFee = zs.fee * zkg; zipTag = '邮编 ' + dz.zip + '：' + zs.label + '（+' + zs.fee + '元/' + zs.unit + ' × ' + zkg + 'kg）'; }
-      }
-    }
-  }
-  var total = fmt(base + sur.total + zipFee);
+  var total = fmt(base + sur.total);
   document.getElementById('rTitle').textContent = PRICE[curC].name + ' · ' + ch.id + ' ' + ch.name;
   document.getElementById('rBill').textContent = billText;
   document.getElementById('rVolW').textContent = fmt(volW) + ' kg（体积重合计）';
@@ -938,16 +892,15 @@ function calc(){
   var yiwuTxt = '—（该渠道无义乌仓）';
   if(ch.type === 'fcl' || ch.type === 'quote'){ yiwuTxt = '整柜/单询请联系客服 19166290491'; }
   else if(ch.yiwu){
-    if(ch.type === 'air' || ch.type === 'parcel'){ var yk = (ch.type === 'parcel') ? wkg : kg; var yiwuFee = ch.yiwu * yk; yiwuTxt = fmt(yiwuFee) + ' 元（+' + ch.yiwu + '元/kg × ' + yk + 'kg），义乌仓合计 <b>' + money(base + sur.total + yiwuFee + zipFee) + '</b> 元'; }
-    else if(ch.type === 'sea'){ var yiwuFee = ch.yiwu * billCbm; yiwuTxt = fmt(yiwuFee) + ' 元（+' + ch.yiwu + '元/方 × ' + fmt(billCbm) + '方），义乌仓合计 <b>' + money(base + sur.total + yiwuFee + zipFee) + '</b> 元'; }
+    if(ch.type === 'air' || ch.type === 'parcel'){ var yiwuFee = ch.yiwu * kg; yiwuTxt = fmt(yiwuFee) + ' 元（+' + ch.yiwu + '元/kg × ' + kg + 'kg），义乌仓合计 <b>' + money(base + sur.total + yiwuFee) + '</b> 元'; }
+    else if(ch.type === 'sea'){ var yiwuFee = ch.yiwu * billCbm; yiwuTxt = fmt(yiwuFee) + ' 元（+' + ch.yiwu + '元/方 × ' + fmt(billCbm) + '方），义乌仓合计 <b>' + money(base + sur.total + yiwuFee) + '</b> 元'; }
   }
   document.getElementById('rYiwu').innerHTML = yiwuTxt;
   document.getElementById('rRate').textContent = rateText;
   document.getElementById('rEta').textContent = ch.eta;
   document.getElementById('rPrice').textContent = (ch.type === 'fcl' || ch.type === 'quote') ? '单询' : money(total);
-  if(sur.list.length || zipFee > 0){
+  if(sur.list.length){
     var html = '';
-    if(zipTag) html += '<div>' + zipTag + '（+' + money(zipFee) + ' 元）</div>';
     sur.list.forEach(function(x){
       html += '<div' + (x.warn ? ' class="warn"' : '') + '>' + x.t + '：' + x.d + (x.fee ? '（+' + money(x.fee) + ' 元）' : '') + '</div>';
     });
@@ -961,14 +914,11 @@ function calc(){
     else if(ch.type !== 'fcl' && ch.type !== 'quote' && !((ch.type === 'sea' && ch.wood) || (ch.type === 'air' && ch.woodAdd))) note += '｜该渠道价格表未区分木箱包装价，木箱出货请咨询客服';
   }
   if(ch.id.indexOf('SG-A') === 0 || ch.id.indexOf('SG-S') === 0) note += '｜新加坡线不包税，货值超400新币GST按9%另计，请主动报货值';
-  if(pack === 'wood' && ch.id.indexOf('SG-A') === 0) note += '｜原木包装需熏蒸';
   if(ch.id === 'MY-A1' || ch.id === 'MY-A3') note += '｜仅限456开头邮编';
   if(ch.id === 'MY-S8' && batches.length > 1) note += '｜小包一票一件，多批合并测算仅供参考，实际需分票计算';
   if(ch.id === 'SG-S4' && (totalN > 2 || cbm > 0.3)) note += '｜超出小包限制（一票≤2件、≤0.3方），请拆分或改走海运';
   note += '｜以上为估算价，最终以客服确认 19166290491 为准';
   document.getElementById('rNote').textContent = note;
-  document.getElementById('ctaPrice').textContent = (ch.type === 'fcl' || ch.type === 'quote') ? '单询' : money(total);
-  document.getElementById('rCta').style.display = 'block';
   document.getElementById('result').className = 'result show';
 }
 
@@ -983,7 +933,6 @@ function reset(){
   document.getElementById('pasteArea').value = '';
   document.getElementById('fileInfo').textContent = '';
   document.getElementById('fMode').value = 'half';
-  document.getElementById('rCta').style.display = 'none';
   document.getElementById('result').className = 'result';
 }
 
@@ -1110,15 +1059,6 @@ function calcCbmOnly(){
 })();
 
 /* ===== 地址 / 邮编识别 ===== */
-function myZipSurcharge(zip, type){
-  if(!/^\d{5}$/.test(zip)) return null;
-  var z = parseInt(zip, 10);
-  var east = (z>=15000 && z<=18500) || (z>=20000 && z<=24300) || (z>=25000 && z<=28800) || (z>=39000 && z<=39200) || z===49000 || (z>=1000 && z<=2800);
-  var df = z===7000 || z===13600 || z===39000 || z===39100 || z===39010 || z===39200 || z===69000 || z===81600 || z===75350;
-  if(type === 'sea' && east) return {label:'西马东海岸派送附加费', fee:80, unit:'CBM'};
-  if((type === 'air' || type === 'parcel') && df) return {label:'免税岛/免税区及高原地区派送附加费', fee:2, unit:'kg'};
-  return null;
-}
 function detectZip(addr){
   var m = addr.match(/\b\d{6}\b/); if(m) return {zip:m[0], c:'SG'};
   var m5 = addr.match(/\b\d{5}\b/); if(m5) return {zip:m5[0], c:'MY'};
@@ -1128,7 +1068,7 @@ function detectZip(addr){
 function myRegion(zip){
   var p2 = parseInt(zip.slice(0,2),10);
   if((p2>=40 && p2<=49) || (p2>=50 && p2<=69)) return 'core';   // 雪兰莪 + 吉隆坡 + 布城
-  if(p2>=87 && p2<=92) return 'sabah';                          // 纳闽87 + 沙巴88-92（东马）
+  if(p2>=88 && p2<=91) return 'sabah';                          // 沙巴（东马）
   if(p2>=93 && p2<=98) return 'sarawak';                        // 砂拉越（东马）
   if(p2>=0 && p2<=86) return 'outer';                           // 西马外省
   return 'unknown';
@@ -1145,16 +1085,9 @@ function parseAddr(){
   }
   var h = '', cls = 'ok';
   if(d.c === 'SG'){
-    var z2 = d.zip.slice(0,2);
-      if(d.zip === '627843' || d.zip === '627625'){ h = '<b>新加坡 · ' + d.zip + '</b>：岛屿地址，有派送附加费用，<b>实报实销</b>，出货前请先单询 19166290491。'; }
-      else if(z2 === '81' || z2 === '49'){ h = '<b>新加坡 · ' + d.zip + '</b>：保税仓地址（81/49开头），派送附加费<b>+60新币</b>；预约派送40新币/票。'; }
-      else if(z2 === '01'){ h = '<b>新加坡 · ' + d.zip + '</b>：金沙酒店/赌场区（01开头），派送附加费<b>+30新币</b>。'; }
-      else if(z2 === '09'){ h = '<b>新加坡 · ' + d.zip + '</b>：特殊区（09开头），派送附加费<b>+16新币/票 + 9%消费税</b>。'; }
-      else { h = '<b>新加坡 · ' + d.zip + '</b>：可发，走 SG 渠道。<br>海运 SG-S1 含派送、不包税，货值超400新币 GST9%另计；空运/小包按渠道规则。'; }
+    h = '<b>新加坡 · ' + d.zip + '</b>：可发，走 SG 渠道。<br>海运 SG-S1 含派送、不包税，货值超 400 新币 GST 9% 另计；小包 / 空运按渠道规则。';
   } else if(d.c === 'PH'){
-    var pz = parseInt(d.zip,10);
-      if(pz <= 1800){ h = '<b>菲律宾（马尼拉省内 · 邮编1000-1800）· ' + d.zip + '</b>：可发，PH-S1 包派送。<br>注意：省内单件200kg+/单边170cm+ 仍需付派送费，收件人负责卸货；省内<1方派送自提免费/我司安排100元/票。'; }
-      else { h = '<b>菲律宾（省外）· ' + d.zip + '</b>：可发，走 PH 渠道，<b>不含派送</b>（免费自提，或叫车派送实报实销）；宿务/达沃走 PH-S6/S7 单询。'; }
+    h = '<b>菲律宾 · ' + d.zip + '</b>：可发，走 PH 渠道。<br>PH-S1 马尼拉市区包派送；宿务 / 达沃走 PH-S6/S7 单询。';
   } else {
     var r = myRegion(d.zip);
     if(r === 'core'){
