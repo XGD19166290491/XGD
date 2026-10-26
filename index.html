@@ -35,6 +35,13 @@ body{font-family:'Noto Sans SC','Microsoft YaHei',system-ui,sans-serif;backgroun
 .track-box textarea{width:100%;box-sizing:border-box;border:1px solid #c9d6ea;border-radius:8px;padding:10px 12px;font-size:14px;resize:vertical;min-height:56px;font-family:inherit}
 .track-row{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;align-items:center}
 .track-tip{font-size:12px;color:#6b7a8d}
+.quote-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.btn-quote{background:var(--orange);color:#fff;border:none}
+.btn-copyq{background:#f2f4f9;color:var(--ink);border:1.6px solid var(--line)}
+.qo-overlay{position:fixed;inset:0;background:rgba(10,20,40,.78);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;z-index:1000;padding:18px 12px;overflow:auto;cursor:default}
+.qo-overlay .qo-hint{color:#e8eef7;font-size:13px;margin:4px 0 10px;text-align:center;line-height:1.6}
+.qo-overlay img{width:min(680px,94vw);border-radius:10px;background:#fff;display:block}
+.qo-overlay .qo-close{margin-top:14px;background:#fff;color:#222;border:none;border-radius:22px;padding:10px 30px;font-size:15px;cursor:pointer}
 
 .countries{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
 .country-btn{border:2px solid var(--line);background:#f8fafd;border-radius:12px;padding:14px 8px;text-align:center;cursor:pointer;transition:.15s;font-family:inherit}
@@ -266,6 +273,10 @@ footer .sep{opacity:.35}
         <tr><td class="k">参考时效</td><td class="v" id="rEta">—</td></tr>
       </table>
       <div class="note-line" id="rNote">计算结果为估算参考，最终以我司客服确认为准。</div>
+      <div class="quote-actions">
+        <button class="btn btn-quote" onclick="drawQuote()">生成报价图 / 转发</button>
+        <button class="btn btn-copyq" onclick="copyQuoteText()">复制文字报价</button>
+      </div>
     </div>
   </div>
 
@@ -964,6 +975,27 @@ function calc(){
   if(ch.id === 'SG-S4' && (totalN > 2 || cbm > 0.3)) note += '｜超出小包限制（一票≤2件、≤0.3方），请拆分或改走海运';
   note += '｜以上为估算价，最终以客服确认 19166290491 为准';
   document.getElementById('rNote').textContent = note;
+  /* 报价图/转发数据快照 */
+  var qYiwuTxt = '';
+  if(ch.type === 'fcl' || ch.type === 'quote'){ qYiwuTxt = '整柜/单询请联系客服 19166290491'; }
+  else if(ch.yiwu){
+    if(ch.type === 'air' || ch.type === 'parcel'){ var yf1 = ch.yiwu * kg; qYiwuTxt = '+' + ch.yiwu + '元/kg × ' + kg + 'kg = ' + money(yf1) + ' 元（义乌仓合计 ' + money(base + sur.total + yf1) + ' 元）'; }
+    else if(ch.type === 'sea'){ var yf2 = ch.yiwu * billCbm; qYiwuTxt = '+' + ch.yiwu + '元/方 × ' + fmt(billCbm) + '方 = ' + money(yf2) + ' 元（义乌仓合计 ' + money(base + sur.total + yf2) + ' 元）'; }
+  }
+  window.lastQuote = {
+    title: PRICE[curC].name + ' · ' + ch.id + ' ' + ch.name,
+    eta: ch.eta,
+    bill: billText,
+    actual: fmt(actual),
+    volW: fmt(volW),
+    cnt: batches.length + ' 批 / ' + totalN + ' 件',
+    rate: rateText,
+    base: (ch.type === 'fcl' || ch.type === 'quote') ? '单询' : money(base) + ' 元',
+    yiwu: qYiwuTxt || '—（该渠道无义乌仓）',
+    sur: sur.list,
+    total: (ch.type === 'fcl' || ch.type === 'quote') ? '单询' : money(base + sur.total),
+    note: note
+  };
   document.getElementById('result').className = 'result show';
 }
 
@@ -1247,7 +1279,199 @@ function showWx(){
 function hideWx(){
   document.getElementById("wxOverlay").style.display = "none";
 }
+
+/* ===== 报价图生成 / 转发 ===== */
+function qWrapTxt(ctx, text, maxW, font){
+  ctx.font = font;
+  var out = [], cur = '';
+  for(var i = 0; i < text.length; i++){
+    var t = cur + text[i];
+    if(cur && ctx.measureText(t).width > maxW){ out.push(cur); cur = text[i]; }
+    else cur = t;
+  }
+  if(cur) out.push(cur);
+  return out;
+}
+function fmtDate(d){
+  return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+}
+function fallbackCopy(txt){
+  var ta = document.createElement('textarea');
+  ta.value = txt;
+  ta.style.position = 'fixed';
+  ta.style.left = '-9999px';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); } catch(e){}
+  document.body.removeChild(ta);
+}
+function copyText(txt, okMsg){
+  var done = function(){ alert(okMsg); };
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(done, function(){ fallbackCopy(txt); done(); });
+  } else { fallbackCopy(txt); done(); }
+}
+function copyQuoteText(){
+  var q = window.lastQuote;
+  if(!q){ alert('请先填写货物并测算，再复制报价'); return; }
+  var L = [];
+  L.push('【新港大国际物流 · 东南亚专线】');
+  L.push(q.title + (q.eta ? '（参考时效 ' + q.eta + '）' : ''));
+  L.push('');
+  L.push('货物：' + q.cnt);
+  L.push('实重：' + q.actual + ' kg ｜ 泡重：' + q.volW + ' kg');
+  L.push('计费：' + q.bill);
+  L.push('单价：' + q.rate);
+  L.push('基础运费：' + q.base);
+  if(q.yiwu) L.push('义乌仓：' + q.yiwu);
+  q.sur.forEach(function(x){
+    L.push('附加费：' + x.t + '：' + x.d + (x.fee ? '（+' + money(x.fee) + ' 元）' : ''));
+  });
+  L.push('预估总费用：' + q.total + ' 元');
+  L.push('备注：' + q.note);
+  L.push('报价日期：' + fmtDate(new Date()) + ' ｜ 咨询 / 下单：电话微信 19166290491');
+  copyText(L.join('\n'), '报价文字已复制，可直接粘贴到微信发送');
+}
+function drawQuote(){
+  var q = window.lastQuote;
+  if(!q){ alert('请先填写货物并测算，再生成报价图'); return; }
+  var W = 750, pad = 40, cw = W - pad * 2;
+  var fontB = '"Microsoft YaHei","PingFang SC",sans-serif';
+  var c = document.createElement('canvas');
+  c.width = W; c.height = 1200;
+  var ctx = c.getContext('2d');
+  var titleLs = qWrapTxt(ctx, q.title, cw, 'bold 26px ' + fontB);
+  var etaLs = q.eta ? qWrapTxt(ctx, '参考时效：' + q.eta, cw, '15px ' + fontB) : [];
+  var rows = [];
+  rows.push({k:'货物批数 / 件数', v:q.cnt});
+  rows.push({k:'实重合计', v:q.actual + ' kg'});
+  rows.push({k:'体积重合计（泡重）', v:q.volW + ' kg'});
+  rows.push({k:'计费重量 / 方数', v:q.bill});
+  rows.push({k:'计费说明', v:q.rate});
+  rows.push({k:'基础运费', v:q.base});
+  if(q.yiwu) rows.push({k:'义乌仓费用', v:q.yiwu});
+  var rowH = [], y = 0;
+  rows.forEach(function(r){
+    var vs = qWrapTxt(ctx, r.v, cw - 170, '15px ' + fontB);
+    rowH.push(Math.max(46, vs.length * 24 + 14));
+    y += rowH[rowH.length - 1];
+  });
+  var feeH = [];
+  q.sur.forEach(function(x){
+    var vs = qWrapTxt(ctx, x.t + '：' + x.d, cw - 170, '15px ' + fontB);
+    feeH.push(Math.max(46, vs.length * 24 + 14));
+    y += feeH[feeH.length - 1];
+  });
+  var totalH = 92;
+  var noteLs = qWrapTxt(ctx, q.note, cw, '14px ' + fontB);
+  var noteH = noteLs.length * 22 + 16;
+  var H = 190 + titleLs.length * 36 + (etaLs.length ? etaLs.length * 26 + 12 : 20) + y + totalH + noteH + 150;
+  c.height = H;
+  /* 顶栏 */
+  ctx.fillStyle = '#1f4e8c';
+  ctx.fillRect(0, 0, W, 128);
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 30px ' + fontB;
+  ctx.textAlign = 'left';
+  ctx.fillText('新港大国际物流 · 东南亚专线', pad, 52);
+  ctx.font = '16px ' + fontB;
+  ctx.fillStyle = '#cfe0f2';
+  ctx.fillText('马来 / 新加坡 / 菲律宾 双清包税专线 · 海运拼箱 · 整柜', pad, 92);
+  ctx.font = 'bold 24px ' + fontB;
+  ctx.fillStyle = '#ffffff';
+  ctx.textAlign = 'right';
+  ctx.fillText('19166290491', W - pad, 54);
+  /* 标题区 */
+  var ty = 190;
+  ctx.textAlign = 'left';
+  ctx.fillStyle = '#1f2937';
+  ctx.font = 'bold 26px ' + fontB;
+  titleLs.forEach(function(t){ ctx.fillText(t, pad, ty); ty += 36; });
+  if(etaLs.length){
+    ctx.font = '15px ' + fontB;
+    ctx.fillStyle = '#6b7a8d';
+    etaLs.forEach(function(t){ ctx.fillText(t, pad, ty); ty += 26; });
+    ty += 12;
+  } else ty += 20;
+  /* 明细 */
+  var ryi = 0;
+  rows.forEach(function(r){
+    var vs = qWrapTxt(ctx, r.v, cw - 170, '15px ' + fontB);
+    ctx.fillStyle = (ryi % 2 === 0) ? '#f7f9fc' : '#ffffff';
+    ctx.fillRect(0, ty - rowH[ryi] / 2, W, rowH[ryi]);
+    ctx.fillStyle = '#6b7a8d';
+    ctx.font = '15px ' + fontB;
+    ctx.textAlign = 'left';
+    ctx.fillText(r.k, pad, ty);
+    ctx.fillStyle = '#1f2937';
+    ctx.font = 'bold 15px ' + fontB;
+    ctx.textAlign = 'right';
+    vs.forEach(function(t){ ctx.fillText(t, W - pad, ty); ty += 24; });
+    ty = ty - vs.length * 24 + rowH[ryi];
+    ryi++;
+  });
+  /* 附加费 */
+  var fi = 0;
+  q.sur.forEach(function(x){
+    var vs = qWrapTxt(ctx, x.t + '：' + x.d, cw - 170, '15px ' + fontB);
+    ctx.fillStyle = '#fff6f4';
+    ctx.fillRect(0, ty - feeH[fi] / 2, W, feeH[fi]);
+    ctx.fillStyle = '#c0392b';
+    ctx.font = 'bold 15px ' + fontB;
+    ctx.textAlign = 'left';
+    ctx.fillText('附加费', pad, ty);
+    ctx.textAlign = 'right';
+    vs.forEach(function(t){ ctx.fillText(t, W - pad, ty); ty += 24; });
+    ty = ty - vs.length * 24 + feeH[fi];
+    fi++;
+  });
+  /* 合计条 */
+  ctx.fillStyle = '#fff3e6';
+  ctx.fillRect(0, ty, W, totalH);
+  ctx.fillStyle = '#b45f06';
+  ctx.font = 'bold 16px ' + fontB;
+  ctx.textAlign = 'left';
+  ctx.fillText('预估总费用（含附加费）', pad, ty + 46);
+  ctx.font = 'bold 40px ' + fontB;
+  ctx.textAlign = 'right';
+  ctx.fillText(q.total + (q.total === '单询' ? '' : ' 元'), W - pad, ty + 46);
+  ty += totalH;
+  /* 备注 */
+  ctx.fillStyle = '#8a97a8';
+  ctx.font = '14px ' + fontB;
+  ctx.textAlign = 'left';
+  noteLs.forEach(function(t){ ctx.fillText(t, pad, ty + 8); ty += 22; });
+  ty += noteH - noteLs.length * 22 + 20;
+  /* 底部 */
+  ctx.strokeStyle = '#e5eaf1';
+  ctx.beginPath();
+  ctx.moveTo(pad, ty);
+  ctx.lineTo(W - pad, ty);
+  ctx.stroke();
+  ty += 46;
+  ctx.fillStyle = '#1f4e8c';
+  ctx.font = 'bold 17px ' + fontB;
+  ctx.textAlign = 'center';
+  ctx.fillText('新港大国际物流 · 东南亚专线', W / 2, ty);
+  ty += 30;
+  ctx.fillStyle = '#6b7a8d';
+  ctx.font = '14px ' + fontB;
+  ctx.fillText('报价日期：' + fmtDate(new Date()) + ' ｜ 咨询 / 下单：电话微信 19166290491', W / 2, ty);
+  /* 显示 */
+  var img = document.getElementById('quoteImg');
+  img.src = c.toDataURL('image/png');
+  document.getElementById('quoteOverlay').style.display = 'flex';
+}
+function closeQuote(){
+  document.getElementById('quoteOverlay').style.display = 'none';
+}
 </script>
 <div class="wx-overlay" id="wxOverlay" onclick="hideWx()" style="display:none"><img id="wxBig" alt="微信二维码"></div>
+<div class="qo-overlay" id="quoteOverlay" style="display:none">
+  <div class="qo-hint">长按图片保存 / 转发到微信给客户<br>电脑端可右键图片另存为</div>
+  <img id="quoteImg" alt="报价单">
+  <button class="qo-close" onclick="closeQuote()">关 闭</button>
+</div>
 </body>
 </html>
