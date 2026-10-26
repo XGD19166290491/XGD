@@ -581,7 +581,8 @@ function renderBatches(){
   }
 }
 function mkField(label, i, key, unit, val){
-  return '<div class="field"><label>' + label + '</label><div class="unit-wrap"><input type="number" min="0.1" step="0.1" data-b="' + i + '" data-k="' + key + '" value="' + val + '"><span class="u">' + unit + '</span></div></div>';
+  var v = (val && val > 0) ? val : '';
+  return '<div class="field"><label>' + label + '</label><div class="unit-wrap"><input type="number" min="0.1" step="0.1" data-b="' + i + '" data-k="' + key + '" value="' + v + '" placeholder="请输入"><span class="u">' + unit + '</span></div></div>';
 }
 function bindBatchInputs(){
   document.getElementById('batchList').addEventListener('input', function(e){
