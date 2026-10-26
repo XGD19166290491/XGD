@@ -107,10 +107,15 @@ body{font-family:'Noto Sans SC','Microsoft YaHei',system-ui,sans-serif;backgroun
 .ref .grid-ref{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
 .ref-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
 .ref-card h4{font-size:14px;font-weight:700;margin-bottom:8px;color:var(--navy)}
-.ref-card table{width:100%;border-collapse:collapse;font-size:12.5px}
+.ref-card table{width:100%;border-collapse:collapse;font-size:12.5px;table-layout:fixed}
 .ref-card th{text-align:left;padding:4px 6px;color:var(--sub);font-weight:500;border-bottom:1px solid var(--line)}
-.ref-card td{padding:4px 6px;border-bottom:1px solid #eef2f9}
-.ref-card td:last-child{text-align:right;font-weight:600;white-space:nowrap}
+.ref-card td{padding:7px 8px;border-bottom:1px solid #eef2f9;vertical-align:top}
+.ref-card td.rn{font-weight:600;color:#0f2a4a;width:38%;padding-right:10px;line-height:1.5}
+.ref-card td.rv{text-align:left;line-height:1.5}
+.ref-card .chip{display:inline-block;border-radius:6px;padding:3px 8px;font-size:11.5px;font-weight:600;white-space:nowrap}
+.ref-card .chip.wt{background:#eef4fb;border:1px solid #dbe6f5;color:#12325c;margin-right:6px}
+.ref-card .chip.px{background:#fff3e6;border:1px solid #ffd9a8;color:#b45f06}
+.ref-card .chip-row{margin:3px 0}
 
 footer{background:#0a2f6d;color:#cdd8ef;margin-top:26px}
 footer .wrap{padding:26px 18px 30px;font-size:13px}
@@ -461,10 +466,10 @@ var pack = 'carton';
 var refs = {
   MY: [
     ['西马空运', [
-      ['MY-A1 经济快线(普)', '17.5/17.5/17/16.5 元/kg'],['MY-A2 西马普货', '首33续19→18'],['MY-A3 敏货', '25/25/25/24'],['MY-A4 西马敏感', '首38续29→25'],['MY-A5 特货', '首40续29→26']
+      ['MY-A1 经济快线(普)', '1-30kg|17.5/kg<br>31-100kg|17.5/kg<br>101-500kg|17/kg<br>501kg+|16.5/kg'],['MY-A2 西马普货', '1-10kg|首33续19/kg<br>11-30kg|19/kg<br>31-100kg|19/kg<br>101-500kg|18.5/kg<br>501kg+|18/kg'],['MY-A3 敏货', '1-30kg|25/kg<br>31-100kg|25/kg<br>101-500kg|25/kg<br>501kg+|24/kg'],['MY-A4 西马敏感', '1-10kg|首38续29/kg<br>11-30kg|27/kg<br>31-100kg|26.5/kg<br>101-500kg|25.5/kg<br>501kg+|25/kg'],['MY-A5 特货', '1-10kg|首40续29/kg<br>11-30kg|28/kg<br>31-100kg|27/kg<br>101-500kg|26.5/kg<br>501kg+|26/kg']
     ]],
     ['东马空运（不分泡）', [
-      ['MYE-1 市区普货', '43/42/46 元/kg'],['MYE-2 市区敏感', '49/48/47'],['MYE-3 偏远普货', '50/45/48'],['MYE-4 偏远敏感', '52/50/49']
+      ['MYE-1 市区普货', '1-10kg|43/kg<br>11-20kg|42/kg<br>21kg+|46/kg'],['MYE-2 市区敏感', '1-10kg|49/kg<br>11-20kg|48/kg<br>21kg+|47/kg'],['MYE-3 偏远普货', '1-10kg|50/kg<br>11-20kg|45/kg<br>21kg+|48/kg'],['MYE-4 偏远敏感', '1-10kg|52/kg<br>11-20kg|50/kg<br>21kg+|49/kg']
     ]],
     ['海派·吉隆坡/雪兰莪', [
       ['MY-S1 普货', '550 元/方'],['MY-S2 敏感', '600 元/方'],['木箱木架', '600/620 元/方'],['0.3方起', '12-18天']
@@ -473,7 +478,7 @@ var refs = {
       ['MY-S3 普货', '610 元/方'],['MY-S4 敏感', '630 元/方'],['5.1方+', '590/610 元/方'],['15-20天', '']
     ]],
     ['海派·其他', [
-      ['MY-S5 报关(深圳)', '600 元/方'],['MY-S6 报关(广州)', '610 元/方'],['MY-S7 整柜', '30000-45000/条'],['MY-S8 小包', '首12续7·10.1+ 6.5']
+      ['MY-S5 报关(深圳)', '600 元/方'],['MY-S6 报关(广州)', '610 元/方'],['MY-S7 整柜', '30000-45000/条'],['MY-S8 小包', '1-10kg|首12续7/kg<br>10.1kg+|6.5/kg']
     ]],
     ['东马海运', [
       ['MYE-S1 古晋普货', '900 元/方'],['MYE-S2 古晋敏感', '950'],['MYE-S3 沙巴普货', '1000'],['MYE-S4 沙巴敏感', '1100']
@@ -481,15 +486,15 @@ var refs = {
   ],
   SG: [
     ['空运（不包税）', [
-      ['SG-A1 普货', '首38续20→16'],['SG-A2 敏感', '首45续25→22'],['SG-A3 特货', '首48续28→24'],['GST 9%', '超400新币另计']
+      ['SG-A1 普货', '1-10kg|首38续20/kg<br>11-50kg|20/kg<br>51-100kg|18.5/kg<br>101-300kg|17.5/kg<br>301-500kg|16.5/kg<br>501kg+|16/kg'],['SG-A2 敏感', '1-10kg|首45续25/kg<br>11-50kg|23.5/kg<br>51-100kg|23.5/kg<br>101-300kg|23.5/kg<br>301-500kg|22.5/kg<br>501kg+|22/kg'],['SG-A3 特货', '1-10kg|首48续28/kg<br>11-50kg|25/kg<br>51-100kg|25/kg<br>101-300kg|25/kg<br>301-500kg|24/kg<br>501kg+|24/kg'],['GST 9%', '超400新币另计']
     ]],
     ['海运（不包税）', [
-      ['SG-S1 普货', '220/280/330 分段'],['SG-S2 敏感', '250/300/350'],['SG-S3 一般贸易', '450 元/方起'],['SG-S4 特快小包', '6kg内80/票·11kg+ 9元/kg']
+      ['SG-S1 普货', '0.1-0.3方|220/方<br>0.4-0.6方|280/方<br>0.7方+|330/方'],['SG-S2 敏感', '0.1-0.3方|250/方<br>0.4-0.6方|300/方<br>0.7方+|350/方'],['SG-S3 一般贸易', '450 元/方起'],['SG-S4 特快小包', '1-6kg|80/票<br>6.1-10kg|10/kg<br>10.1kg+|9/kg']
     ]]
   ],
   PH: [
     ['空运（包税）', [
-      ['PH-A1 普货', '首55续40→23.5'],['PH-A2 敏感', '首62续50→31'],['PH-A3 特货', '首65续50→34'],['PH-A4 手机/笔记本', '55/kg+10/台']
+      ['PH-A1 普货', '1-10kg|首55续40/kg<br>11-50kg|25/kg<br>51-100kg|24.5/kg<br>101-300kg|24/kg<br>301kg+|23.5/kg'],['PH-A2 敏感', '1-10kg|首62续50/kg<br>11-50kg|34/kg<br>51-100kg|33/kg<br>101-300kg|32/kg<br>301kg+|31/kg'],['PH-A3 特货', '1-10kg|首65续50/kg<br>11-50kg|36/kg<br>51-100kg|35/kg<br>101-300kg|35/kg<br>301kg+|34/kg'],['PH-A4 手机/笔记本', '55/kg+10/台']
     ]],
     ['海运（包税）', [
       ['PH-S1 普货', '700 元/方'],['PH-S2 敏感', '780'],['PH-S3 特货', '880'],['PH-S4 医疗/液体', '1100'],['PH-S5 手机/平板', '1250+10/台'],['PH-S6/7 宿务达沃', '单询']
@@ -542,7 +547,16 @@ function renderRefs(){
     card.className = 'ref-card';
     var html = '<h4>' + item[0] + '</h4><table>';
     item[1].forEach(function(r){
-      html += '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td></tr>';
+      var v = r[1];
+      if (v.indexOf('<br>') >= 0) {
+        var rows = v.split('<br>').map(function(s){
+          var p = s.split('|');
+          return '<div class="chip-row"><span class="chip wt">' + p[0] + '</span><span class="chip px">' + (p[1] || '') + '</span></div>';
+        }).join('');
+        html += '<tr><td class="rn">' + r[0] + '</td><td class="rv">' + rows + '</td></tr>';
+      } else {
+        html += '<tr><td class="rn">' + r[0] + '</td><td class="rv">' + v + '</td></tr>';
+      }
     });
     html += '</table>';
     card.innerHTML = html;
