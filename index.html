@@ -281,7 +281,7 @@ footer .sep{opacity:.35}
   </div>
 
   <div class="ref">
-    <div class="sec-title" style="font-size:16px"><span class="dot"></span>三国全渠道参考价格（2026年10月25号执行）</div>
+    <div class="sec-title" style="font-size:16px"><span class="dot"></span>三国全渠道参考价格（2026年11月6号执行）</div>
     <div class="grid-ref" id="refGrid"></div>
   </div>
 
@@ -417,7 +417,7 @@ var PRICE = {
     name: '新加坡', en: 'Singapore',
     channels: [
       { id:'SG-A1', name:'空运普货', grp:'空运', cat:'普货', type:'air', yiwu:0.6, eta:'2-5天',
-        tiers:[{max:10,first:38,add:20},{max:50,p:20},{max:100,p:18.5},{max:300,p:17.5},{max:500,p:16.5},{max:Infinity,p:16}],
+        tiers:[{max:10,first:40,add:22},{max:50,p:22},{max:100,p:20.5},{max:300,p:19.5},{max:500,p:18.5},{max:Infinity,p:18}],
         woodAdd:2,
         sur:{air:{w:100,l:180,consult:'单件超100kg或双边超180*100*100cm需提前咨询派送附加费'}},
         note:'双清到门·不包税·除6000分半泡·木箱木架托盘+2/kg·货值超400新币GST按9%另计' },
@@ -448,7 +448,7 @@ var PRICE = {
     name: '菲律宾', en: 'Philippines',
     channels: [
       { id:'PH-A1', name:'空运普货', grp:'空运', cat:'普货', type:'air', yiwu:0.6, eta:'3-6天', tag:'马尼拉市区包派送',
-        tiers:[{max:10,first:55,add:40},{max:50,p:25},{max:100,p:24.5},{max:300,p:24},{max:Infinity,p:23.5}],
+        tiers:[{max:10,first:53,add:38},{max:50,p:23},{max:100,p:22.5},{max:300,p:22},{max:Infinity,p:21.5}],
         woodAdd:2,
         sur:{air:{w:68,lims:{L:120,W:80,H:80},fee:150,per:'件'}},
         note:'双清包税到门·除6000分半泡·木箱木架+2/kg·单件超68kg或尺寸超120*80*80cm加收150元/件（超长超重可叠加）·马尼拉外单件≤30kg、单边≤150cm' },
@@ -519,7 +519,7 @@ var refs = {
   ],
   SG: [
     ['空运（不包税）', [
-      ['SG-A1 普货', '1-10kg|首38续20/kg<br>11-50kg|20/kg<br>51-100kg|18.5/kg<br>101-300kg|17.5/kg<br>301-500kg|16.5/kg<br>501kg+|16/kg'],['SG-A2 敏感', '1-10kg|首45续25/kg<br>11-50kg|23.5/kg<br>51-100kg|23.5/kg<br>101-300kg|23.5/kg<br>301-500kg|22.5/kg<br>501kg+|22/kg'],['SG-A3 特货', '1-10kg|首48续28/kg<br>11-50kg|25/kg<br>51-100kg|25/kg<br>101-300kg|25/kg<br>301-500kg|24/kg<br>501kg+|24/kg'],['GST 9%', '超400新币另计']
+      ['SG-A1 普货', '1-10kg|首40续22/kg<br>11-50kg|22/kg<br>51-100kg|20.5/kg<br>101-300kg|19.5/kg<br>301-500kg|18.5/kg<br>501kg+|18/kg'],['SG-A2 敏感', '1-10kg|首45续25/kg<br>11-50kg|23.5/kg<br>51-100kg|23.5/kg<br>101-300kg|23.5/kg<br>301-500kg|22.5/kg<br>501kg+|22/kg'],['SG-A3 特货', '1-10kg|首48续28/kg<br>11-50kg|25/kg<br>51-100kg|25/kg<br>101-300kg|25/kg<br>301-500kg|24/kg<br>501kg+|24/kg'],['GST 9%', '超400新币另计']
     ]],
     ['海运（不包税）', [
       ['SG-S1 普货', '0.1-0.3方|220/方<br>0.4-0.6方|280/方<br>0.7方+|330/方'],['SG-S2 敏感', '0.1-0.3方|250/方<br>0.4-0.6方|300/方<br>0.7方+|350/方'],['SG-S3 一般贸易', '450 元/方起'],['SG-S4 特快小包', '1-6kg|80/票<br>6.1-10kg|10/kg<br>10.1kg+|9/kg']
@@ -527,7 +527,7 @@ var refs = {
   ],
   PH: [
     ['空运（包税）', [
-      ['PH-A1 普货', '1-10kg|首55续40/kg<br>11-50kg|25/kg<br>51-100kg|24.5/kg<br>101-300kg|24/kg<br>301kg+|23.5/kg'],['PH-A2 敏感', '1-10kg|首62续50/kg<br>11-50kg|34/kg<br>51-100kg|33/kg<br>101-300kg|32/kg<br>301kg+|31/kg'],['PH-A3 特货', '1-10kg|首65续50/kg<br>11-50kg|36/kg<br>51-100kg|35/kg<br>101-300kg|35/kg<br>301kg+|34/kg'],['PH-A4 手机/笔记本', '55/kg+10/台']
+      ['PH-A1 普货', '1-10kg|首53续38/kg<br>11-50kg|23/kg<br>51-100kg|22.5/kg<br>101-300kg|22/kg<br>301kg+|21.5/kg'],['PH-A2 敏感', '1-10kg|首62续50/kg<br>11-50kg|34/kg<br>51-100kg|33/kg<br>101-300kg|32/kg<br>301kg+|31/kg'],['PH-A3 特货', '1-10kg|首65续50/kg<br>11-50kg|36/kg<br>51-100kg|35/kg<br>101-300kg|35/kg<br>301kg+|34/kg'],['PH-A4 手机/笔记本', '55/kg+10/台']
     ]],
     ['海运（包税）', [
       ['PH-S1 普货', '700 元/方'],['PH-S2 敏感', '780'],['PH-S3 特货', '880'],['PH-S4 医疗/液体', '1100'],['PH-S5 手机/平板', '1250+10/台'],['PH-S6/7 宿务达沃', '单询']
