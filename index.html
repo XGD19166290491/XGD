@@ -70,6 +70,8 @@ body{font-family:'Noto Sans SC','Microsoft YaHei',system-ui,sans-serif;backgroun
 .ch-btn:hover{border-color:#b9c8e8}
 .ch-btn.active{border-color:var(--orange);background:#fff7ec;box-shadow:0 0 0 1px var(--orange)}
 .ch-btn.active .t{color:var(--orange2)}
+#channels{display:flex;flex-direction:column;gap:8px}
+#channels .acc-body{padding:12px 14px}
 
 .pack-row{display:flex;gap:10px;margin-bottom:16px}
 .pack-btn{flex:1;min-width:140px;border:2px solid var(--line);background:#f8fafd;border-radius:12px;padding:13px 8px;text-align:center;cursor:pointer;font-family:inherit;font-size:14.5px;font-weight:700;color:var(--ink);transition:.15s}
@@ -82,6 +84,7 @@ body{font-family:'Noto Sans SC','Microsoft YaHei',system-ui,sans-serif;backgroun
 .batch .del{background:none;border:none;color:#c2402e;font-size:13px;font-weight:700;cursor:pointer;padding:6px 8px;font-family:inherit}
 .batch .del:hover{text-decoration:underline}
 .b-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.pack-sel{width:100%;border:1px solid var(--line);border-radius:10px;padding:12px 10px;font-family:inherit;font-size:14.5px;color:var(--ink);background:#fff;box-sizing:border-box;cursor:pointer}
 .field label{display:block;font-size:12px;color:var(--sub);margin-bottom:4px;font-weight:500}
 .field .unit-wrap{position:relative}
 .field input{width:100%;border:1.6px solid var(--line);border-radius:10px;padding:10px 38px 10px 11px;font-size:16px;font-family:inherit;color:var(--ink);background:#fff;transition:.12s}
@@ -125,7 +128,19 @@ body{font-family:'Noto Sans SC','Microsoft YaHei',system-ui,sans-serif;backgroun
 .note-line{margin-top:10px;font-size:12.5px;color:#4a6a58;line-height:1.7}
 
 .ref{margin-bottom:22px}
-.ref .grid-ref{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.ref .grid-ref{display:grid;grid-template-columns:1fr;gap:10px}
+.acc{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.acc-head{display:flex;align-items:center;gap:8px;padding:13px 16px;cursor:pointer;font-weight:700;font-size:14px;color:var(--navy);user-select:none;-webkit-tap-highlight-color:transparent}
+.acc-head .acc-count{font-weight:400;font-size:12px;color:var(--sub);margin-left:auto;background:#f2f6fd;border-radius:999px;padding:2px 9px}
+.acc-head .acc-arrow{color:var(--sub);font-size:12px;transition:transform .18s;margin-left:2px}
+.acc.open .acc-arrow{transform:rotate(180deg)}
+.acc-body{display:none;border-top:1px solid var(--line);padding:0 16px}
+.acc.open .acc-body{display:block}
+.acc-sub{background:#f7f9fd;border:1px solid #e4eaf5;border-radius:10px;margin:10px 0;overflow:hidden}
+.acc-sub .acc-head{padding:9px 12px;font-size:13px;font-weight:600;color:#33415c;gap:6px}
+.acc-sub .acc-head .acc-count{font-size:11px;background:#fff;border:1px solid #e4eaf5;padding:1px 8px}
+.acc-sub .acc-body{padding:0 10px 8px;border-top:1px solid #e9eef7}
+.acc-sub .acc-arrow{font-size:11px}
 .ref-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
 .ref-card h4{font-size:14px;font-weight:700;margin-bottom:8px;color:var(--navy)}
 .ref-card table{width:100%;border-collapse:collapse;font-size:12.5px;table-layout:fixed}
@@ -169,7 +184,7 @@ footer .sep{opacity:.35}
 <div class="hero">
   <div class="wrap">
     <h1>新港大东南亚专线 · 运费速算器</h1>
-    <p>马来西亚（西马+东马）/ 新加坡 / 菲律宾 全渠道报价，含普货·敏感·特货，支持多批货物录入与表格导入，自动计算计费重量、超长超重附加费与总运费。</p>
+    <p>马来西亚（西马+东马）/ 新加坡 / 菲律宾 全渠道报价，含普货·敏感·特货，客户发来的消息直接粘贴就自动填尺寸重量，自动计算计费重量、超长超重附加费与总运费。</p>
     <div class="tags">
       <span>马来空运低至16.5元/kg</span><span>马来海派550元/方起</span><span>菲律宾包税专线</span><span>新加坡空运2-5天</span>
     </div>
@@ -188,12 +203,6 @@ footer .sep{opacity:.35}
     <div class="sec-title"><span class="dot"></span>2 · 选择渠道（含敏感/特货）</div>
     <div class="channels" id="channels"></div>
 
-    <div class="sec-title"><span class="dot"></span>3 · 包装方式</div>
-    <div class="pack-row">
-      <button type="button" class="pack-btn active" data-p="carton">纸箱</button>
-      <button type="button" class="pack-btn" data-p="wood">木箱 / 木架 / 托盘</button>
-    </div>
-
     <div id="cbmCard" style="display:none;background:#f8fbff;border:1px solid #dbe6f7;border-radius:12px;padding:12px 14px;margin:0 0 16px">
       <div class="sec-title" style="margin-bottom:10px"><span class="dot"></span>方数直算（海运快捷 · 与下方尺寸录入互不影响）</div>
       <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px">
@@ -205,19 +214,6 @@ footer .sep{opacity:.35}
     </div>
 
     <div id="addrCard" style="background:#f8fbff;border:1px solid #dbe6f7;border-radius:12px;padding:12px 14px;margin:0 0 16px">
-      <div class="sec-title" style="margin-bottom:10px"><span class="dot"></span>智能识别（粘贴客户消息，自动填地址 + 货物）</div>
-      <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px">
-        <div class="field" style="grid-column:1/-1"><label>粘贴客户发来的消息</label>
-          <textarea id="fSmart" class="paste-area" rows="4" placeholder="粘贴客户发来的消息，多种写法都能认：&#10;· 41*34*34cm / 41×34×34 / 41,34,34cm / 4.1*1.9*2.4m&#10;· 长41宽34高34 / 长1.2米 宽1米 高0.8米&#10;· 重800kg / 每箱7kg / 一共25个箱子&#10;· 地址：6, Lorong Belatuk 1, 14300 Nibong Tebal, 槟城, 马来西亚"></textarea>
-        </div>
-      </div>
-      <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;align-items:center">
-        <button class="btn btn-parse" id="btnSmart" style="flex:0 0 auto">智能识别并填入</button>
-        <span style="font-size:12px;color:#6b7a8d">识别：邮编→地址区｜长×宽×高→货物批次｜kg→实重｜件/箱→件数｜支持多种写法</span>
-      </div>
-      <div id="smartResult" style="display:none;margin-top:10px;background:#fff;border-radius:8px;padding:10px 12px;font-size:14px;line-height:1.9"></div>
-
-      <hr style="border:none;border-top:1px dashed #dbe6f7;margin:12px 0">
       <div class="sec-title" style="margin-bottom:10px"><span class="dot"></span>地址 / 邮编识别（判断能不能发 · 有无额外派送费）</div>
       <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px">
         <div class="field"><label>收货地址（自动识别邮编）</label>
@@ -231,24 +227,29 @@ footer .sep{opacity:.35}
       <div id="addrResult" style="display:none;margin-top:10px;background:#fff;border-radius:8px;padding:10px 12px;font-size:14px;line-height:1.9"></div>
     </div>
 
-    <div class="sec-title"><span class="dot"></span>4 · 录入货物（可多批）</div>
-    <div id="batchList"></div>
-    <div class="actions" style="margin-bottom:14px">
-      <button class="btn btn-add" id="btnAdd">＋ 新增一批货物</button>
-    </div>
+    <div class="sec-title"><span class="dot"></span>3 · 录入货物（可多批）</div>
 
-    <div class="import-box">
-      <div class="sec-title" style="margin-bottom:10px"><span class="dot"></span>表格导入（Excel / CSV / 粘贴）</div>
-      <div class="import-row">
-        <button class="btn btn-import" id="btnFile">选择表格文件</button>
+    <div id="smartCard" style="background:#f8fbff;border:1px solid #dbe6f7;border-radius:12px;padding:12px 14px;margin:0 0 14px">
+      <div class="sec-title" style="margin-bottom:10px"><span class="dot"></span>智能识别（粘贴客户消息 / 上传表格，自动填货物和地址）</div>
+      <div class="field">
+        <label>客户发来的消息、Excel 复制的内容、聊天记录，直接粘进来</label>
+        <textarea id="fSmart" class="paste-area" rows="5" placeholder="粘进来就会自动识别，不用点按钮。下面这些写法都认：&#10;· 50*40*35cm 3箱 每箱12kg&#10;· 长50宽40高35，3件，共36公斤&#10;· 1.2*0.8*0.6m 一共25个箱子&#10;· 50 40 35 10 12（Excel 复制的一整列数字）&#10;· 地址：6, Lorong Belatuk 1, 14300 Nibong Tebal, 槟城, 马来西亚"></textarea>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;align-items:center">
+        <button class="btn btn-parse" id="btnSmart" style="flex:0 0 auto">重新识别</button>
+        <button class="btn btn-import" id="btnFile">选择 Excel / CSV 文件</button>
         <input type="file" id="fileIn" accept=".xlsx,.xls,.csv,.txt" hidden>
         <span class="fname" id="fileInfo"></span>
       </div>
-      <textarea class="paste-area" id="pasteArea" placeholder="或直接粘贴 Excel 复制内容：每行一箱型 = 长 宽 高 件数 实重（Tab / 空格 / 逗号分隔均可）&#10;示例：&#10;50 40 35 10 12&#10;60 45 40 5 15"></textarea>
-      <button class="btn btn-parse" id="btnParse" style="margin-top:10px">解析并加入货物</button>
+      <div id="smartResult" style="display:none;margin-top:10px;background:#fff;border-radius:8px;padding:10px 12px;font-size:14px;line-height:1.9"></div>
       <div class="import-tip">
-        表头可写可不写，自动识别「长/宽/高/件数/实重」列；xlsx / xls / csv 均可，csv 支持中文（GBK）编码。
+        粘贴后自动识别并直接填入，不用点按钮。尺寸认：50*40*35 / 50×40×35 / 50 40 35 / 50,40,35 / 长50宽40高35 / 1.2*0.8*0.6m（mm、cm、米混写都行，斜杠分隔也认）。件数认：3箱 / 3件 / 3个 / 3pcs / 共25箱。重量认：12kg / 毛重12公斤 / 每箱12kg（自动乘件数）/ 共36kg（自动按件数分摊）。表格认：Excel 复制来的多列、带表头、带序号列、一个格子写「50*40*35」。聊天记录里夹着地址和寒暄也能挑出货物那几句。
       </div>
+    </div>
+
+    <div id="batchList"></div>
+    <div class="actions" style="margin-bottom:14px">
+      <button class="btn btn-add" id="btnAdd">＋ 新增一批货物</button>
     </div>
 
     <div class="grid" id="modeRow" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:0 0 14px">
@@ -504,7 +505,7 @@ var PRICE = {
 };
 
 var curC = 'MY', curCh = PRICE.MY.channels[0];
-var batches = [{L:0, W:0, H:0, N:0, WT:0}];
+var batches = [{L:0, W:0, H:0, N:0, WT:0, PK:'纸箱'}];
 var pack = 'carton';
 var refs = {
   MY: [
@@ -545,28 +546,56 @@ var refs = {
   ]
 };
 
-/* ===== 渠道渲染（分组） ===== */
+/* ===== 渠道渲染（分组 → 二级细分） ===== */
 var GROUP_ORDER = ['空运','东马空运','海运','东马海运','海运小包','整柜/单询'];
+function chBtn(ch){
+  var b = document.createElement('button');
+  b.className = 'ch-btn' + (ch.id === curCh.id ? ' active' : '');
+  b.innerHTML = '<div class="t">' + ch.id + ' ' + ch.name + '</div><div class="m">' +
+    (ch.cat ? '[' + ch.cat + '] ' : '') + ch.eta + (ch.tag ? ' · ' + ch.tag : '') + '</div>';
+  b.onclick = function(){ selectChannel(ch, b); };
+  return b;
+}
 function renderChannels(){
   var box = document.getElementById('channels');
   box.innerHTML = '';
   var groups = {};
   PRICE[curC].channels.forEach(function(ch){ (groups[ch.grp] = groups[ch.grp] || []).push(ch); });
-  GROUP_ORDER.forEach(function(g){
+  GROUP_ORDER.forEach(function(g, gi){
     if(!groups[g]) return;
-    var wrap = document.createElement('div');
-    wrap.className = 'ch-group';
-    wrap.innerHTML = '<div class="ch-group-title">' + g + '</div><div class="ch-grid"></div>';
-    var grid = wrap.querySelector('.ch-grid');
-    groups[g].forEach(function(ch){
-      var b = document.createElement('button');
-      b.className = 'ch-btn' + (ch.id === curCh.id ? ' active' : '');
-      b.innerHTML = '<div class="t">' + ch.id + ' ' + ch.name + '</div><div class="m">' +
-        (ch.cat ? '[' + ch.cat + '] ' : '') + ch.eta + (ch.tag ? ' · ' + ch.tag : '') + '</div>';
-      b.onclick = function(){ selectChannel(ch, b); };
-      grid.appendChild(b);
-    });
-    box.appendChild(wrap);
+    var list = groups[g];
+    var acc = document.createElement('div');
+    var openIt = (gi === 0) || list.some(function(c){ return c.id === curCh.id; });
+    acc.className = 'acc' + (openIt ? ' open' : '');
+    acc.innerHTML = '<div class="acc-head"><span class="acc-t">' + g + '</span>' +
+      '<span class="acc-count">' + list.length + ' 个渠道</span><span class="acc-arrow">▾</span></div>' +
+      '<div class="acc-body"></div>';
+    var body = acc.querySelector('.acc-body');
+
+    var cats = [];
+    list.forEach(function(c){ if(c.cat && cats.indexOf(c.cat) < 0) cats.push(c.cat); });
+    if(list.length >= 4 && cats.length >= 2 && cats.length <= 3){
+      cats.forEach(function(cat, ci){
+        var subList = list.filter(function(c){ return c.cat === cat; });
+        var sub = document.createElement('div');
+        var subOpen = (ci === 0 && openIt) || subList.some(function(c){ return c.id === curCh.id; });
+        sub.className = 'acc acc-sub' + (subOpen ? ' open' : '');
+        sub.innerHTML = '<div class="acc-head"><span class="acc-t">' + cat + '</span>' +
+          '<span class="acc-count">' + subList.length + ' 个</span><span class="acc-arrow">▾</span></div>' +
+          '<div class="acc-body"><div class="ch-grid"></div></div>';
+        var grid2 = sub.querySelector('.ch-grid');
+        subList.forEach(function(ch){ grid2.appendChild(chBtn(ch)); });
+        sub.querySelector('.acc-head').onclick = function(){ sub.classList.toggle('open'); };
+        body.appendChild(sub);
+      });
+    } else {
+      var grid = document.createElement('div');
+      grid.className = 'ch-grid';
+      list.forEach(function(ch){ grid.appendChild(chBtn(ch)); });
+      body.appendChild(grid);
+    }
+    acc.querySelector('.acc-head').onclick = function(){ acc.classList.toggle('open'); };
+    box.appendChild(acc);
   });
   document.getElementById('modeRow').style.display = (curCh.type === 'air') ? 'grid' : 'none';
   document.getElementById('cbmCard').style.display = (curCh.type === 'sea') ? 'block' : 'none';
@@ -585,25 +614,29 @@ function selectChannel(ch, btn){
 function renderRefs(){
   var g = document.getElementById('refGrid');
   g.innerHTML = '';
-  refs[curC].forEach(function(item){
-    var card = document.createElement('div');
-    card.className = 'ref-card';
-    var html = '<h4>' + item[0] + '</h4><table>';
-    item[1].forEach(function(r){
+  refs[curC].forEach(function(item, gi){
+    var list = item[1];
+    var acc = document.createElement('div');
+    acc.className = 'acc' + (gi === 0 ? ' open' : '');
+    var rows = '';
+    list.forEach(function(r){
       var v = r[1];
       if (v.indexOf('<br>') >= 0) {
-        var rows = v.split('<br>').map(function(s){
+        var chips = v.split('<br>').map(function(s){
           var p = s.split('|');
           return '<div class="chip-row"><span class="chip wt">' + p[0] + '</span><span class="chip px">' + (p[1] || '') + '</span></div>';
         }).join('');
-        html += '<tr><td class="rn">' + r[0] + '</td><td class="rv">' + rows + '</td></tr>';
+        rows += '<tr><td class="rn">' + r[0] + '</td><td class="rv">' + chips + '</td></tr>';
       } else {
-        html += '<tr><td class="rn">' + r[0] + '</td><td class="rv">' + v + '</td></tr>';
+        rows += '<tr><td class="rn">' + r[0] + '</td><td class="rv">' + v + '</td></tr>';
       }
     });
-    html += '</table>';
-    card.innerHTML = html;
-    g.appendChild(card);
+    acc.innerHTML = '<div class="acc-head"><span class="acc-t">' + item[0] + '</span>' +
+      '<span class="acc-count">' + list.length + ' 项</span>' +
+      '<span class="acc-arrow">▾</span></div>' +
+      '<div class="acc-body"><div class="ref-card" style="border:0;padding:10px 0 6px"><table>' + rows + '</table></div></div>';
+    acc.querySelector('.acc-head').onclick = function(){ acc.classList.toggle('open'); };
+    g.appendChild(acc);
   });
 }
 
@@ -630,6 +663,7 @@ function renderBatches(){
       mkField('单箱高', i, 'H', 'cm', b.H) +
       mkField('件数', i, 'N', '箱', b.N) +
       mkField('单箱实重', i, 'WT', 'kg', b.WT) +
+      mkPackSelect(i, b.PK) +
       '</div>';
     box.innerHTML = head + grid;
     list.appendChild(box);
@@ -649,8 +683,16 @@ function mkField(label, i, key, unit, val){
   var v = (val && val > 0) ? val : '';
   return '<div class="field"><label>' + label + '</label><div class="unit-wrap"><input type="number" min="0.1" step="0.1" data-b="' + i + '" data-k="' + key + '" value="' + v + '" placeholder="请输入"><span class="u">' + unit + '</span></div></div>';
 }
+function mkPackSelect(i, val){
+  var v = val || '纸箱';
+  var opts = ['纸箱','木箱','木架','托盘'].map(function(o){
+    return '<option' + (o === v ? ' selected' : '') + '>' + o + '</option>';
+  }).join('');
+  return '<div class="field"><label>包装方式</label><select class="pack-sel" data-b="' + i + '" data-k="PK">' + opts + '</select></div>';
+}
 function bindBatchInputs(){
-  document.getElementById('batchList').addEventListener('input', function(e){
+  var list = document.getElementById('batchList');
+  list.addEventListener('input', function(e){
     var inp = e.target;
     if(inp.tagName === 'INPUT' && inp.hasAttribute('data-b')){
       var b = parseInt(inp.getAttribute('data-b'), 10);
@@ -659,15 +701,32 @@ function bindBatchInputs(){
       if(!isNaN(v)) batches[b][k] = v;
     }
   });
+  list.addEventListener('change', function(e){
+    var inp = e.target;
+    if(inp.tagName === 'SELECT' && inp.hasAttribute('data-b')){
+      var b = parseInt(inp.getAttribute('data-b'), 10);
+      var k = inp.getAttribute('data-k');
+      batches[b][k] = inp.value;
+      if(k === 'PK'){ if(curCh && curCh.type === 'sea') calcCbmOnly(); document.getElementById('result').className = 'result'; }
+    }
+  });
 }
 
 /* ===== 表格导入 ===== */
-function addRows(rows){
-  var ok = 0, bad = 0;
+function addRows(rows, quiet){
+  var ok = 0, bad = 0, noWt = 0;
+  // 清掉占位的空批（初始默认那条），否则导入完会多出一批没数据的
+  var keep = [];
+  batches.forEach(function(b){
+    if(b.L > 0 && b.W > 0 && b.H > 0 && b.N > 0) keep.push(b);
+  });
+  batches.length = 0;
+  keep.forEach(function(b){ batches.push(b); });
   rows.forEach(function(r){
     var L = r[0], W = r[1], H = r[2], N = r[3], WT = r[4];
-    if(L>0 && W>0 && H>0 && N>0 && WT>0){
-      batches.push({L:L, W:W, H:H, N:N, WT:WT});
+    if(L>0 && W>0 && H>0 && N>0){
+      if(!(WT>0)){ WT = 0; noWt++; }
+      batches.push({L:L, W:W, H:H, N:N, WT:WT, PK: r[5] || '纸箱'});
       ok++;
     } else {
       bad++;
@@ -675,47 +734,132 @@ function addRows(rows){
   });
   renderBatches();
   document.getElementById('result').className = 'result';
-  var info = '成功导入 ' + ok + ' 批货物' + (bad ? '，跳过 ' + bad + ' 行无效数据' : '');
-  document.getElementById('fileInfo').textContent = info;
+  var info = '成功导入 ' + ok + ' 批货物';
+  if(bad) info += '，跳过 ' + bad + ' 行（尺寸或件数没读到）';
+  if(noWt) info += '；其中 ' + noWt + ' 批没读到单箱实重，请补填后再算';
+  if(!quiet) document.getElementById('fileInfo').textContent = info;
   return ok;
 }
+/* ---------- 表格解析：容错识别 ---------- */
+function normCell(v){
+  return String(v === null || v === undefined ? '' : v)
+    .replace(/（/g, '(').replace(/）/g, ')').replace(/／/g, '/').replace(/\s+/g, '').toLowerCase();
+}
+function numOf(v){
+  if(typeof v === 'number') return (isFinite(v) && v > 0) ? v : NaN;
+  var s = normCell(v);
+  if(!s) return NaN;
+  var m = s.match(/\d+(?:\.\d+)?/);
+  if(!m) return NaN;
+  var n = parseFloat(m[0]);
+  if(!(n > 0)) return NaN;
+  // 1.2m / 1.5米 这类写成米的，换算成厘米
+  if(!/(cm|厘米|mm|毫米|kg|克|g)$/.test(s) && /(m|米)$/.test(s) && n < 10) n = Math.round(n * 1000) / 10;
+  return n;
+}
+function blankAt(cells, idx){
+  if(idx === undefined) return false;
+  var v = cells[idx];
+  return v === undefined || v === null || String(v).trim() === '';
+}
+function colKind(raw){
+  var t = normCell(raw);
+  if(!t || t.length > 14) return null;
+  if((/[*×]/.test(t) && /长|宽|高|尺寸/.test(t)) || /尺寸|规格|箱规|size|dimension/.test(t)) return 'SIZE';
+  if(/实重|毛重|净重|重量|weight|单箱重|单件重|每箱重|^kg$|^wt$|g\.?w/.test(t)) return 'WT';
+  if(/件数|箱数|数量|qty|pcs|^ctn|^件$|^箱$|^n$/.test(t)) return 'N';
+  if(t === 'l' || /长/.test(t) || /^l\(|lcm/.test(t)) return 'L';
+  if(t === 'w' || /宽/.test(t) || /^w\(|wcm/.test(t)) return 'W';
+  if(t === 'h' || /高/.test(t) || /^h\(|hcm/.test(t) || /厚/.test(t)) return 'H';
+  return null;
+}
+var DIM_RE = /^\d+(?:\.\d+)?(?:[*×x]\d+(?:\.\d+)?){1,2}$/;
+function splitDim(v){
+  var s = normCell(v);
+  if(!DIM_RE.test(s)) return null;
+  var ps = s.split(/[*×x]/).map(function(x){ return parseFloat(x); });
+  ps = ps.filter(function(n){ return n > 0; });
+  return ps.length >= 2 ? ps : null;
+}
 function parseRows(rows){
+  // 1) 在前 8 行里找表头：命中列数最多的那行
+  var headerIdx = -1, headerMap = null, best = 0;
+  var limit = Math.min(rows.length, 8);
+  for(var i = 0; i < limit; i++){
+    var cells = rows[i] || [], map = {}, score = 0;
+    for(var j = 0; j < cells.length; j++){
+      var k = colKind(cells[j]);
+      if(k && map[k] === undefined){ map[k] = j; score++; }
+    }
+    // 合并表头：表头写"长×宽×高"或"长"占了两三列，后面是合并留下的空格 → 拆回三列
+    if(map.SIZE !== undefined){
+      if(blankAt(cells, map.SIZE + 1) && blankAt(cells, map.SIZE + 2)){ map.L = map.SIZE; map.W = map.SIZE + 1; map.H = map.SIZE + 2; }
+      else if(blankAt(cells, map.SIZE + 1)){ map.L = map.SIZE; map.W = map.SIZE + 1; }
+    } else if(map.L !== undefined){
+      if(map.W === undefined && blankAt(cells, map.L + 1)){ map.W = map.L + 1; }
+      if(map.H === undefined && map.W === map.L + 1 && blankAt(cells, map.L + 2)){ map.H = map.L + 2; }
+    }
+    var hasDim = (map.SIZE !== undefined || map.L !== undefined || map.W !== undefined || map.H !== undefined);
+    if(score >= 2 && hasDim && score > best){ best = score; headerMap = map; headerIdx = i; }
+  }
+
+  // 2) 逐行提取
   var out = [];
-  var headerMap = null;
-  for(var i=0;i<rows.length;i++){
-    var cells = rows[i];
-    if(!cells || !cells.length) continue;
-    var nums = cells.map(function(c){ return parseFloat(String(c).replace(/[,\s]/g,'')); });
-    var allNum = nums.every(function(n){ return !isNaN(n); });
-    if(!allNum){
-      if(!headerMap){
-        headerMap = {};
-        for(var j=0;j<cells.length;j++){
-          var t = String(cells[j]).trim().toLowerCase();
-          if(/长|leng|^l$/.test(t)) headerMap.L = j;
-          else if(/宽|wid|^w$/.test(t)) headerMap.W = j;
-          else if(/高|hei|^h$/.test(t)) headerMap.H = j;
-          else if(/件|数量|qty|num|^n$|箱/.test(t)) headerMap.N = j;
-          else if(/实重|重量|重|kg|wt|weight/.test(t)) headerMap.WT = j;
-        }
-      }
-      continue;
-    }
+  for(var r = 0; r < rows.length; r++){
+    if(r === headerIdx) continue;
+    var cs = rows[r] || [];
+    if(!cs.length) continue;
+    var L = NaN, W = NaN, H = NaN, N = NaN, WT = NaN;
+
     if(headerMap){
-      out.push([nums[headerMap.L], nums[headerMap.W], nums[headerMap.H], nums[headerMap.N], nums[headerMap.WT]]);
-    } else {
-      out.push(nums.slice(0, 5));
+      if(headerMap.L !== undefined) L = numOf(cs[headerMap.L]);
+      if(headerMap.W !== undefined) W = numOf(cs[headerMap.W]);
+      if(headerMap.H !== undefined) H = numOf(cs[headerMap.H]);
+      if(headerMap.N !== undefined) N = numOf(cs[headerMap.N]);
+      if(headerMap.WT !== undefined) WT = numOf(cs[headerMap.WT]);
+      // 三边没凑齐、或者某一格直接写着 50*40*35
+      if((isNaN(L) || isNaN(W) || isNaN(H)) && headerMap.SIZE !== undefined){
+        var d0 = splitDim(cs[headerMap.SIZE]);
+        if(d0 && d0.length >= 3){ L = d0[0]; W = d0[1]; H = d0[2]; }
+      }
     }
+    // 表头没分清长宽高、但某个格子里写着 50*40*35
+    if(isNaN(W) || isNaN(H)){
+      for(var q = 0; q < cs.length; q++){
+        var dm = splitDim(cs[q]);
+        if(dm && dm.length >= 3){ L = dm[0]; W = dm[1]; H = dm[2]; break; }
+      }
+    }
+    // 没有表头：按 长 宽 高 件数 实重 的位置顺序取
+    if((isNaN(L) || isNaN(W) || isNaN(H)) && !headerMap){
+      var flat = [];
+      for(var q2 = 0; q2 < cs.length; q2++){
+        var dm2 = splitDim(cs[q2]);
+        if(dm2){ flat = flat.concat(dm2.slice(0, 3)); continue; }
+        var nv = numOf(cs[q2]);
+        if(nv > 0) flat.push(nv);
+      }
+      if(flat.length === 6 && flat[0] <= 3) flat = flat.slice(1);   // 首列像序号
+      if(flat.length >= 5){ L = flat[0]; W = flat[1]; H = flat[2]; N = flat[3]; WT = flat[4]; }
+      else if(flat.length === 4){ L = flat[0]; W = flat[1]; H = flat[2]; N = flat[3]; }
+    }
+    if(!(L > 0) || !(W > 0) || !(H > 0) || !(N > 0)) continue;
+    out.push([L, W, H, Math.round(N), WT > 0 ? WT : 0]);
   }
   return out;
 }
 function parseText(text){
   var rows = [];
   var lines = text.split(/\r?\n/);
-  for(var i=0;i<lines.length;i++){
-    if(!lines[i].trim()) continue;
-    var cells = lines[i].split(/\t|[,，;；]|\s+/).filter(function(x){ return x.length; });
-    rows.push(cells);
+  for(var i = 0; i < lines.length; i++){
+    var ln = lines[i];
+    if(!ln.trim()) continue;
+    var cells;
+    if(ln.indexOf('\t') >= 0) cells = ln.split('\t');
+    else if(/[,，;；]/.test(ln)) cells = ln.split(/[,，;；]/);
+    else cells = ln.split(/\s+/);
+    cells = cells.map(function(x){ return x.trim(); }).filter(function(x){ return x.length; });
+    if(cells.length) rows.push(cells);
   }
   return parseRows(rows);
 }
@@ -861,6 +1005,8 @@ function parcelLabel(ch, wkg){
 }
 
 function calc(){
+  // 只要有一批是木箱/木架/托盘，就按木箱价算（同一票里纸箱木箱混装也走木箱口径）
+  pack = batches.some(function(b){ return b.PK && b.PK !== '纸箱'; }) ? 'wood' : 'carton';
   var valid = batches.filter(function(b){
     return b.L>0 && b.W>0 && b.H>0 && b.N>0 && b.WT>0;
   });
@@ -1010,14 +1156,14 @@ function calc(){
 }
 
 function reset(){
-  batches = [{L:0,W:0,H:0,N:0,WT:0}];
+  batches = [{L:0,W:0,H:0,N:0,WT:0,PK:'纸箱'}];
   pack = 'carton';
   renderBatches();
-  var pbs = document.querySelectorAll('.pack-btn');
-  for(var i=0;i<pbs.length;i++) pbs[i].className = (pbs[i].getAttribute('data-p') === 'carton') ? 'pack-btn active' : 'pack-btn';
   document.getElementById('fCbm2').value = '';
   document.getElementById('cbmResult').style.display = 'none';
-  document.getElementById('pasteArea').value = '';
+  document.getElementById('fSmart').value = '';
+  document.getElementById('smartResult').style.display = 'none';
+  _smartLast = '';
   document.getElementById('fileInfo').textContent = '';
   document.getElementById('fMode').value = 'half';
   document.getElementById('result').className = 'result';
@@ -1028,6 +1174,7 @@ function calcCbmOnly(){
   var v = parseFloat(document.getElementById('fCbm2').value);
   if(!(v > 0)){ box.style.display = 'none'; return; }
   var ch = curCh, html = '', unit;
+  pack = batches.some(function(b){ return b.PK && b.PK !== '纸箱'; }) ? 'wood' : 'carton';
   var cbm = v, bill = v;
   if(ch.seaTiers){
     unit = null;
@@ -1069,22 +1216,13 @@ function calcCbmOnly(){
       document.getElementById('result').className = 'result';
     };
   }
-  var pbs = document.querySelectorAll('.pack-btn');
-  for(var k=0;k<pbs.length;k++){
-    pbs[k].onclick = function(){
-      for(var m=0;m<pbs.length;m++) pbs[m].className = 'pack-btn';
-      this.className = 'pack-btn active';
-      pack = this.getAttribute('data-p');
-      if(curCh.type === 'sea') calcCbmOnly();
-      document.getElementById('result').className = 'result';
-    };
-  }
   document.getElementById('fCbm2').oninput = calcCbmOnly;
   renderChannels();
   renderRefs();
   bindBatchInputs();
+  renderBatches();
   document.getElementById('btnAdd').onclick = function(){
-    batches.push({L:0,W:0,H:0,N:0,WT:0});
+    batches.push({L:0,W:0,H:0,N:0,WT:0,PK:'纸箱'});
     renderBatches();
     document.getElementById('result').className = 'result';
   };
@@ -1100,28 +1238,35 @@ function calcCbmOnly(){
     if(name.endsWith('.csv') || name.endsWith('.txt')){
       reader.onload = function(ev){
         var text = ev.target.result;
-        var rows = [];
-        var lines = text.split(/\r?\n/);
-        for(var i=0;i<lines.length;i++){
-          if(!lines[i].trim()) continue;
-          var cells = lines[i].split(/[,，;；]|\t/).filter(function(x){ return x.length; });
-          if(cells.length) rows.push(cells);
+        var parsed = parseText(text);
+        if(!parsed.length) parsed = smartRows(smartNorm(text));
+        if(!parsed.length){
+          document.getElementById('fileInfo').textContent = '没读到有效数据：请确认表里有 长 / 宽 / 高 / 件数 这几列（实重可选）';
+          return;
         }
-        var parsed = parseRows(rows);
         addRows(parsed);
       };
       reader.readAsText(f, 'gb18030');
     } else {
       reader.onload = function(ev){
         if(typeof XLSX === 'undefined'){
-          document.getElementById('fileInfo').textContent = '解析库加载失败（需联网），请改用下方粘贴方式导入';
+          document.getElementById('fileInfo').textContent = '解析库加载失败（需联网），请改用上面的粘贴框';
           return;
         }
         try{
           var wb = XLSX.read(new Uint8Array(ev.target.result), {type:'array'});
-          var ws = wb.Sheets[wb.SheetNames[0]];
-          var data = XLSX.utils.sheet_to_json(ws, {header:1, raw:true});
-          var parsed = parseSheetArray(data);
+          var parsed = [];
+          // 一个文件多个 sheet 时，往后找第一张能读出数据的表
+          for(var si = 0; si < wb.SheetNames.length; si++){
+            var ws = wb.Sheets[wb.SheetNames[si]];
+            var data = XLSX.utils.sheet_to_json(ws, {header:1, raw:true, defval:''});
+            parsed = parseSheetArray(data);
+            if(parsed.length) break;
+          }
+          if(!parsed.length){
+            document.getElementById('fileInfo').textContent = '没读到有效数据：请确认表里有 长 / 宽 / 高 / 件数 这几列（实重可选）';
+            return;
+          }
           addRows(parsed);
         }catch(err){
           document.getElementById('fileInfo').textContent = '文件解析失败：' + err.message;
@@ -1130,26 +1275,38 @@ function calcCbmOnly(){
       reader.readAsArrayBuffer(f);
     }
   };
-  document.getElementById('btnParse').onclick = function(){
-    var text = document.getElementById('pasteArea').value;
-    if(!text.trim()){
-      alert('请先粘贴表格内容');
-      return;
-    }
-    var parsed = parseText(text);
-    if(!parsed.length){
-      alert('未能识别到有效数据，格式：每行 = 长 宽 高 件数 实重');
-      return;
-    }
-    addRows(parsed);
-  };
 })();
 
 /* ===== 地址 / 邮编识别 ===== */
 function detectZip(addr){
-  var m = addr.match(/\b\d{6}\b/); if(m) return {zip:m[0], c:'SG'};
-  var m5 = addr.match(/\b\d{5}\b/); if(m5) return {zip:m5[0], c:'MY'};
-  var ms = addr.match(/\b\d{4}\b/g); if(ms) return {zip:ms[ms.length-1], c:'PH'};
+  if(/印尼|印度尼西亚|indonesia|jakarta|雅加达|surabaya|泗水/i.test(addr)) return {zip:'', c:'ID'};
+  var all = addr.match(/\b\d{4,6}\b/g) || [];
+  var bad = /重量|毛重|体积|件数|货值|单价|运费|价格|总重|kg/i;
+  function pick(len){
+    for(var i = 0; i < all.length; i++){
+      var d = all[i];
+      if(d.length !== len) continue;
+      var idx = addr.indexOf(d);
+      var pre = addr.slice(Math.max(0, idx - 8), idx);
+      if(bad.test(pre)) continue;         // 重量/体积之类的数字，不是邮编
+      return d;
+    }
+    return null;
+  }
+  var z6 = pick(6); if(z6) return {zip:z6, c:'SG'};
+  var z5 = pick(5); if(z5) return {zip:z5, c:'MY'};
+  var fours = addr.match(/\b\d{4}\b/g) || [];
+  var z4 = null;
+  for(var k = 0; k < fours.length; k++){
+    var ii = addr.indexOf(fours[k]);
+    var pp = addr.slice(Math.max(0, ii - 8), ii);
+    if(bad.test(pp)) continue;
+    z4 = fours[k];
+  }
+  if(z4) return {zip:z4, c:'PH'};
+  if(/philippines|菲律宾|manila|马尼拉|cebu|宿务|davao|达沃/i.test(addr)) return {zip:'', c:'PH'};
+  if(/singapore|新加坡/i.test(addr)) return {zip:'', c:'SG'};
+  if(/malaysia|马来西亚|selangor|johor|penang|sabah|sarawak|kedah/i.test(addr)) return {zip:'', c:'MY'};
   return null;
 }
 function myRegion(zip){
@@ -1172,22 +1329,25 @@ function parseAddr(){
   }
   var h = '', cls = 'ok';
   if(d.c === 'SG'){
-    h = '<b>新加坡 · ' + d.zip + '</b>：可发，走 SG 渠道。<br>海运 SG-S1 含派送、不包税，货值超 400 新币 GST 9% 另计；小包 / 空运按渠道规则。';
+    h = '<b>新加坡 · ' + (d.zip || '未含邮编') + '</b>：可发，走 SG 渠道。<br>海运 SG-S1 含派送、不包税，货值超 400 新币 GST 9% 另计；小包 / 空运按渠道规则。';
+  } else if(d.c === 'ID'){
+    h = '<b>印尼</b>：本站只走马来 / 新加坡 / 菲律宾三条线，印尼要单独询价，打 19166290491。';
+    cls = 'warn';
   } else if(d.c === 'PH'){
-    h = '<b>菲律宾 · ' + d.zip + '</b>：可发，走 PH 渠道。<br>PH-S1 马尼拉市区包派送；宿务 / 达沃走 PH-S6/S7 单询。';
+    h = '<b>菲律宾 · ' + (d.zip || '未含邮编') + '</b>：可发，走 PH 渠道。<br>PH-S1 马尼拉市区包派送；宿务 / 达沃走 PH-S6/S7 单询。';
   } else {
     var r = myRegion(d.zip);
     if(r === 'core'){
-      h = '<b>马来西亚（西马 · 吉隆坡/雪兰莪核心区）· ' + d.zip + '</b>：可发。<br>建议 MY-S1 海运（自营派送，<b>无额外派送费</b>）或 MY-A 空运；义乌交货 +60/方。';
+      h = '<b>马来西亚（西马 · 吉隆坡/雪兰莪核心区）· ' + (d.zip || '未含邮编') + '</b>：可发。<br>建议 MY-S1 海运（自营派送，<b>无额外派送费</b>）或 MY-A 空运；义乌交货 +60/方。';
     } else if(r === 'outer'){
-      h = '<b>马来西亚（西马外省）· ' + d.zip + '</b>：可发。<br>建议 MY-S3/S4 海运（双清包税<b>含派送</b>）；偏远区域派送费另议，走货前请与客服确认 19166290491。';
+      h = '<b>马来西亚（西马外省）· ' + (d.zip || '未含邮编') + '</b>：可发。<br>建议 MY-S3/S4 海运（双清包税<b>含派送</b>）；偏远区域派送费另议，走货前请与客服确认 19166290491。';
     } else if(r === 'sabah'){
-      h = '<b>马来西亚（东马 · 沙巴）· ' + d.zip + '</b>：可发，走东马线。<br>MYE-S3/S4 海运<b>不含派送</b>，派送费另计；空运沙巴不接，请先确认。';
+      h = '<b>马来西亚（东马 · 沙巴）· ' + (d.zip || '未含邮编') + '</b>：可发，走东马线。<br>MYE-S3/S4 海运<b>不含派送</b>，派送费另计；空运沙巴不接，请先确认。';
     } else if(r === 'sarawak'){
-      h = '<b>马来西亚（东马 · 砂拉越）· ' + d.zip + '</b>：可发，走东马线。<br>MYE-S1/S2 海运（古晋）<b>不含派送</b>，派送费另计；偏远看 MYE-3/4 空运。';
+      h = '<b>马来西亚（东马 · 砂拉越）· ' + (d.zip || '未含邮编') + '</b>：可发，走东马线。<br>MYE-S1/S2 海运（古晋）<b>不含派送</b>，派送费另计；偏远看 MYE-3/4 空运。';
     } else {
       cls = 'warn';
-      h = '<b>马来西亚 · ' + d.zip + '</b>：邮编段未能自动归类，请联系客服 19166290491 确认派送范围。';
+      h = '<b>马来西亚 · ' + (d.zip || '未含邮编') + '</b>：邮编段未能自动归类，请联系客服 19166290491 确认派送范围。';
     }
   }
   out.style.display = 'block';
@@ -1197,44 +1357,121 @@ document.getElementById('btnAddr').onclick = parseAddr;
 document.getElementById('fAddr').onkeydown = function(e){ if(e.key === 'Enter') parseAddr(); };
 
 /* ===== 智能粘贴识别（地址 + 货物自动填入） ===== */
+var _smartLast = '', _smartTimer = null;
 function smartNorm(s){
   var t = s;
   t = t.replace(/[０-９Ａ-Ｚａ-ｚ]/g, function(ch){ return String.fromCharCode(ch.charCodeAt(0) - 0xFEE0); });
-  t = t.replace(/[，]/g, ',').replace(/[；]/g, ';').replace(/[：]/g, ':');
-  t = t.replace(/[×✕✖xX]/g, '*');
+  t = t.replace(/，/g, ',').replace(/；/g, ';').replace(/：/g, ':').replace(/、/g, ',');
+  t = t.replace(/[×✕✖xX＊]/g, '*');
   t = t.replace(/毫米/g, 'mm').replace(/厘米|公分/g, 'cm').replace(/米/g, 'm').replace(/公斤|千克/g, 'kg').replace(/kgs/gi, 'kg');
-  return t.replace(/\s+/g, ' ');
+  t = t.replace(/(\d+(?:\.\d+)?)\s*斤/g, function(_, n){ return (parseFloat(n) * 0.5) + 'kg'; });
+  t = t.replace(/(\d+(?:\.\d+)?)\s*(?:吨|tons?|T(?![A-Za-z]))/gi, function(_, n){ return (parseFloat(n) * 1000) + 'kg'; });
+  t = t.replace(/一箱(?:大概|大约|约)?/g, '每箱');
+  t = t.replace(/[一二三四五六七八九]/g, function(ch){ return ({'一':'1','二':'2','三':'3','四':'4','五':'5','六':'6','七':'7','八':'8','九':'9'})[ch]; });
+  t = t.replace(/两/g, '2');
+  t = t.replace(/[（）()【】\[\]]/g, ' ');
+  return t.replace(/[ \t]+/g, ' ');
 }
-function smartCount(seg){
-  var m = seg.match(/(?:共|一共|总计|total)\s*[:：]?\s*(\d+)\s*(?:件|个|箱|箱子|票|包|pcs|cartons?|cases?)|(\d+)\s*(?:件|个|箱|箱子|票|包|pcs|cartons?|cases?)/i);
-  return m ? (parseInt(m[1] !== undefined ? m[1] : m[2], 10)) : null;
+function fmt0(n){
+  var v = parseFloat(n);
+  if(!isFinite(v)) return '0';
+  return String(Math.round(v * 10) / 10);
 }
-function smartWeight(seg){
-  var m = seg.match(/(\d+(?:\.\d+)?)\s*kg\b/i);
-  if(m && m.index > 0){ var ch = seg.charAt(m.index-1); if(ch === '/' || ch === '元') return null; }
-  return m ? parseFloat(m[1]) : null;
+function smartNums(seg){
+  var m = seg.match(/\d+(?:\.\d+)?/g);
+  return m ? m.length : 0;
+}
+function smartUnitFactor(units, nums){
+  var f = 1, has = false;
+  for(var ui = 0; ui < 3; ui++){ if(units[ui]){ has = true; f = units[ui] === 'mm' ? 0.1 : (units[ui] === 'm' ? 100 : 1); break; } }
+  if(!has){
+    var mx = Math.max(nums[0], nums[1], nums[2]);
+    var mn = Math.min(nums[0], nums[1], nums[2]);
+    if(mx <= 10) f = 100;          // 1.2*0.8*0.6 按米
+    else if(mn >= 300) f = 0.1;    // 500*400*350 按毫米
+  }
+  return f;
+}
+function smartCount2(seg){
+  var re = /(\d+)\s*(?:件|个|箱|箱子|票|包|pcs|ctns?|cartons?|cases?)/gi;
+  var m;
+  while((m = re.exec(seg)) !== null){
+    var pre = seg.slice(Math.max(0, m.index - 1), m.index);
+    if(pre === '第') continue;            // 「第2箱」是序号，不是件数
+    var n = parseInt(m[1], 10);
+    if(n > 0) return n;
+  }
+  return null;
+}
+function smartWeight2(seg){
+  // 12kg/箱：单件重量
+  var per2 = seg.match(/(\d+(?:\.\d+)?)\s*kg\s*\/\s*(?:箱|件|个|pcs|ctn)/i);
+  if(per2) return { v: parseFloat(per2[1]), per: true };
+  // 每箱/单箱/每件：单件重量，整批要乘件数
+  var per = seg.match(/(?:每箱|单箱|每件|单件|每个箱子|each|per\s*carton)\s*[:：]?\s*(\d+(?:\.\d+)?)\s*kg/i);
+  if(per) return { v: parseFloat(per[1]), per: true };
+  // 共/总重/合计：整批总重
+  var tot = seg.match(/(?:共|总重|总|合计|total)\s*[:：]?\s*(\d+(?:\.\d+)?)\s*kg/i);
+  if(tot) return { v: parseFloat(tot[1]), per: false };
+  var all = seg.match(/(\d+(?:\.\d+)?)\s*kg/gi);
+  if(all && all.length){
+    for(var i = 0; i < all.length; i++){
+      var idx = seg.indexOf(all[i]);
+      var pre = seg.slice(Math.max(0, idx - 4), idx);
+      if(/元|价格|运费|报价|单价/.test(pre)) continue;
+      var m = all[i].match(/(\d+(?:\.\d+)?)/);
+      if(m) return { v: parseFloat(m[1]), per: false };
+    }
+  }
+  return null;
 }
 function smartDimsFormula(seg){
-  // 公式：41*34*34cm / 41cm*34cm*34cm / 1.2*1*0.8m / 41,34,34 / 60x45x40cm
-  var re = /(\d+(?:\.\d+)?)\s*(mm|cm|m)?\s*[*，,]\s*(\d+(?:\.\d+)?)\s*(mm|cm|m)?\s*[*，,]\s*(\d+(?:\.\d+)?)\s*(mm|cm|m)?/gi;
+  // 41*34*34cm / 41cm*34cm*34cm / 1.2*1*0.8m / 1.5m*宽1.5m*高2m
+  var s2 = seg.replace(/(?:长度|宽度|高度|长|宽|高)\s*[:：=]?\s*/g, function(x){ return new Array(x.length + 1).join(' '); });
+  var re = /(\d+(?:\.\d+)?)\s*(mm|cm|m)?\s*[*,]\s*(\d+(?:\.\d+)?)\s*(mm|cm|m)?\s*[*,]\s*(\d+(?:\.\d+)?)\s*(mm|cm|m)?/gi;
   var m, dims = [];
-  while((m = re.exec(seg)) !== null){
-    var units = [m[2]||'', m[4]||'', m[6]||''], f = 1;
-    for(var ui=0; ui<3; ui++){ if(units[ui]) { f = units[ui] === 'mm' ? 0.1 : (units[ui] === 'm' ? 100 : 1); break; } }
-    if(f === 1 && units[0] === '' && units[1] === '' && units[2] === '' && (m[1].indexOf('.')>=0 || m[3].indexOf('.')>=0 || m[5].indexOf('.')>=0)) f = 100;
-    dims.push({L:parseFloat(m[1])*f, W:parseFloat(m[3])*f, H:parseFloat(m[5])*f, end:m.index + m[0].length});
+  while((m = re.exec(s2)) !== null){
+    var nums = [parseFloat(m[1]), parseFloat(m[3]), parseFloat(m[5])];
+    var f = smartUnitFactor([m[2] || '', m[4] || '', m[6] || ''], nums);
+    dims.push({ L: nums[0] * f, W: nums[1] * f, H: nums[2] * f, start: m.index, end: m.index + m[0].length });
   }
   return dims;
 }
 function smartDimsLabel(seg){
-  // 标签：长41宽34高34 / 长：1.2m 宽：1m 高：0.8m / L41 W34 H34
-  var m = seg.match(/(?:长|长度)\s*[:：=]?\s*(\d+(?:\.\d+)?)\s*(mm|cm|m)?[\s,;、，]*?(?:宽|宽度)\s*[:：=]?\s*(\d+(?:\.\d+)?)\s*(mm|cm|m)?[\s,;、，]*?(?:高|高度)\s*[:：=]?\s*(\d+(?:\.\d+)?)\s*(mm|cm|m)?/i);
-  if(!m) m = seg.match(/\bL\s*[:：=]?\s*(\d+(?:\.\d+)?)\s*(mm|cm|m)?[\s,;、，]*?\bW\s*[:：=]?\s*(\d+(?:\.\d+)?)\s*(mm|cm|m)?[\s,;、，]*?\bH\s*[:：=]?\s*(\d+(?:\.\d+)?)\s*(mm|cm|m)?/i);
-  if(!m) return null;
-  var units = [m[2]||'', m[4]||'', m[6]||''], f = 1;
-  for(var ui=0; ui<3; ui++){ if(units[ui]) { f = units[ui] === 'mm' ? 0.1 : (units[ui] === 'm' ? 100 : 1); break; } }
-  if(f === 1 && units[0] === '' && units[1] === '' && units[2] === '' && (m[1].indexOf('.')>=0 || m[3].indexOf('.')>=0 || m[5].indexOf('.')>=0)) f = 100;
-  return [{L:parseFloat(m[1])*f, W:parseFloat(m[3])*f, H:parseFloat(m[5])*f, end:m.index + m[0].length}];
+  // 长41宽34高34 / 长：1.2m 宽：1m 高：0.8m / L41 W34 H34
+  var m = seg.match(/(?:长|长度)\s*[:：=]?\s*(\d+(?:\.\d+)?)\s*(mm|cm|m)?[\s,;]*?(?:宽|宽度)\s*[:：=]?\s*(\d+(?:\.\d+)?)\s*(mm|cm|m)?[\s,;]*?(?:高|高度)\s*[:：=]?\s*(\d+(?:\.\d+)?)\s*(mm|cm|m)?/i);
+  if(!m) m = seg.match(/\bL\s*[:：=]?\s*(\d+(?:\.\d+)?)\s*(mm|cm|m)?[\s,;]*?\bW\s*[:：=]?\s*(\d+(?:\.\d+)?)\s*(mm|cm|m)?[\s,;]*?\bH\s*[:：=]?\s*(\d+(?:\.\d+)?)\s*(mm|cm|m)?/i);
+  if(!m) return [];
+  var nums = [parseFloat(m[1]), parseFloat(m[3]), parseFloat(m[5])];
+  var f = smartUnitFactor([m[2] || '', m[4] || '', m[6] || ''], nums);
+  return [{ L: nums[0] * f, W: nums[1] * f, H: nums[2] * f, start: m.index, end: m.index + m[0].length }];
+}
+function smartDimsSlash(seg){
+  // 50/40/35 斜杠写法的货代尺寸（排除日期）
+  var re = /(\d{2,4}(?:\.\d+)?)\s*(mm|cm|m)?\s*\/\s*(\d{2,4}(?:\.\d+)?)\s*(mm|cm|m)?\s*\/\s*(\d{2,4}(?:\.\d+)?)\s*(mm|cm|m)?/g;
+  var m, out = [];
+  while((m = re.exec(seg)) !== null){
+    var nums = [parseFloat(m[1]), parseFloat(m[3]), parseFloat(m[5])];
+    var f = smartUnitFactor([m[2] || '', m[4] || '', m[6] || ''], nums);
+    var L = nums[0] * f, W = nums[1] * f, H = nums[2] * f;
+    if(L >= 5 && L <= 400 && W >= 5 && W <= 400 && H >= 5 && H <= 400){
+      out.push({ L: L, W: W, H: H, start: m.index, end: m.index + m[0].length });
+    }
+  }
+  return out;
+}
+function smartDimsSpace(seg){
+  // 空格分隔的三个数（Excel 复制常见），只在整段数字不多时启用，避免把件数重量当尺寸
+  if(/\*/.test(seg)) return [];
+  var re = /(?:^|[\s,])(\d{2,3}(?:\.\d+)?)\s+(\d{2,3}(?:\.\d+)?)\s+(\d{2,3}(?:\.\d+)?)(?=$|[\s,])/g;
+  var m, out = [];
+  while((m = re.exec(seg)) !== null){
+    var nums = [parseFloat(m[1]), parseFloat(m[2]), parseFloat(m[3])];
+    if(nums[0] < 5 || nums[1] < 5 || nums[2] < 5) continue;
+    if(nums[0] > 300 || nums[1] > 300 || nums[2] > 300) continue;
+    out.push({ L: nums[0], W: nums[1], H: nums[2], start: m.index, end: m.index + m[0].length });
+  }
+  return out;
 }
 function smartAddr(txt){
   var lineRe = /[^\n;]*(?:地址|收货|邮编)[^\n;]*\d{4,6}[^\n;]*/i;
@@ -1245,42 +1482,138 @@ function smartAddr(txt){
   var cm = txt.match(/[^\n;]*(?:马来|马来西亚|Malaysia|西马|东马|新加坡|Singapore|菲律宾|Philippines)[^\n;]*/i);
   return cm ? cm[0].trim() : '';
 }
-function smartParse(){
-  var raw = document.getElementById('fSmart').value;
-  var res = document.getElementById('smartResult');
-  if(!raw.trim()){ res.style.display='block'; res.innerHTML='<div class="warn">请先粘贴客户消息。</div>'; return; }
-  var txt = smartNorm(raw);
-  var segs = txt.split(/[;\n\r]+/).map(function(s){return s.trim();}).filter(Boolean);
-  var found = [], addrLine = '', kg = null, msg = [], allCount = null;
-  var cmt = txt.match(/(?:共|一共|总计|total)\s*[:：]?\s*(\d+)\s*(?:件|个|箱|箱子|票|包|pcs|cartons?|cases?)/i);
-  if(cmt) allCount = parseInt(cmt[1],10); // 全文件数兜底（尺寸段没写件数时用）
+function looksTabular(txt){
+  // 只有「多行、每行都是数字」才走表格解析，避免聊天原话被当成表格
+  var lines = txt.split(/\n/).map(function(s){ return s.trim(); }).filter(Boolean);
+  if(lines.length < 2) return false;
+  if(/(?:长|宽|高|每箱|单箱|每件|共|总重|合计|第[0-9一二三四五六七八九])/.test(txt)) return false;
+  var okRows = 0;
+  for(var i = 0; i < lines.length; i++){
+    var n = (lines[i].match(/\d+(?:\.\d+)?/g) || []).length;
+    if(n >= 3) okRows++;
+  }
+  return okRows >= 2;
+}
+function packOf(seg, fallback){
+  if(/木架|打木架|木条架|木框架/.test(seg)) return '木架';
+  if(/木箱|wooden\s*case/i.test(seg)) return '木箱';
+  if(/托盘|卡板|pallet/i.test(seg)) return '托盘';
+  if(/纸箱|carton/i.test(seg)) return '纸箱';
+  return fallback || '纸箱';
+}
+function smartRows(txt){
+  var out = [];
+  var gPack = packOf(txt, '');
+  if(/木架|打木架|木条架|木框架/.test(txt)) gPack = '木架';
+  else if(/木箱|wooden\s*case/i.test(txt)) gPack = '木箱';
+  else if(/托盘|卡板|pallet/i.test(txt)) gPack = '托盘';
+  else gPack = '纸箱';
+  var segs = txt.split(/[\n\r;]+/).map(function(s){ return s.trim(); }).filter(Boolean);
+  var gCount = null, gKg = null;
+  var cm = txt.match(/(?:共|一共|总计|total)\s*[:：]?\s*(\d+)\s*(?:件|个|箱|箱子|pcs|ctns?|cartons?)/i)
+        || txt.match(/(?:件数|数量)\s*[:：]?\s*(\d+)/i)
+        || txt.match(/(\d+)\s*(?:件|箱|个)\b/);
+  if(cm) gCount = parseInt(cm[1], 10);
+  var km = txt.match(/(?:共|总重|合计|总毛重|毛重|重量)\s*[:：]?\s*(\d+(?:\.\d+)?)\s*kg/i)
+        || txt.match(/(\d+(?:\.\d+)?)\s*kg/i);
+  if(km) gKg = parseFloat(km[1]);
   segs.forEach(function(seg){
     var dims = smartDimsFormula(seg);
     if(!dims.length) dims = smartDimsLabel(seg);
-    if(dims.length){
-      dims.forEach(function(d){
-        var after = seg.slice(d.end);
-        var c = smartCount(after);
-        var w = smartWeight(after);
-        found.push({L:d.L, W:d.W, H:d.H, N:c !== null ? c : (allCount ? allCount : 1), WT:w});
-      });
-    }
-    if(kg === null){ var w2 = smartWeight(seg); if(w2 !== null) kg = w2; }
+    if(!dims.length) dims = smartDimsSlash(seg);
+    if(!dims.length && smartNums(seg) <= 4) dims = smartDimsSpace(seg);
+    if(!dims.length) return;
+    var prevEnd = 0;
+    dims.forEach(function(d, di){
+      var nextStart = di < dims.length - 1 ? dims[di + 1].start : seg.length;
+      var after = seg.slice(d.end, nextStart);     // 尺寸后面那串
+      var before = seg.slice(prevEnd, d.start);    // 尺寸前面那串
+      var c = smartCount2(after);
+      if(c === null) c = smartCount2(before);
+      var w = smartWeight2(after);
+      if(!w) w = smartWeight2(before);
+      var N = c !== null ? c : (gCount !== null ? gCount : 1);
+      var WT = 0;
+      if(w) WT = w.per ? (w.v * N) : w.v;
+      else if(gKg !== null) WT = gKg;
+      out.push([d.L, d.W, d.H, N, WT, packOf(seg, gPack)]);
+      prevEnd = d.end;
+    });
   });
-  addrLine = smartAddr(txt);
-  if(addrLine){ document.getElementById('fAddr').value = addrLine; parseAddr(); msg.push('地址：已识别填入 → ' + addrLine.slice(0,34)); }
-  else msg.push('地址：未识别到邮编（马来5位/新加坡6位/菲律宾4位），请手动填');
-  var ok = 0;
-  if(found.length){
-    var before = batches.length;
-    addRows(found.map(function(f){ return [f.L, f.W, f.H, f.N, f.WT !== null ? f.WT : (kg !== null ? kg : 0)]; }));
-    ok = batches.length - before;
-    msg.push('货物：识别到 ' + found.length + ' 组尺寸，已加入 ' + ok + ' 批（没识别到重量的按全局重量或0，请核对）');
-  } else msg.push('货物：未识别到尺寸（支持 41*34*34cm、长41宽34高34、1.2m*1*0.8m 等写法），请手动录入');
-  res.style.display='block';
-  res.innerHTML = '<div class="' + (ok > 0 || addrLine ? 'ok' : 'warn') + '">' + msg.join('<br>') + '</div>';
+  return out;
 }
-document.getElementById('btnSmart').onclick = smartParse;
+function smartParse(auto){
+  var raw = document.getElementById('fSmart').value;
+  var res = document.getElementById('smartResult');
+  if(!raw.trim()){ res.style.display = 'block'; res.innerHTML = '<div class="warn">请先粘贴客户消息。</div>'; return; }
+  if(auto && raw === _smartLast) return;
+  _smartLast = raw;
+  var txt = smartNorm(raw);
+
+  var tblRows = null;
+  try{ tblRows = parseText(txt); }catch(e){ tblRows = null; }
+  var nlRows = smartRows(txt);
+
+  var rows = [], how = '';
+  if(looksTabular(txt) && tblRows && tblRows.length){ rows = tblRows; how = '表格'; }
+  else if(nlRows.length){ rows = nlRows; how = '文字'; }
+  else if(tblRows && tblRows.length){ rows = tblRows; how = '表格'; }
+
+  // 按方报 / 整柜 / 非服务国：没有三边尺寸也要给提示
+  var cbm = null, hqType = null, hqNum = null, notServed = '';
+  var vm = txt.match(/(\d+(?:\.\d+)?)\s*(?:个?方|立方米|cbm)/i) || txt.match(/体积\s*[:：]?\s*(\d+(?:\.\d+)?)/i);
+  if(vm) cbm = parseFloat(vm[1]);
+  var sk = txt.match(/(\d+(?:\.\d+)?)\s*kg/i);
+  var solKg = sk ? parseFloat(sk[1]) : null;
+  var ht = txt.match(/(?:柜型|container)\s*[:：]?\s*(20GP|40HQ|40GP|45HQ|40尺|20尺)/i);
+  if(ht) hqType = ht[1].toUpperCase();
+  var hm = txt.match(/(\d+)\s*\*\s*(HQ|40HQ|20GP|柜)/i);
+  if(hm){ var hv = parseInt(hm[1], 10); if(hv !== 20 && hv !== 40 && hv !== 45) hqNum = hv; }
+  if(/印尼|印度尼西亚|indonesia/i.test(txt)) notServed = '印尼';
+  else if(/越南|vietnam/i.test(txt)) notServed = '越南';
+  else if(/泰国|thailand/i.test(txt)) notServed = '泰国';
+
+  var addrLine = smartAddr(txt);
+  if(addrLine){ document.getElementById('fAddr').value = addrLine; parseAddr(); }
+
+  var msg = [], ok = 0;
+  if(rows.length){
+    // 撤掉上一次自动识别加的批次，避免改一个字就重复叠加
+    var keep = [];
+    batches.forEach(function(b){ if(!b._smart) keep.push(b); });
+    batches.length = 0;
+    keep.forEach(function(b){ batches.push(b); });
+
+    ok = addRows(rows, true);
+    for(var i = batches.length - ok; i < batches.length; i++) batches[i]._smart = true;
+
+    var parts = rows.slice(0, 5).map(function(r){
+      return '长' + fmt0(r[0]) + ' × 宽' + fmt0(r[1]) + ' × 高' + fmt0(r[2]) + '　｜　' + r[3] + ' 件' + (r[4] > 0 ? '　｜　' + fmt0(r[4]) + ' kg' : '　｜　重量没读到');
+    }).join('<br>');
+    msg.push('识别到 ' + rows.length + ' 组，已加进 ' + ok + ' 批（按' + how + '识别）：<br>' + parts + (rows.length > 5 ? '<br>……还有 ' + (rows.length - 5) + ' 组' : ''));
+    if(rows.some(function(r){ return !(r[4] > 0); })) msg.push('<span style="color:#b3541e">有批次没读到重量，补上再算才准</span>');
+  } else {
+    if(solKg) msg.push('<span style="color:#b3541e">只读到重量 ' + fmt0(solKg) + ' kg，没读到长宽高</span>：空运可以直接按 kg 报，海运要客户补尺寸。');
+    else msg.push('没识别到尺寸。把客户原话整段粘进来（或上传 Excel）再试；实在不行就手动填一批。');
+  }
+  if(cbm) msg.push('<span style="color:#b3541e">客户报了 ' + fmt0(cbm) + ' 方</span>：海运按方计费，可以直接报方价；要进网站算再补 L×W×H。');
+  if(hqType || hqNum) msg.push('<span style="color:#b3541e">这票是整柜' + (hqType ? '（' + hqType + '）' : '') + (hqNum ? '，' + hqNum + ' 个柜' : '') + '</span>，走「整柜 / 单询」渠道。');
+  if(notServed) msg.push('<span style="color:#b3541e">目的地是' + notServed + '，不在本站三条线</span>（马来 / 新加坡 / 菲律宾），单独报。');
+  var pkSet = {};
+  rows.forEach(function(r){ if(r[5]) pkSet[r[5]] = 1; });
+  var pkList = Object.keys(pkSet).filter(function(x){ return x !== '纸箱'; });
+  if(pkList.length) msg.push('包装方式已自动选：' + pkList.join(' / '));
+  if(addrLine) msg.push('地址已自动填进下方地址栏，邮编也一起识别了');
+  res.style.display = 'block';
+  res.innerHTML = '<div class="' + (ok > 0 ? 'ok' : 'warn') + '">' + msg.join('<br>') + '</div>';
+}
+document.getElementById('btnSmart').onclick = function(){ _smartLast = ''; smartParse(false); };
+document.getElementById('fSmart').addEventListener('input', function(){
+  var v = this.value;
+  clearTimeout(_smartTimer);
+  if(!v.trim()){ _smartLast = ''; return; }
+  _smartTimer = setTimeout(function(){ smartParse(true); }, 700);
+});
 
 function showWx(){
   document.getElementById("wxBig").src = document.getElementById("wxQr").src;
