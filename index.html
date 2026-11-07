@@ -562,7 +562,7 @@ footer .sep{opacity:.3}
     </div>
     <div class="ci-body" id="priceBody" style="display:none">
       <div class="pe-bar" id="priceEditBar">
-        <label>价格生效日 <input id="fPriceDate" type="date" value="2026-11-06"></label>
+        <label>价格生效日 <input id="fPriceDate" type="date" value="2026-11-09"></label>
         <button class="btn-mini" onclick="savePriceEdit()">保存改价（存本机）</button>
         <button class="btn-mini btn-gen" onclick="exportSite()">生成新网站 index.html</button>
         <button class="btn-mini" onclick="resetPriceOverride()">恢复原价</button>
@@ -626,42 +626,42 @@ var PRICE = {
     channels: [
       /* ===== 西马空运 ===== */
       { id:'MY-A1', name:'普货经济快线', grp:'空运', cat:'普货', type:'air', eta:'4-7天', tag:'限456邮编', yiwu:0.6,
-        tiers:[{max:30,p:17.5},{max:100,p:17.5},{max:500,p:17},{max:Infinity,p:16.5}],
+        tiers:[{max:30,p:19.5},{max:100,p:19.5},{max:500,p:19},{max:Infinity,p:18.5}],
         free:true,
         noWood:true,
         sur:{air:{w:60,lims:{L:120,W:70,H:70},notAccept:'单件超60kg或纸箱超120*70*70cm不接，请走MY-A2或海运'}},
         note:'双清包税到门·除6000分半泡·义乌+0.6/kg·仅限456开头邮编·不接木箱木架航空箱' },
       { id:'MY-A2', name:'西马普货', grp:'空运', cat:'普货', type:'air', eta:'4-6天', yiwu:0.6,
-        tiers:[{max:10,first:33,add:19},{max:30,p:19},{max:100,p:19},{max:500,p:18.5},{max:Infinity,p:18}],
+        tiers:[{max:10,first:35,add:21},{max:30,p:21},{max:100,p:21},{max:500,p:20.5},{max:Infinity,p:20}],
         free:true,
         woodAdd:1,
         sur:{air:{w:68,lims:{L:120,W:80,H:80},l2:160,fee:150,per:'票'}},
         note:'双清包税到门·除6000分半泡·木箱木架航空箱+1/kg·可接一般贸易报关件' },
       { id:'MY-A3', name:'西马敏货', grp:'空运', cat:'敏感', type:'air', eta:'3-6天', tag:'限456邮编', yiwu:0.6,
-        tiers:[{max:30,p:25},{max:100,p:25},{max:500,p:25},{max:Infinity,p:24}],
+        tiers:[{max:30,p:27},{max:100,p:27},{max:500,p:27},{max:Infinity,p:26}],
         note:'非品牌、带电带磁、3C电子·双清包税·除6000分半泡·仅限456邮编·香港交仓减1元/kg（香港登记费350港币+停车费100港币）' },
       { id:'MY-A4', name:'西马敏感', grp:'空运', cat:'敏感', type:'air', eta:'4-6天', yiwu:0.6,
-        tiers:[{max:10,first:38,add:29},{max:30,p:27},{max:100,p:26.5},{max:500,p:25.5},{max:Infinity,p:25}],
+        tiers:[{max:10,first:40,add:31},{max:30,p:29},{max:100,p:28.5},{max:500,p:27.5},{max:Infinity,p:27}],
         note:'西马敏感货·双清包税·除6000分半泡·品名限制以价格表为准，出货前请先与客服确认 19166290491' },
       { id:'MY-A5', name:'西马特货', grp:'空运', cat:'特货', type:'air', eta:'4-6天', yiwu:0.6,
-        tiers:[{max:10,first:40,add:29},{max:30,p:28},{max:100,p:27},{max:500,p:26.5},{max:Infinity,p:26}],
+        tiers:[{max:10,first:42,add:31},{max:30,p:30},{max:100,p:29},{max:500,p:28.5},{max:Infinity,p:28}],
         note:'一线品牌、保健品、化妆品·手机清关费+10/台、电池+2/个·出货前请确认' },
       /* ===== 东马空运（不分泡，按实重） ===== */
       { id:'MYE-1', name:'东马市区普货', grp:'东马空运', cat:'普货', type:'air', yiwu:0.6, eta:'3-7天', tag:'巴士自提3-5天/快递6-7天',
-        tiers:[{max:10,p:43},{max:20,p:42},{max:Infinity,p:46}],
+        tiers:[{max:10,p:45},{max:20,p:44},{max:Infinity,p:48}],
         fixedActual:true,
         sur:{air:{w:60,lims:{L:120,W:70,H:70},fee:200,per:'票'}},
         note:'东马不分泡按实重计费·单件超60kg或尺寸超120*70*70cm加收200元/票·沙巴不接·含木箱木架/批量单一品名/单件>25kg/单边>50cm走20.1kg+档' },
       { id:'MYE-2', name:'东马市区敏感', grp:'东马空运', cat:'敏感', type:'air', yiwu:0.6, eta:'3-7天',
-        tiers:[{max:10,p:49},{max:20,p:48},{max:Infinity,p:47}],
+        tiers:[{max:10,p:51},{max:20,p:50},{max:Infinity,p:49}],
         fixedActual:true,
         note:'东马不分泡按实重计费·沙巴不接·出货前请确认' },
       { id:'MYE-3', name:'东马偏远普货', grp:'东马空运', cat:'普货', type:'air', yiwu:0.6, eta:'3-7天', tag:'含美里/诗巫/民都鲁',
-        tiers:[{max:10,p:50},{max:20,p:45},{max:Infinity,p:48}],
+        tiers:[{max:10,p:52},{max:20,p:47},{max:Infinity,p:50}],
         fixedActual:true,
         note:'东马不分泡按实重计费·含美里、诗巫、民都鲁等城镇·沙巴不接' },
       { id:'MYE-4', name:'东马偏远敏感', grp:'东马空运', cat:'敏感', type:'air', yiwu:0.6, eta:'3-7天',
-        tiers:[{max:10,p:52},{max:20,p:50},{max:Infinity,p:49}],
+        tiers:[{max:10,p:54},{max:20,p:52},{max:Infinity,p:51}],
         fixedActual:true,
         note:'东马不分泡按实重计费·含美里、诗巫、民都鲁等城镇·沙巴不接' },
       /* ===== 西马海运 ===== */
@@ -744,7 +744,7 @@ var PRICE = {
     name: '菲律宾', en: 'Philippines',
     channels: [
       { id:'PH-A1', name:'空运普货', grp:'空运', cat:'普货', type:'air', yiwu:0.6, eta:'3-5天', tag:'马尼拉市区包派送',
-        tiers:[{max:10,first:53,add:38},{max:50,p:23},{max:100,p:22.5},{max:300,p:22},{max:Infinity,p:21.5}],
+        tiers:[{max:10,first:55,add:40},{max:50,p:25},{max:100,p:24.5},{max:300,p:24},{max:Infinity,p:23.5}],
         woodAdd:2,
         sur:{air:{w:68,lims:{L:120,W:80,H:80},fee:150,per:'件'}},
         note:'双清包税到门·除6000分半泡·木箱木架+2/kg·单件超68kg或尺寸超120*80*80cm加收150元/件（超长超重可叠加）·马尼拉外单件≤30kg、单边≤150cm' },
@@ -789,7 +789,7 @@ var PRICE = {
   }
 };
 /*XGD_PRICE_END*/
-var PRICE_DATE = '2026-11-06';
+var PRICE_DATE = '2026-11-09';
 
 var curC = 'MY', curCh = PRICE.MY.channels[0];
 var batches = [{L:0, W:0, H:0, N:0, WT:0, PK:'纸箱'}];
@@ -798,10 +798,10 @@ var curHub = 'sz';
 var refs = {
   MY: [
     ['西马空运', [
-      ['MY-A1 经济快线(普)', '1-30kg|17.5/kg<br>31-100kg|17.5/kg<br>101-500kg|17/kg<br>501kg+|16.5/kg'],['MY-A2 西马普货', '1-10kg|首33续19/kg<br>11-30kg|19/kg<br>31-100kg|19/kg<br>101-500kg|18.5/kg<br>501kg+|18/kg'],['MY-A3 敏货', '1-30kg|25/kg<br>31-100kg|25/kg<br>101-500kg|25/kg<br>501kg+|24/kg'],['MY-A4 西马敏感', '1-10kg|首38续29/kg<br>11-30kg|27/kg<br>31-100kg|26.5/kg<br>101-500kg|25.5/kg<br>501kg+|25/kg'],['MY-A5 特货', '1-10kg|首40续29/kg<br>11-30kg|28/kg<br>31-100kg|27/kg<br>101-500kg|26.5/kg<br>501kg+|26/kg']
+      ['MY-A1 经济快线(普)', '1-30kg|19.5/kg<br>31-100kg|19.5/kg<br>101-500kg|19/kg<br>501kg+|18.5/kg'],['MY-A2 西马普货', '1-10kg|首35续21/kg<br>11-30kg|21/kg<br>31-100kg|21/kg<br>101-500kg|20.5/kg<br>501kg+|20/kg'],['MY-A3 敏货', '1-30kg|27/kg<br>31-100kg|27/kg<br>101-500kg|27/kg<br>501kg+|26/kg'],['MY-A4 西马敏感', '1-10kg|首40续31/kg<br>11-30kg|29/kg<br>31-100kg|28.5/kg<br>101-500kg|27.5/kg<br>501kg+|27/kg'],['MY-A5 特货', '1-10kg|首42续31/kg<br>11-30kg|30/kg<br>31-100kg|29/kg<br>101-500kg|28.5/kg<br>501kg+|28/kg']
     ]],
     ['东马空运（不分泡）', [
-      ['MYE-1 市区普货', '1-10kg|43/kg<br>11-20kg|42/kg<br>21kg+|46/kg'],['MYE-2 市区敏感', '1-10kg|49/kg<br>11-20kg|48/kg<br>21kg+|47/kg'],['MYE-3 偏远普货', '1-10kg|50/kg<br>11-20kg|45/kg<br>21kg+|48/kg'],['MYE-4 偏远敏感', '1-10kg|52/kg<br>11-20kg|50/kg<br>21kg+|49/kg']
+      ['MYE-1 市区普货', '1-10kg|45/kg<br>11-20kg|44/kg<br>21kg+|48/kg'],['MYE-2 市区敏感', '1-10kg|51/kg<br>11-20kg|50/kg<br>21kg+|49/kg'],['MYE-3 偏远普货', '1-10kg|52/kg<br>11-20kg|47/kg<br>21kg+|50/kg'],['MYE-4 偏远敏感', '1-10kg|54/kg<br>11-20kg|52/kg<br>21kg+|51/kg']
     ]],
     ['海派·吉隆坡/雪兰莪', [
       ['MY-S1 普货', '550 元/方'],['MY-S2 敏感', '600 元/方'],['木箱木架', '600/620 元/方'],['0.3方起', '12-18天']
@@ -826,7 +826,7 @@ var refs = {
   ],
   PH: [
     ['空运（包税）', [
-      ['PH-A1 普货', '1-10kg|首53续38/kg<br>11-50kg|23/kg<br>51-100kg|22.5/kg<br>101-300kg|22/kg<br>301kg+|21.5/kg'],['PH-A2 敏感', '1-10kg|首62续50/kg<br>11-50kg|34/kg<br>51-100kg|33/kg<br>101-300kg|32/kg<br>301kg+|31/kg'],['PH-A3 特货', '1-10kg|首65续50/kg<br>11-50kg|36/kg<br>51-100kg|35/kg<br>101-300kg|35/kg<br>301kg+|34/kg'],['PH-A4 手机/笔记本', '55/kg+10/台']
+      ['PH-A1 普货', '1-10kg|首55续40/kg<br>11-50kg|25/kg<br>51-100kg|24.5/kg<br>101-300kg|24/kg<br>301kg+|23.5/kg'],['PH-A2 敏感', '1-10kg|首62续50/kg<br>11-50kg|34/kg<br>51-100kg|33/kg<br>101-300kg|32/kg<br>301kg+|31/kg'],['PH-A3 特货', '1-10kg|首65续50/kg<br>11-50kg|36/kg<br>51-100kg|35/kg<br>101-300kg|35/kg<br>301kg+|34/kg'],['PH-A4 手机/笔记本', '55/kg+10/台']
     ]],
     ['海运（包税）', [
       ['PH-S1 普货', '700 元/方'],['PH-S2 敏感', '780'],['PH-S3 特货', '880'],['PH-S4 医疗/液体', '1100'],['PH-S5 手机/平板', '1250+10/台'],['PH-S6/7 宿务达沃', '单询']
@@ -2741,7 +2741,7 @@ function copyQuoteText(){
   if(q.blocked){ alert('这票超出渠道限制或需人工确认，不能复制正式报价。请先按提示调整，或联系客服 19166290491。'); return; }
   copyText(quoteTextOf(q), '报价文字已复制，可直接粘贴到微信发送');
 }
-var PRICE_DATE = '2026-11-06';
+var PRICE_DATE = '2026-11-09';
 function tierLine(arr, unit){
   return arr.map(function(t){
     var m = (t.max === Infinity) ? '∞' : ('≤' + t.max);
@@ -3173,7 +3173,7 @@ function buildSiteHtml(){
   if(!re.test(tpl)) return '';
   tpl = tpl.replace(re, block);
   var d = (document.getElementById('fPriceDate').value || PRICE_DATE);
-  tpl = tpl.split('2026-11-06').join(d);
+  tpl = tpl.split('2026-11-09').join(d);
   tpl = tpl.replace(/（20\d{2}年\d+月\d+号执行）/g, '（' + fmtCN(d) + '执行）');
   return tpl;
 }
