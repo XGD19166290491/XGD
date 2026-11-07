@@ -443,6 +443,15 @@ footer .sep{opacity:.3}
         <input type="file" id="fileIn" accept=".xlsx,.xls,.csv,.txt" hidden>
         <span class="fname" id="fileInfo"></span>
       </div>
+      <div id="importPrev" style="display:none;margin-top:10px;background:#fff;border:1px solid #e4e7ec;border-radius:8px;padding:10px 12px">
+        <div style="font-weight:800;color:#0f2a4a;margin-bottom:4px">导入预览 · 核对后再填入<span id="importPrevHow" style="font-weight:400;color:#667085;font-size:12px;margin-left:6px"></span></div>
+        <div style="font-size:13px;color:#475467;margin-bottom:8px">毫米已换算成厘米，包装方式已按表里的写法识别；不要的行取消勾选。</div>
+        <div id="importPrevBody" style="overflow-x:auto"></div>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+          <button class="btn btn-import" onclick="confirmImport()">确认填入</button>
+          <button class="btn btn-reset" onclick="cancelImport()">取消</button>
+        </div>
+      </div>
       <div id="smartResult" style="display:none;margin-top:10px;background:#fff;border-radius:8px;padding:10px 12px;font-size:14px;line-height:1.9"></div>
       <div class="import-tip">
         粘贴后自动识别，先核对、点「确认填入」再算入。尺寸支持 50*40*35 / 50×40×35 / 长50宽40高35 / 1.2×0.8×0.6m（mm、cm、米混写都认）；件数与重量支持「3件」「共25箱」「每箱12kg」「共36kg」；Excel 复制来的表格、聊天里夹着寒暄的整段话也能挑出来。
@@ -470,6 +479,13 @@ footer .sep{opacity:.3}
           <option value="yw">义乌仓 · 按渠道加收义乌仓费</option>
         </select>
       </div>
+    </div>
+
+    <div id="deliveryRow" style="display:none;margin:0 0 14px;padding:10px 12px;background:#f8fafc;border:1px solid #e4e7ec;border-radius:8px;align-items:center;flex-wrap:wrap;gap:8px">
+      <span style="font-size:13px;color:#475467;font-weight:700">派送方式</span>
+      <button type="button" class="btn-mini delm" data-d="door" onclick="setDelivery('door')">送货上门</button>
+      <button type="button" class="btn-mini delm" data-d="self" onclick="setDelivery('self')">到港 / 到仓自提</button>
+      <span style="font-size:12px;color:#667085" id="delNote"></span>
     </div>
 
     <div class="actions">
@@ -506,7 +522,14 @@ footer .sep{opacity:.3}
     </div>
 
     <div class="hist" id="histCard" style="display:none">
-      <div class="hist-h">报价记录（存在本机，最多 40 条；点「载入」恢复当时的货物重新算）</div>
+      <div class="hist-h">报价记录（存在本机，最多 40 条；点「载入」恢复当时的货物重新算）
+        <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <button class="btn-mini" onclick="exportHist()">导出报价记录（备份 JSON）</button>
+          <button class="btn-mini" onclick="document.getElementById('histFile').click()">导入备份恢复</button>
+          <input type="file" id="histFile" accept=".json" hidden onchange="importHist(this)">
+          <span id="histMsg" style="font-size:12px;color:#667085"></span>
+        </div>
+      </div>
       <div id="histList"></div>
     </div>
 
@@ -519,13 +542,7 @@ footer .sep{opacity:.3}
         <span class="ci-arrow" id="profitArrow">展开</span>
       </div>
       <div class="ci-body" id="profitBody" style="display:none">
-        <div class="p-grid">
-          <div class="field"><label>客户报价（元）</label><input id="pQuote" type="number" readonly placeholder="先测算"></div>
-          <div class="field"><label>实际物流成本（元）</label><input id="pCost" type="number" placeholder="渠道给你的成本价" oninput="calcProfit()"></div>
-          <div class="field"><label>其他成本（元）</label><input id="pOther" type="number" placeholder="报关 / 提货 / 贴标等" oninput="calcProfit()"></div>
-          <div class="field"><label>最低利润率（%）</label><input id="pMin" type="number" placeholder="选填，如 8" oninput="calcProfit()"></div>
-        </div>
-        <div class="p-out" id="pOut">填成本后自动算利润</div>
+        <div class="p-out" id="profitMask">内部模块：需管理员密码登录后使用（成本数据只在本机填、本机看，不会写进页面文件）</div>
       </div>
     </div>
   </div>
@@ -539,7 +556,7 @@ footer .sep{opacity:.3}
     <div class="ci-head" onclick="togglePrice()">
       <div>
         <div class="ci-t">价格与规则总表 <span class="ci-tag">管理员改价</span></div>
-        <div class="ci-s">39 条渠道的价格都能在这里改；改完保存、测算无误，再点「生成新网站」下载 index.html，自己上传覆盖线上文件即可，不用再等改版</div>
+        <div class="ci-s">所有人可查看 / 搜索 / 导出全站价格与规则；改价需管理员密码，每次保存二次确认并自动记录价格版本（时间 · 生效日 · 改了几处）</div>
       </div>
       <span class="ci-arrow" id="priceArrow">展开</span>
     </div>
@@ -552,11 +569,12 @@ footer .sep{opacity:.3}
         <span class="pe-msg" id="priceSaveMsg"></span>
       </div>
       <div class="pe-info" id="siteGenInfo"></div>
+      <div class="pe-info" id="priceVerInfo" style="color:#475467"></div>
       <div class="pr-tools">
         <input id="fPriceQ" placeholder="搜渠道编号 / 名称 / 规则，如 456、GST、超60kg" oninput="renderPrice()">
         <button class="btn-mini" onclick="exportPrice()">导出价格表 JSON</button>
       </div>
-      <div class="pr-note">改价流程：解锁 → 改数字 → 保存改价（先存本机试算）→ 确认无误后点「生成新网站」，用下载的 index.html 覆盖线上文件即可，全站客户看到的就是新价。</div>
+      <div class="pr-note">改价流程：解锁 → 改数字 → 保存改价（二次确认 + 自动记一条版本，先存本机试算）→ 确认无误后点「生成新网站」，用下载的 index.html 覆盖线上文件即可。线上文件不变，客户看到的价格也不会变。</div>
       <div id="priceList"></div>
     </div>
   </div>
@@ -715,7 +733,7 @@ var PRICE = {
         note:'敏感250/300/350分段·含派送·不包税，GST9%另计' },
       { id:'SG-S3', name:'海运一般贸易', grp:'海运', cat:'报关', type:'sea', yiwu:60, eta:'单询',
         price:450, minCbm:1,
-        note:'深圳交仓450/方、广州交仓500/方·1方起·国内报关费500/票·不包税' },
+        note:'深圳交仓450/方、广州交仓500/方（选广州白云仓自动按500计）·1方起·国内报关费500/票·不包税' },
       { id:'SG-S4', name:'海运特快小包', grp:'海运小包', cat:'普/敏', type:'parcel', yiwu:1, eta:'8-10天', tag:'货值1000RMB内包税',
         parcelTiers:[{max:6,p:80,flat:true},{max:10,p:10},{max:Infinity,p:9}],
         fixedFull:true,
@@ -725,20 +743,20 @@ var PRICE = {
   PH: {
     name: '菲律宾', en: 'Philippines',
     channels: [
-      { id:'PH-A1', name:'空运普货', grp:'空运', cat:'普货', type:'air', yiwu:0.6, eta:'3-6天', tag:'马尼拉市区包派送',
+      { id:'PH-A1', name:'空运普货', grp:'空运', cat:'普货', type:'air', yiwu:0.6, eta:'3-5天', tag:'马尼拉市区包派送',
         tiers:[{max:10,first:53,add:38},{max:50,p:23},{max:100,p:22.5},{max:300,p:22},{max:Infinity,p:21.5}],
         woodAdd:2,
         sur:{air:{w:68,lims:{L:120,W:80,H:80},fee:150,per:'件'}},
         note:'双清包税到门·除6000分半泡·木箱木架+2/kg·单件超68kg或尺寸超120*80*80cm加收150元/件（超长超重可叠加）·马尼拉外单件≤30kg、单边≤150cm' },
-      { id:'PH-A2', name:'空运敏感', grp:'空运', cat:'敏感', type:'air', yiwu:0.6, eta:'3-6天', tag:'F牌、带电',
+      { id:'PH-A2', name:'空运敏感', grp:'空运', cat:'敏感', type:'air', yiwu:0.6, eta:'3-5天', tag:'F牌、带电',
         tiers:[{max:10,first:62,add:50},{max:50,p:34},{max:100,p:33},{max:300,p:32},{max:Infinity,p:31}],
         sur:{air:{w:68,lims:{L:120,W:80,H:80},fee:150,per:'件'}},
         note:'F牌、带电·双清包税·除6000分半泡·拉拉莫派送/其他默认JNT·单件超68kg或超120*80*80cm加收150元/件（超长超重可叠加）' },
-      { id:'PH-A3', name:'空运特货', grp:'空运', cat:'特货', type:'air', yiwu:0.6, eta:'3-6天', tag:'液体、食品',
+      { id:'PH-A3', name:'空运特货', grp:'空运', cat:'特货', type:'air', yiwu:0.6, eta:'3-5天', tag:'液体、食品',
         tiers:[{max:10,first:65,add:50},{max:50,p:36},{max:100,p:35},{max:300,p:35},{max:Infinity,p:34}],
         sur:{air:{w:68,lims:{L:120,W:80,H:80},fee:150,per:'件'}},
         note:'液体、食品·双清包税·除6000分半泡·单件超68kg或超120*80*80cm加收150元/件（超长超重可叠加）' },
-      { id:'PH-A4', name:'空运特敏', grp:'空运', cat:'特敏', type:'air', yiwu:0.6, eta:'3-6天', tag:'手机/笔记本',
+      { id:'PH-A4', name:'空运特敏', grp:'空运', cat:'特敏', type:'air', yiwu:0.6, eta:'3-5天', tag:'手机/笔记本',
         tiers:[{max:Infinity,p:55}], addPerPcs:10,
         note:'手机55/kg+附加10/台·笔记本55/kg+附加10/台·不分品牌' },
       { id:'PH-S1', name:'海运普货', grp:'海运', cat:'普货', type:'sea', eta:'12-15天', tag:'马尼拉市区包派送', yiwu:60,
@@ -803,7 +821,7 @@ var refs = {
       ['SG-A1 普货', '1-10kg|首40续22/kg<br>11-50kg|22/kg<br>51-100kg|20.5/kg<br>101-300kg|19.5/kg<br>301-500kg|18.5/kg<br>501kg+|18/kg'],['SG-A2 敏感', '1-10kg|首45续25/kg<br>11-50kg|23.5/kg<br>51-100kg|23.5/kg<br>101-300kg|23.5/kg<br>301-500kg|22.5/kg<br>501kg+|22/kg'],['SG-A3 特货', '1-10kg|首48续28/kg<br>11-50kg|25/kg<br>51-100kg|25/kg<br>101-300kg|25/kg<br>301-500kg|24/kg<br>501kg+|24/kg'],['GST 9%', '超400新币另计']
     ]],
     ['海运（不包税）', [
-      ['SG-S1 普货', '0.1-0.3方|220/方<br>0.4-0.6方|280/方<br>0.7方+|330/方'],['SG-S2 敏感', '0.1-0.3方|250/方<br>0.4-0.6方|300/方<br>0.7方+|350/方'],['SG-S3 一般贸易', '450 元/方起'],['SG-S4 特快小包', '1-6kg|80/票<br>6.1-10kg|10/kg<br>10.1kg+|9/kg']
+      ['SG-S1 普货', '0.1-0.3方|220/方<br>0.4-0.6方|280/方<br>0.7方+|330/方'],['SG-S2 敏感', '0.1-0.3方|250/方<br>0.4-0.6方|300/方<br>0.7方+|350/方'],['SG-S3 一般贸易', '深圳450 / 广州500 元/方起'],['SG-S4 特快小包', '1-6kg|80/票<br>6.1-10kg|10/kg<br>10.1kg+|9/kg']
     ]]
   ],
   PH: [
@@ -869,6 +887,7 @@ function renderChannels(){
   });
   document.getElementById('modeRow').style.display = (curCh.type === 'air') ? 'grid' : 'none';
   document.getElementById('cbmCard').style.display = (curCh.type === 'sea') ? 'block' : 'none';
+  updateDeliveryRow();
   if(curCh.type === 'sea') calcCbmOnly();
 }
 function selectChannel(ch, btn){
@@ -878,6 +897,7 @@ function selectChannel(ch, btn){
   btn.className = 'ch-btn active';
   document.getElementById('modeRow').style.display = (ch.type === 'air') ? 'grid' : 'none';
   document.getElementById('cbmCard').style.display = (ch.type === 'sea') ? 'block' : 'none';
+  updateDeliveryRow();
   if(ch.type === 'sea') calcCbmOnly();
   if(document.getElementById('result').className.indexOf('show') >= 0) calc();
 }
@@ -924,6 +944,7 @@ function refPriceText(ch){
     return s.join('<br>');
   }
   if(ch.price != null){
+    if(ch.id === 'SG-S3') return ch.price + '(深圳) / 500(广州) 元/方';
     return (ch.addPerPcs != null) ? (ch.price + '+' + ch.addPerPcs + '/台') : (ch.price + ' 元/方');
   }
   return null;
@@ -1030,7 +1051,7 @@ function mkField(label, i, key, unit, val){
 }
 function mkPackSelect(i, val){
   var v = val || '纸箱';
-  var opts = ['纸箱','木箱','木架','托盘'].map(function(o){
+  var opts = PACK_KEYS.map(function(o){
     return '<option' + (o === v ? ' selected' : '') + '>' + o + '</option>';
   }).join('');
   return '<div class="field"><label>包装方式</label><select class="pack-sel" data-b="' + i + '" data-k="PK">' + opts + '</select></div>';
@@ -1088,7 +1109,9 @@ function addRows(rows, quiet){
     var L = r[0], W = r[1], H = r[2], N = r[3], WT = r[4];
     if(L>0 && W>0 && H>0 && N>0){
       if(!(WT>0)){ WT = 0; noWt++; }
-      batches.push({L:L, W:W, H:H, N:N, WT:WT, PK: r[5] || '纸箱', GD:'普货'});
+      var pk = r[5] || '纸箱';
+      if(PACK_KEYS.indexOf(pk) < 0) pk = '纸箱';
+      batches.push({L:L, W:W, H:H, N:N, WT:WT, PK: pk, GD:'普货'});
       ok++;
     } else {
       bad++;
@@ -1102,12 +1125,67 @@ function addRows(rows, quiet){
   if(!quiet) document.getElementById('fileInfo').textContent = info;
   return ok;
 }
+var pendingImport = null;
+function openImportPreview(rows, how){
+  var ok = [];
+  rows.forEach(function(r){ if(r[0] > 0 && r[1] > 0 && r[2] > 0 && r[3] > 0) ok.push(r); });
+  if(!ok.length){
+    document.getElementById('fileInfo').textContent = '没读到有效数据：请确认表里有 长 / 宽 / 高 / 件数 这几列（实重可选）';
+    return;
+  }
+  pendingImport = ok;
+  var th = 'style="padding:6px;border-bottom:1px solid #e4e7ec;text-align:left;white-space:nowrap"';
+  var td = 'padding:6px;border-bottom:1px solid #f2f4f7;white-space:nowrap';
+  var h = '<table style="width:100%;border-collapse:collapse;font-size:13px">' +
+    '<thead><tr style="background:#f8fafc;color:#475467">' +
+    '<th ' + th + '>保留</th><th ' + th + '>长 cm</th><th ' + th + '>宽 cm</th><th ' + th + '>高 cm</th>' +
+    '<th ' + th + '>件数</th><th ' + th + '>单箱实重 kg</th><th ' + th + '>包装</th><th ' + th + '>方数</th>' +
+    '</tr></thead><tbody>';
+  ok.forEach(function(r, i){
+    h += '<tr>' +
+      '<td style="' + td + ';text-align:center"><input type="checkbox" checked data-keep="' + i + '"></td>' +
+      '<td style="' + td + '">' + fmt(r[0]) + '</td>' +
+      '<td style="' + td + '">' + fmt(r[1]) + '</td>' +
+      '<td style="' + td + '">' + fmt(r[2]) + '</td>' +
+      '<td style="' + td + '">' + r[3] + '</td>' +
+      '<td style="' + td + '">' + (r[4] > 0 ? fmt(r[4]) : '<span style="color:#B54708">待补</span>') + '</td>' +
+      '<td style="' + td + '">' + (r[5] || '纸箱') + '</td>' +
+      '<td style="' + td + '">' + fmt(r[0] * r[1] * r[2] * r[3] / 1000000) + '</td>' +
+      '</tr>';
+  });
+  h += '</tbody></table>';
+  document.getElementById('importPrevBody').innerHTML = h;
+  document.getElementById('importPrevHow').textContent = how ? '· ' + how : '';
+  document.getElementById('importPrev').style.display = 'block';
+  document.getElementById('fileInfo').textContent = '已解析 ' + ok.length + ' 批，请在上方预览核对后确认填入';
+}
+function confirmImport(){
+  var rows = pendingImport || [];
+  var keep = [];
+  var bs = document.querySelectorAll('#importPrevBody input[data-keep]');
+  for(var i = 0; i < bs.length; i++){
+    if(bs[i].checked){
+      var k = parseInt(bs[i].getAttribute('data-keep'), 10);
+      if(rows[k]) keep.push(rows[k]);
+    }
+  }
+  pendingImport = null;
+  document.getElementById('importPrev').style.display = 'none';
+  if(!keep.length){ document.getElementById('fileInfo').textContent = '已取消：没有勾选任何批次'; return; }
+  addRows(keep);
+}
+function cancelImport(){
+  pendingImport = null;
+  document.getElementById('importPrev').style.display = 'none';
+  document.getElementById('fileInfo').textContent = '已取消导入，上面的货物没有改动';
+}
+
 /* ---------- 表格解析：容错识别 ---------- */
 function normCell(v){
   return String(v === null || v === undefined ? '' : v)
     .replace(/（/g, '(').replace(/）/g, ')').replace(/／/g, '/').replace(/\s+/g, '').toLowerCase();
 }
-function numOf(v){
+function numOf(v, isDim){
   if(typeof v === 'number') return (isFinite(v) && v > 0) ? v : NaN;
   var s = normCell(v);
   if(!s) return NaN;
@@ -1115,9 +1193,42 @@ function numOf(v){
   if(!m) return NaN;
   var n = parseFloat(m[0]);
   if(!(n > 0)) return NaN;
+  if(isDim){
+    // 尺寸列：1200mm → 120cm；1.2m / 1.2米 → 120cm；cm 原样
+    if(/mm|毫米|㎜/.test(s)) return n / 10;
+    if(/cm|厘米|㎝/.test(s)) return n;
+    if(/m|米/.test(s) && n < 10) return Math.round(n * 1000) / 10;
+    return n;
+  }
   // 1.2m / 1.5米 这类写成米的，换算成厘米
   if(!/(cm|厘米|mm|毫米|kg|克|g)$/.test(s) && /(m|米)$/.test(s) && n < 10) n = Math.round(n * 1000) / 10;
   return n;
+}
+function unitHint(raw){
+  var t = String(raw === null || raw === undefined ? '' : raw).toLowerCase();
+  if(/mm|毫米|㎜/.test(t)) return 'mm';
+  if(/cm|厘米|㎝/.test(t)) return 'cm';
+  if(/米|(^|[^a-z])m($|[^a-z])/.test(t)) return 'm';
+  return '';
+}
+function applyHint(n, h){
+  if(!(n > 0)) return n;
+  if(h === 'mm') return Math.round(n / 10 * 100) / 100;
+  if(h === 'm') return Math.round(n * 100 * 100) / 100;
+  return n;
+}
+function numOfDim(v, hint){
+  if(typeof v === 'number') return applyHint((isFinite(v) && v > 0) ? v : NaN, hint);
+  var s = normCell(v);
+  if(!s) return NaN;
+  var m = s.match(/\d+(?:\.\d+)?/);
+  if(!m) return NaN;
+  var n = parseFloat(m[0]);
+  if(!(n > 0)) return NaN;
+  if(/mm|毫米|㎜/.test(s)) return n / 10;
+  if(/cm|厘米|㎝/.test(s)) return n;
+  if(/(^|[^a-z])m($|[^a-z])|米/.test(s)) return n < 10 ? Math.round(n * 1000) / 10 : n;
+  return applyHint(n, hint);
 }
 function blankAt(cells, idx){
   if(idx === undefined) return false;
@@ -1129,23 +1240,44 @@ function colKind(raw){
   if(!t || t.length > 14) return null;
   if((/[*×]/.test(t) && /长|宽|高|尺寸/.test(t)) || /尺寸|规格|箱规|size|dimension/.test(t)) return 'SIZE';
   if(/实重|毛重|净重|重量|weight|单箱重|单件重|每箱重|^kg$|^wt$|g\.?w/.test(t)) return 'WT';
+  if(/包装|打包|packing|package/.test(t)) return 'PACK';
   if(/件数|箱数|数量|qty|pcs|^ctn|^件$|^箱$|^n$/.test(t)) return 'N';
   if(t === 'l' || /长/.test(t) || /^l\(|lcm/.test(t)) return 'L';
   if(t === 'w' || /宽/.test(t) || /^w\(|wcm/.test(t)) return 'W';
   if(t === 'h' || /高/.test(t) || /^h\(|hcm/.test(t) || /厚/.test(t)) return 'H';
   return null;
 }
-var DIM_RE = /^\d+(?:\.\d+)?(?:[*×x]\d+(?:\.\d+)?){1,2}$/;
-function splitDim(v){
+var DIM_RE = /^\d+(?:\.\d+)?(?:mm|毫米|cm|厘米|㎜|㎝|m|米)?(?:[*×x]\d+(?:\.\d+)?(?:mm|毫米|cm|厘米|㎜|㎝|m|米)?){1,2}$/;
+function dimToCm(n, u){
+  u = (u || '').toLowerCase();
+  if(u === 'mm' || u === '毫米' || u === '㎜') return n / 10;
+  if(u === 'm' || u === '米') return n * 100;
+  return n;
+}
+function splitDim(v, hint){
   var s = normCell(v);
   if(!DIM_RE.test(s)) return null;
-  var ps = s.split(/[*×x]/).map(function(x){ return parseFloat(x); });
-  ps = ps.filter(function(n){ return n > 0; });
+  var ps = s.split(/[*×x]/).map(function(x){
+    var m = x.match(/^(\d+(?:\.\d+)?)(mm|毫米|㎜|cm|厘米|㎝|m|米)?$/);
+    if(!m) return NaN;
+    return dimToCm(parseFloat(m[1]), m[2] || hint || '');
+  }).filter(function(n){ return n > 0; });
   return ps.length >= 2 ? ps : null;
+}
+var PACK_KEYS = ['纸箱', '木箱', '木架', '托盘', '航空箱'];
+function packKind(raw){
+  var t = String(raw === null || raw === undefined ? '' : raw);
+  if(!t) return '';
+  if(/航空箱|空运箱|air\s*box/i.test(t)) return '航空箱';
+  if(/木架|木框|wood\s*frame/i.test(t)) return '木架';
+  if(/木箱|wood\s*case|wooden\s*case/i.test(t)) return '木箱';
+  if(/托盘|卡板|pallet/i.test(t)) return '托盘';
+  if(/纸箱|carton/i.test(t)) return '纸箱';
+  return '';
 }
 function parseRows(rows){
   // 1) 在前 8 行里找表头：命中列数最多的那行
-  var headerIdx = -1, headerMap = null, best = 0;
+  var headerIdx = -1, headerMap = null, headerHint = {}, best = 0;
   var limit = Math.min(rows.length, 8);
   for(var i = 0; i < limit; i++){
     var cells = rows[i] || [], map = {}, score = 0;
@@ -1162,7 +1294,15 @@ function parseRows(rows){
       if(map.H === undefined && map.W === map.L + 1 && blankAt(cells, map.L + 2)){ map.H = map.L + 2; }
     }
     var hasDim = (map.SIZE !== undefined || map.L !== undefined || map.W !== undefined || map.H !== undefined);
-    if(score >= 2 && hasDim && score > best){ best = score; headerMap = map; headerIdx = i; }
+    if(score >= 2 && hasDim && score > best){
+      best = score; headerMap = map; headerIdx = i;
+      headerHint = {
+        L: unitHint(cells[map.L]),
+        W: unitHint(cells[map.W]),
+        H: unitHint(cells[map.H]),
+        SIZE: unitHint(cells[map.SIZE])
+      };
+    }
   }
 
   // 2) 逐行提取
@@ -1173,22 +1313,24 @@ function parseRows(rows){
     if(!cs.length) continue;
     var L = NaN, W = NaN, H = NaN, N = NaN, WT = NaN;
 
+    var PK = '';
     if(headerMap){
-      if(headerMap.L !== undefined) L = numOf(cs[headerMap.L]);
-      if(headerMap.W !== undefined) W = numOf(cs[headerMap.W]);
-      if(headerMap.H !== undefined) H = numOf(cs[headerMap.H]);
+      if(headerMap.L !== undefined) L = numOfDim(cs[headerMap.L], headerHint.L);
+      if(headerMap.W !== undefined) W = numOfDim(cs[headerMap.W], headerHint.W);
+      if(headerMap.H !== undefined) H = numOfDim(cs[headerMap.H], headerHint.H);
       if(headerMap.N !== undefined) N = numOf(cs[headerMap.N]);
       if(headerMap.WT !== undefined) WT = numOf(cs[headerMap.WT]);
+      if(headerMap.PACK !== undefined) PK = packKind(cs[headerMap.PACK]);
       // 三边没凑齐、或者某一格直接写着 50*40*35
       if((isNaN(L) || isNaN(W) || isNaN(H)) && headerMap.SIZE !== undefined){
-        var d0 = splitDim(cs[headerMap.SIZE]);
+        var d0 = splitDim(cs[headerMap.SIZE], headerHint.SIZE);
         if(d0 && d0.length >= 3){ L = d0[0]; W = d0[1]; H = d0[2]; }
       }
     }
     // 表头没分清长宽高、但某个格子里写着 50*40*35
     if(isNaN(W) || isNaN(H)){
       for(var q = 0; q < cs.length; q++){
-        var dm = splitDim(cs[q]);
+        var dm = splitDim(cs[q], headerHint.SIZE);
         if(dm && dm.length >= 3){ L = dm[0]; W = dm[1]; H = dm[2]; break; }
       }
     }
@@ -1206,7 +1348,14 @@ function parseRows(rows){
       else if(flat.length === 4){ L = flat[0]; W = flat[1]; H = flat[2]; N = flat[3]; }
     }
     if(!(L > 0) || !(W > 0) || !(H > 0) || !(N > 0)) continue;
-    out.push([L, W, H, Math.round(N), WT > 0 ? WT : 0]);
+    // 表里没有包装列时，扫一遍整行找木箱 / 木架 / 托盘 / 航空箱，避免包装信息丢失
+    if(!PK){
+      for(var q4 = 0; q4 < cs.length; q4++){
+        var pk = packKind(cs[q4]);
+        if(pk){ PK = pk; break; }
+      }
+    }
+    out.push([L, W, H, Math.round(N), WT > 0 ? WT : 0, PK || '纸箱']);
   }
   return out;
 }
@@ -1240,8 +1389,8 @@ function parseSheetArray(data){
 /* ===== 附加费 ===== */
 function calcSurcharge(ch, batches){
   var sur = ch.sur;
-  var list = [];
-  if(!sur) return {total:0, list:list};
+  var list = [], pending = [];
+  if(!sur) return {total:0, list:list, pending:pending};
   var total = 0;
   if(sur.air){
     var a = sur.air;
@@ -1273,11 +1422,42 @@ function calcSurcharge(ch, batches){
     });
     if(a.notAccept && notOk){
       list.push({t:'渠道限制', d:a.notAccept, warn:true});
-      return {total:0, list:list, blocked:true};
+      return {total:0, list:list, pending:pending, blocked:true};
     }
     if(a.consult && consult){
       list.push({t:'需咨询', d:a.consult, warn:true});
-      return {total:0, list:list, blocked:true};
+      return {total:0, list:list, pending:pending, blocked:true};
+    }
+    if(a.fee && !a.notAccept && !a.consult){
+      /* 原规则（PH-A1/A2/A3 规则说明）：单件超重、超尺寸分别加收，超长超重可叠加 */
+      var wN = 0, sN = 0, wWhy = [], sWhy = [];
+      batches.forEach(function(b, i){
+        if(a.w && b.WT > a.w){ wN += b.N; wWhy.push('第' + (i + 1) + '批 ' + b.WT + 'kg'); }
+        var sm = [];
+        if(a.lims){
+          if(b.L > a.lims.L) sm.push('长' + b.L);
+          if(b.W > a.lims.W) sm.push('宽' + b.W);
+          if(b.H > a.lims.H) sm.push('高' + b.H);
+        } else {
+          var mx = Math.max(b.L, b.W, b.H);
+          if(a.l && mx > a.l) sm.push('单边' + mx);
+          if(a.h && b.H > a.h) sm.push('高' + b.H);
+        }
+        if(a.l2 && Math.max(b.L, b.W, b.H) > a.l2) sm.push('单边长' + Math.max(b.L, b.W, b.H));
+        if(sm.length){ sN += b.N; sWhy.push('第' + (i + 1) + '批 ' + sm.join('、')); }
+      });
+      if(wN){
+        var wFee = a.fee * wN;
+        total += wFee;
+        list.push({t:'超重费', d:'单件超' + a.w + 'kg（' + wWhy.join('；') + '），' + a.fee + '元/件×' + wN + '件', fee:wFee});
+      }
+      if(sN){
+        var sFee = a.fee * sN;
+        total += sFee;
+        list.push({t:'超尺寸费', d:'尺寸超' + (a.lims ? (a.lims.L + '*' + a.lims.W + '*' + a.lims.H + 'cm') : '规则尺寸') + '（' + sWhy.join('；') + '），' + a.fee + '元/件×' + sN + '件', fee:sFee});
+      }
+      if(wN && sN) list.push({t:'叠加说明', d:'超重与超尺寸按原规则分别加收、可叠加，同一件两项都超即两笔', fee:0});
+      return {total: total, list: list, pending: pending};
     }
     if(reasons.length){
       var n = 0;
@@ -1288,7 +1468,7 @@ function calcSurcharge(ch, batches){
       list.push({t:'超长/超重费', d:reasons.join('；') + '，加收' + a.fee + '元/' + a.per, fee:fee});
       total += fee;
     }
-    return {total:total, list:list};
+    return {total:total, list:list, pending:pending};
   }
   if(sur.sea){
     var s = sur.sea;
@@ -1300,9 +1480,7 @@ function calcSurcharge(ch, batches){
         list.push({t:'海运超重费', d:'单件' + b.WT + 'kg超' + s.w + 'kg，加收' + s.fee + '元/件×' + b.N + '件', fee:f});
       }
       if(s.w2 && b.WT > s.w2){
-        var f2 = s.fee2 * b.N;
-        total += f2;
-        list.push({t:'海运超重费(2)', d:'单件' + b.WT + 'kg超' + s.w2 + 'kg，加收' + s.fee2 + '元/件×' + b.N + '件', fee:f2});
+        pending.push('单件 ' + b.WT + 'kg 已超 ' + s.w2 + 'kg 档（价目表里是 ' + s.fee2 + ' 元/件）：规则说明只写了「每方限 ' + s.w + 'kg」，' + s.w2 + 'kg 档与 ' + s.w + 'kg 档是叠加还是替换未写明，待业务确认后另计');
       }
       if(s.l && maxSide > s.l){
         var fl = s.fee * b.N;
@@ -1310,9 +1488,9 @@ function calcSurcharge(ch, batches){
         list.push({t:'海运超长费', d:'单边' + maxSide + 'cm超' + s.l + 'cm，加收' + s.fee + '元/件×' + b.N + '件', fee:fl});
       }
     });
-    return {total:total, list:list};
+    return {total:total, list:list, pending:pending};
   }
-  return {total:0, list:list};
+  return {total:0, list:list, pending:pending};
 }
 
 /* ===== 渠道状态：包税 / 派送范围 / 待确认费用 ===== */
@@ -1350,20 +1528,124 @@ function routeCheck(ch, dz, addrTxt){
   var r = [];
   if((ch.id === 'MY-A1' || ch.id === 'MY-A3') && dz.zip && dz.zip.indexOf('456') !== 0)
     r.push('该渠道只收 456 开头邮编，本单是 ' + dz.zip + '，请改 MY-A2 / 海运');
-  if(ch.id.indexOf('MYE-') === 0 && /沙巴|sabah|kota\s*kinabalu|亚庇|山打根|sandakan/i.test(addrTxt))
+  if(ch.id.indexOf('MYE-') === 0 && ch.id.indexOf('MYE-S') !== 0 && /沙巴|sabah|kota\s*kinabalu|亚庇|山打根|sandakan/i.test(addrTxt))
     r.push('东马空运渠道沙巴不接（含亚庇、山打根）');
   if(ch.id.indexOf('PH-') === 0 && ch.id !== 'PH-S6' && ch.id !== 'PH-S7' && /cebu|davao|宿务|达沃/i.test(addrTxt))
     r.push('该渠道只派马尼拉，宿务 / 达沃请改 PH-S6 / PH-S7');
   return r;
 }
-function chPending(ch, zip){
+function chPending(ch, zip, addrTxt, country){
   var arr = [];
   if(ch.id.indexOf('SG-') === 0) arr.push('GST 9%（货值超 400 新币按货值另计，需客户提供货值）');
   if(ch.type === 'fcl' || ch.type === 'quote') arr.push('整柜 / 单询价、税费与派送费待业务确认');
   if(ch.id === 'MY-S5' || ch.id === 'MY-S6') arr.push('进口税费按报关单实缴，金额待确认');
-  if((ch.id.indexOf('PH-') === 0) && ch.id !== 'PH-S6' && ch.id !== 'PH-S7') arr.push('马尼拉以外地区派送费待确认');
+  if(ch.id.indexOf('PH-') === 0 && ch.id !== 'PH-S6' && ch.id !== 'PH-S7'){
+    var pz = phZone(addrTxt || '', zip || '');
+    if(pz === 'outer') arr.push('该地址在马尼拉以外（外省），外省派送费待确认');
+    else if(pz === 'unknown') arr.push('地址没识别到马尼拉市区，是否属外省待确认（补邮编或详细地址更准）');
+  }
   if(!zip) arr.push('邮编未填，偏远 / 派送范围待确认');
   return arr;
+}
+
+/* ===== 校验：批次完整性 / 渠道限制 / 国家与区域 ===== */
+function countryNameOf(c){ return ({MY:'马来西亚', SG:'新加坡', PH:'菲律宾', ID:'印尼'})[c] || '未识别'; }
+function regionCN(r){ return ({core:'吉隆坡 / 雪兰莪核心区', outer:'西马外省', sabah:'沙巴', sarawak:'砂拉越', unknown:'未知邮区'})[r] || '未知邮区'; }
+
+/* 只要某批开始填了，就必须填全；不完整的批次不允许被忽略 */
+function batchIssues(){
+  var ms = [], any = false;
+  batches.forEach(function(b, i){
+    var started = (b.L > 0 || b.W > 0 || b.H > 0 || b.N > 0 || b.WT > 0);
+    if(!started) return;
+    any = true;
+    var lack = [];
+    if(!(b.L > 0)) lack.push('单箱长');
+    if(!(b.W > 0)) lack.push('单箱宽');
+    if(!(b.H > 0)) lack.push('单箱高');
+    if(!(b.N > 0)) lack.push('件数');
+    if(!(b.WT > 0)) lack.push('单箱实重');
+    if(lack.length) ms.push('第 ' + (i + 1) + ' 批缺少：' + lack.join('、'));
+  });
+  return {ms: ms, any: any};
+}
+
+/* 用到的非纸箱包装（木箱 / 木架 / 托盘 / 航空箱） */
+function packsUsed(){
+  var out = [];
+  batches.forEach(function(b, i){
+    var k = b.PK || '纸箱';
+    if(k !== '纸箱') out.push('第 ' + (i + 1) + ' 批 ' + k);
+  });
+  return out;
+}
+
+/* 菲律宾：马尼拉市区 / 外省 / 无法识别 */
+function phZone(addrTxt, zip){
+  var a = addrTxt || '';
+  var outer = /cebu|宿务|davao|达沃|iloilo|伊洛伊洛|baguio|碧瑶|batangas|八打雁|laguna|拉古纳|cavite|甲米地|bulacan|布拉干|pampanga|邦板牙|zamboanga|三宝颜|pangasinan|邦阿西楠|bicol|比科尔|leyte|莱特|mindanao|棉兰老|visayas|米沙鄢|subic|苏比克|clark|克拉克/i;
+  var manila = /manila|马尼拉|makati|玛卡提|makati|quezon\s*city|奎松|taguig|达义|pasig|帕西|caloocan|卡洛奥坎|mandaluyong|曼达卢永|san\s*juan|圣胡安|marikina|马里基纳|paranaque|帕拉纳克|las\s*pinas|拉斯皮纳斯|muntinlupa|蒙廷卢帕|navotas|纳沃塔斯|valenzuela|巴伦苏埃拉|malabon|马拉邦|pasay|帕赛|pateros|帕特罗斯/i;
+  if(outer.test(a)) return 'outer';
+  if(manila.test(a)) return 'manila';
+  if(zip && /^\d{4}$/.test(zip)){
+    var z = parseInt(zip, 10);
+    if(z >= 1000 && z <= 1799) return 'manila';
+    return 'outer';
+  }
+  return 'unknown';
+}
+
+/* 渠道自带的硬性限制（数值全部来自该渠道自己的规则说明，不新增不改动） */
+function channelLimitMs(ch, ctx){
+  var ms = [];
+  if(ch.noWood && ctx.packs.length){
+    ms.push(ch.id + ' 不接木箱 / 木架 / 航空箱等非纸箱包装（' + ctx.packs.join('、') + '），请改纸箱出货或换渠道');
+  }
+  if(ch.id === 'MY-S8'){
+    if(ctx.totalN > 1) ms.push('MY-S8 一票一件，本单 ' + ctx.totalN + ' 件，请分票测算');
+    batches.forEach(function(b, i){
+      if(b.WT > 30) ms.push('MY-S8 单件≤30kg，第 ' + (i + 1) + ' 批 ' + b.WT + 'kg 超限');
+    });
+  }
+  if(ch.id === 'SG-S4'){
+    if(ctx.totalN > 2) ms.push('SG-S4 一票≤2 件，本单 ' + ctx.totalN + ' 件，请拆分或改海运整柜');
+    if(ctx.cbm > 0.3) ms.push('SG-S4 一票≤0.3 方，本单 ' + fmt(ctx.cbm) + ' 方，请拆分或改海运');
+    batches.forEach(function(b, i){
+      var mx = Math.max(b.L, b.W, b.H);
+      if(mx > 120) ms.push('SG-S4 单件≤1.2m，第 ' + (i + 1) + ' 批最长边 ' + mx + 'cm');
+    });
+  }
+  return ms;
+}
+
+/* 马来邮编 → 核心区 / 外省 / 沙巴 / 砂拉越 与渠道是否匹配（依据各渠道自己的派送范围说明） */
+function regionMs(ch, dz, addrTxt){
+  var ms = [];
+  if(!dz || !dz.zip || dz.c !== 'MY') return ms;
+  var r = myRegion(dz.zip);
+  var id = ch.id;
+  var isEast = (r === 'sabah' || r === 'sarawak') || /sabah|sarawak|沙巴|砂拉越|沙捞越|kota\s*kinabalu|亚庇|kuching|古晋/i.test(addrTxt || '');
+  if(r === 'unknown'){
+    ms.push('邮编 ' + dz.zip + ' 不在已知马来邮区，无法判断核心区 / 外省 / 东马，请人工确认派送范围');
+    return ms;
+  }
+  if(id === 'MY-S1' || id === 'MY-S2'){
+    if(r !== 'core') ms.push(id + ' 只派吉隆坡 / 雪兰莪核心区，本单 ' + dz.zip + ' 属' + regionCN(r) + '，请改 MY-S3 / MY-S4 或东马渠道');
+  } else if(id === 'MY-S3' || id === 'MY-S4'){
+    if(isEast) ms.push(id + ' 只派西马外省，本单 ' + dz.zip + ' 属' + regionCN(r) + '，东马请改 MYE 渠道');
+  } else if(id === 'MY-S5' || id === 'MY-S6' || id === 'MY-S8'){
+    if(isEast) ms.push(id + ' 只派西马，本单 ' + dz.zip + ' 属' + regionCN(r) + '，东马请改 MYE 渠道');
+  } else if(id.indexOf('MYE-') === 0){
+    if(!isEast) ms.push(id + ' 是东马渠道，本单 ' + dz.zip + ' 属' + regionCN(r) + '，西马请改 MY 渠道');
+    else if(id.indexOf('MYE-S1') === 0 || id.indexOf('MYE-S2') === 0){
+      if(r === 'sabah') ms.push(id + ' 走古晋（砂拉越），沙巴请改 MYE-S3 / MYE-S4');
+    } else if(id.indexOf('MYE-S3') === 0 || id.indexOf('MYE-S4') === 0){
+      if(r === 'sarawak') ms.push(id + ' 走沙巴，砂拉越请改 MYE-S1 / MYE-S2');
+    }
+  } else if(id.indexOf('MY-A') === 0){
+    if(isEast) ms.push(id + ' 是西马空运，本单 ' + dz.zip + ' 属' + regionCN(r) + '，东马请改 MYE 空运');
+  }
+  return ms;
 }
 
 /* ===== 合并测算 ===== */
@@ -1418,27 +1700,29 @@ function parcelLabel(ch, wkg){
 }
 
 function calc(){
-  // 只要有一批是木箱/木架/托盘，就按木箱价算（同一票里纸箱木箱混装也走木箱口径）
-  pack = batches.some(function(b){ return b.PK && b.PK !== '纸箱'; }) ? 'wood' : 'carton';
-  var valid = batches.filter(function(b){
-    return b.L>0 && b.W>0 && b.H>0 && b.N>0 && b.WT>0;
-  });
-  if(!valid.length){
+  var bi = batchIssues();
+  if(bi.ms.length){
+    document.getElementById('result').className = 'result';
+    alert('有批次没填完整，不能出价：\n' + bi.ms.join('\n') + '\n\n请补齐单箱长宽高、件数、单箱实重后再测算。');
+    return;
+  }
+  if(!bi.any){
     alert('请至少填写一批有效的货物数据');
     return;
   }
+  // 只要有一批是木箱/木架/托盘/航空箱，就按木箱价算（同一票里纸箱木箱混装也走木箱口径）
+  var packs = packsUsed();
+  pack = packs.length ? 'wood' : 'carton';
   var mode = document.getElementById('fMode').value;
   var ch = curCh;
 
   var totalN = 0;
   var volW = 0, actual = 0, cbm = 0;
   batches.forEach(function(b){
-    if(b.L>0 && b.W>0 && b.H>0 && b.N>0 && b.WT>0){
-      totalN += b.N;
-      volW += b.L*b.W*b.H*b.N/6000;
-      actual += b.WT*b.N;
-      cbm += b.L*b.W*b.H*b.N/1000000;
-    }
+    totalN += b.N;
+    volW += b.L*b.W*b.H*b.N/6000;
+    actual += b.WT*b.N;
+    cbm += b.L*b.W*b.H*b.N/1000000;
   });
   var sur = calcSurcharge(ch, batches);
   var base = 0, billText = '', rateText = '';
@@ -1492,6 +1776,7 @@ function calc(){
       billCbm = Math.max(cbm, minC);
       if(step > 0) billCbm = Math.ceil(billCbm/step)*step;
       var unit = ch.price;
+      if(ch.id === 'SG-S3' && curHub === 'gz') unit = 500;
       if(ch.price5 && cbm > 5) unit = ch.price5;
       if(pack === 'wood' && ch.wood) unit = ch.wood;
       base = fmt(unit * billCbm);
@@ -1499,9 +1784,14 @@ function calc(){
     }
     if(ch.delMin && cbm < ch.delMin.maxCbm){
       var dFee = ch.delMin.fee;
-      sur.total += dFee;
-      sur.list.push({t:ch.delMin.label, d:'实际 ' + fmt(cbm) + ' 方，不足 1 方按票收 ' + dFee + ' 元（自提可免）', fee:dFee});
-      rateText += '，1方以下派送费 ' + dFee + ' 元/票（自提可免）';
+      if(deliveryMode === 'self'){
+        sur.list.push({t:'自提', d:'按原规则免 ' + ch.delMin.label + ' ' + dFee + ' 元/票（实际 ' + fmt(cbm) + ' 方），其他费用不变', fee:0});
+        rateText += '，自提免派送费';
+      } else {
+        sur.total += dFee;
+        sur.list.push({t:ch.delMin.label, d:'实际 ' + fmt(cbm) + ' 方，不足 ' + ch.delMin.maxCbm + ' 方按票收 ' + dFee + ' 元（送货上门）', fee:dFee});
+        rateText += '，1方以下派送费 ' + dFee + ' 元/票';
+      }
     }
     if(ch.addPerPcs) base += ch.addPerPcs * totalN;
     billText = fmt(billCbm) + ' CBM（计费方数）';
@@ -1514,6 +1804,7 @@ function calc(){
     rateText = parcelLabel(ch, wkg);
     billText = wkg + ' kg（计费重·泡重/实重取大）';
     calcQty = wkg;
+    kg = wkg;
   }
 
   var ywFee = (curHub === 'yw' && ch.yiwu) ? fmt(ch.yiwu * calcQty) : 0;
@@ -1521,6 +1812,13 @@ function calc(){
   var addrTxt0 = (document.getElementById('fAddr').value || '').trim();
   var dz0 = detectZip(addrTxt0) || {zip:'', c:''};
   var routeMs = routeCheck(ch, dz0, addrTxt0);
+  routeMs = routeMs.concat(regionMs(ch, dz0, addrTxt0));
+  routeMs = routeMs.concat(channelLimitMs(ch, {totalN: totalN, cbm: cbm, packs: packs}));
+  if(dz0.c && dz0.c !== curC){
+    routeMs.push('收货地址识别为「' + countryNameOf(dz0.c) + '」，当前选的是「' + PRICE[curC].name + '」，国家不一致，请切换国家或核对地址');
+  } else if(addrTxt0 && !dz0.c){
+    routeMs.push('收货地址没识别到国家 / 邮编，无法核对渠道是否匹配，请补邮编或找客服确认');
+  }
   var goodsMs = goodsCheck(goodsOfBatches());
   if(goodsMs) routeMs.push(goodsMs);
   if(routeMs.length){
@@ -1589,9 +1887,12 @@ function calc(){
   var addrTxt = (document.getElementById('fAddr').value || '').trim();
   var dz = detectZip(addrTxt) || {zip:'', c:''};
   var zipHtml = dz.zip ? dz.zip : '<b class="warn">未填</b>';
-  var pends = chPending(ch, dz.zip);
+  var pends = chPending(ch, dz.zip, addrTxt, dz.c).concat(sur.pending || []);
   var rpEl = document.getElementById('rPending');
-  if(pends.length){ rpEl.innerHTML = pends.join('；') + '　<b>（以上未计入，需确认后另计）</b>'; rpEl.className = 'v warn'; }
+  if(routeMs.length){
+    rpEl.innerHTML = '<b>本渠道该票不接 / 需人工确认：</b>' + routeMs.join('；') + '　<b>（已拦截，不出正式报价）</b>';
+    rpEl.className = 'v warn';
+  } else if(pends.length){ rpEl.innerHTML = pends.join('；') + '　<b>（以上未计入，需确认后另计）</b>'; rpEl.className = 'v warn'; }
   else { rpEl.textContent = '无'; rpEl.className = 'v'; }
   document.getElementById('rCheck').innerHTML = '录入口径核对：件数 ' + batches.length + ' 批 / ' + totalN + ' 件' +
     '　｜　实重 ' + fmt(actual) + ' kg' +
@@ -1647,6 +1948,9 @@ function reset(){
   document.getElementById('cbmResult').style.display = 'none';
   document.getElementById('fSmart').value = '';
   document.getElementById('smartResult').style.display = 'none';
+  var ip = document.getElementById('importPrev');
+  if(ip) ip.style.display = 'none';
+  pendingImport = null;
   _smartLast = '';
   document.getElementById('fileInfo').textContent = '';
   document.getElementById('fMode').value = 'half';
@@ -1655,41 +1959,105 @@ function reset(){
   document.getElementById('result').className = 'result';
 }
 
+var deliveryMode = 'door';
+function setDelivery(d){
+  deliveryMode = d;
+  paintDelivery();
+  updateDeliveryRow();
+  if(document.getElementById('result').className.indexOf('show') >= 0) calc();
+  if(document.getElementById('cbmResult').style.display !== 'none') calcCbmOnly();
+}
+function paintDelivery(){
+  var bs = document.querySelectorAll('#deliveryRow .delm');
+  for(var i = 0; i < bs.length; i++){
+    var on = bs[i].getAttribute('data-d') === deliveryMode;
+    bs[i].style.background = on ? '#0f2a4a' : '#fff';
+    bs[i].style.color = on ? '#fff' : '#344054';
+    bs[i].style.borderColor = on ? '#0f2a4a' : '#d0d5dd';
+  }
+}
+function updateDeliveryRow(){
+  var row = document.getElementById('deliveryRow');
+  if(!row) return;
+  var ch = curCh;
+  var on = !!(ch && ch.delMin);
+  row.style.display = on ? 'flex' : 'none';
+  if(on){
+    var note = document.getElementById('delNote');
+    note.textContent = (deliveryMode === 'self')
+      ? '自提：按原规则免 ' + ch.delMin.label + ' ' + ch.delMin.fee + ' 元/票'
+      : '送货：' + (ch.delMin.label || '') + ' ' + ch.delMin.fee + ' 元/票（实际 ' + ch.delMin.maxCbm + ' 方以下）';
+  }
+}
 function calcCbmOnly(){
   var box = document.getElementById('cbmResult');
   var v = parseFloat(document.getElementById('fCbm2').value);
   if(!(v > 0)){ box.style.display = 'none'; return; }
-  var ch = curCh, html = '', unit;
-  pack = batches.some(function(b){ return b.PK && b.PK !== '纸箱'; }) ? 'wood' : 'carton';
-  var cbm = v, bill = v;
+  var ch = curCh, html = '', unit = 0, packTag = '';
+  var packs = packsUsed();
+  pack = packs.length ? 'wood' : 'carton';
+  if(ch.type === 'fcl' || ch.type === 'quote' || (!ch.seaTiers && ch.price == null)){
+    box.innerHTML = '<b>' + ch.id + ' ' + ch.name + '</b> 是整柜 / 单询渠道，没有按方单价，方数仅供参考，请直接联系客服 19166290491 报价。';
+    box.style.display = 'block';
+    return;
+  }
+  var cbm = v, bill = v, base = 0, rateLine = '', hops = [], hopTotal = 0;
   if(ch.seaTiers){
-    unit = null;
-    for(var i=0;i<ch.seaTiers.length;i++){
+    for(var i = 0; i < ch.seaTiers.length; i++){
       if(v <= ch.seaTiers[i].max){ unit = ch.seaTiers[i].p; break; }
     }
-    var total = unit * v;
-    html += '<b>计费方数：</b>' + fmt(cbm) + ' m³<br>';
-    html += '<b>单价：</b>' + unit + ' 元/m³（' + (ch.seaTiers.length > 1 ? '分段计价，落入 ' + fmt(v) + ' m³ 档' : '按方计费') + '）<br>';
-    html += '<b>预估费用：</b><span style="font-size:18px;font-weight:800;color:#101828">' + fmt(total) + '</span> 元';
+    base = unit * v;
+    rateLine = unit + ' 元/m³' + (ch.seaTiers.length > 1 ? '（分段计价，' + fmt(v) + ' m³ 落入该档）' : '（按方计费）');
   } else {
     bill = Math.max(v, ch.minCbm || 0.3);
     if(ch.stepCbm) bill = Math.ceil(bill / ch.stepCbm) * ch.stepCbm;
     unit = ch.price;
+    if(ch.id === 'SG-S3' && curHub === 'gz') unit = 500;
     if(ch.price5 && v > 5) unit = ch.price5;
-    var packTag = '';
     if(pack === 'wood' && ch.wood){ unit = ch.wood; packTag = '（木箱木架价）'; }
-    var total = unit * bill;
-    html += '<b>计费方数：</b>' + fmt(bill) + ' m³' + (bill !== v ? '（' + fmt(v) + ' m³ 按' + (ch.minCbm ? '起收' : '进位') + '调整）' : '') + '<br>';
-    html += '<b>单价：</b>' + unit + ' 元/m³' + packTag + '<br>';
-    html += '<b>预估费用：</b><span style="font-size:18px;font-weight:800;color:#101828">' + fmt(total) + '</span> 元';
+    base = unit * bill;
+    rateLine = unit + ' 元/m³' + packTag;
   }
-  if(ch.delMin && v < ch.delMin.maxCbm){
-    total += ch.delMin.fee;
-    html += '<br><b>派送费：</b>' + ch.delMin.fee + ' 元（实际 ' + fmt(v) + ' 方，1方以下按票收，自提可免）';
-    html += '<br><b>合计：</b><span style="font-size:18px;font-weight:800;color:#101828">' + fmt(total) + '</span> 元';
+  // 义乌仓费（与主计算同口径：海运按计费方数）
+  if(ch.yiwu){
+    if(curHub === 'yw' && ch.type === 'sea'){
+      var ywFee = ch.yiwu * bill;
+      hops.push('义乌仓提货费 ' + ch.yiwu + ' 元/方 × ' + fmt(bill) + ' 方 = ' + fmt(ywFee) + ' 元（已计入）');
+      hopTotal += ywFee;
+    } else if(curHub === 'yw') {
+      hops.push('义乌仓费按实际重量计（' + ch.yiwu + ' 元/kg），方数无法换算，未计入');
+    } else {
+      hops.push('未走义乌仓（若义乌交货另加 ' + ch.yiwu + ' 元/方）');
+    }
   }
-  if(ch.id.indexOf('SG-A') === 0 || ch.id.indexOf('SG-S') === 0) html += '<br><span style="color:#B54708">新加坡线不包税，货值超400新币另计GST 9%</span>';
-  html += '<br><span style="color:#98A2B3;font-size:12px">最终以客服确认 19166290491 为准</span>';
+  // 派送费
+  if(ch.delMin){
+    if(v < ch.delMin.maxCbm){
+      if(deliveryMode === 'self'){
+        hops.push('自提：按原规则免 ' + ch.delMin.label + ' ' + ch.delMin.fee + ' 元/票');
+      } else {
+        hops.push(ch.delMin.label + ' ' + ch.delMin.fee + ' 元/票（实际 ' + fmt(v) + ' 方，' + ch.delMin.maxCbm + ' 方以下按票收，已计入）');
+        hopTotal += ch.delMin.fee;
+      }
+    } else {
+      hops.push(fmt(v) + ' 方已达 ' + ch.delMin.maxCbm + ' 方，派送费按实际地址另计，未计入');
+    }
+  }
+  var notIn = [];
+  if(ch.sur && ch.sur.sea) notIn.push('单件超重 / 超尺寸附加费（单件限 ' + (ch.sur.sea.w || '') + 'kg，需按实际件重与尺寸判定）');
+  else notIn.push('超长 / 超重附加费（需按实际单件重量与尺寸判定）');
+  notIn.push('保险费、目的港查验 / 滞留费、偏远地区加派');
+  if(ch.id.indexOf('SG-') === 0) notIn.push('GST 9%（货值超 400 新币按货值另计）');
+  if(ch.id === 'MY-S5' || ch.id === 'MY-S6') notIn.push('进口税费（按报关单实缴）');
+  var total = base + hopTotal;
+  html = '<div style="font-size:13px;color:#667085">基础运费估算</div>';
+  html += '<b>计费方数：</b>' + fmt(bill) + ' m³' + (bill !== v ? '（' + fmt(v) + ' m³ 按' + (ch.minCbm ? '起收' : '进位') + ' 调整）' : '') + '<br>';
+  html += '<b>单价：</b>' + rateLine + '<br>';
+  html += '<b>基础运费：</b><span style="font-size:18px;font-weight:800;color:#101828">' + fmt(base) + '</span> 元';
+  if(hops.length) html += '<div style="margin-top:8px;font-size:13px;color:#475467">' + hops.map(function(x){ return '· ' + x; }).join('<br>') + '</div>';
+  html += '<div style="margin-top:8px;padding-top:8px;border-top:1px dashed #e4e7ec"><b>预估应付总额：</b><span style="font-size:18px;font-weight:800;color:#101828">' + fmt(total) + '</span> 元</div>';
+  html += '<div style="margin-top:8px;color:#B54708;font-size:13px"><b>本估算不含：</b><br>' + notIn.map(function(x){ return '· ' + x; }).join('<br>') + '</div>';
+  html += '<div style="margin-top:6px;color:#98A2B3;font-size:12px">最终以客服确认 19166290491 为准</div>';
   box.innerHTML = html;
   box.style.display = 'block';
 }
@@ -1718,7 +2086,9 @@ function calcCbmOnly(){
   };
   renderChannels();
   renderRefs();
+  paintDelivery();
   setTimeout(function(){ if(typeof renderHist === 'function') renderHist(); }, 0);
+  setTimeout(function(){ if(typeof initProfitLock === 'function') initProfitLock(); if(typeof renderVerInfo === 'function') renderVerInfo(); }, 0);
   bindBatchInputs();
   renderBatches();
   document.getElementById('btnAdd').onclick = function(){
@@ -1744,7 +2114,8 @@ function calcCbmOnly(){
           document.getElementById('fileInfo').textContent = '没读到有效数据：请确认表里有 长 / 宽 / 高 / 件数 这几列（实重可选）';
           return;
         }
-        addRows(parsed);
+        document.getElementById('fileInfo').textContent = '已读取 ' + f.name + '，正在解析…';
+        openImportPreview(parsed, '来自 ' + f.name);
       };
       reader.readAsText(f, 'gb18030');
     } else {
@@ -1767,7 +2138,7 @@ function calcCbmOnly(){
             document.getElementById('fileInfo').textContent = '没读到有效数据：请确认表里有 长 / 宽 / 高 / 件数 这几列（实重可选）';
             return;
           }
-          addRows(parsed);
+          openImportPreview(parsed, '来自 ' + f.name);
         }catch(err){
           document.getElementById('fileInfo').textContent = '文件解析失败：' + err.message;
         }
@@ -2064,7 +2435,7 @@ function renderSmartPreview(rows, addrLine, how, msg){
   rows.forEach(function(r, i){
     h += '<div class="sp-item"><div class="sp-dim">' + fmt0(r[0]) + ' × ' + fmt0(r[1]) + ' × ' + fmt0(r[2]) + ' cm' +
       (r[5] && r[5] !== '纸箱' ? '<span class="sp-pk">' + r[5] + '</span>' : '') + '</div>' +
-      '<div class="sp-fields"><label>件数<input type="number" class="sp-n" data-si="' + i + '" value="' + (r[3] || 0) + '" min="0"></label>' +
+      '<div class="sp-fields"><label>件数<input type="number" class="sp-n" data-si="' + i + '" value="' + ((r[3] && r[3] > 0) ? r[3] : 1) + '" min="0"></label>' +
       '<label>单箱重 kg<input type="number" class="sp-w" data-si="' + i + '" value="' + (r[4] || 0) + '" min="0" step="0.1"></label></div></div>';
   });
   h += '<div class="sp-addr"><label>收货地址（可改）</label><input id="spAddr" value="' + escHtml(addrLine || '') + '" placeholder="客户地址 / 邮编"></div>';
@@ -2094,6 +2465,7 @@ function applySmart(){
   });
   batches.length = 0;
   keep.forEach(function(b){ batches.push(b); });
+  rows.forEach(function(r){ if(!(r[3] > 0)) r[3] = 1; });
   var ok = addRows(rows, true);
   for(var k = batches.length - ok; k < batches.length; k++) batches[k]._smart = true;
   _smartPending = null;
@@ -2219,6 +2591,53 @@ function saveQuote(){
   histStore(arr); renderHist();
   alert('已保存：' + q.no + '（' + q.total + (q.total === '单询' ? '' : ' 元') + '）');
 }
+function exportHist(){
+  var arr = histLoad();
+  if(!arr.length){ alert('还没有报价记录可以导出'); return; }
+  var d = new Date();
+  var stamp = '' + d.getFullYear() + (d.getMonth() < 9 ? '0' : '') + (d.getMonth() + 1) + (d.getDate() < 10 ? '0' : '') + d.getDate();
+  var payload = {v: 1, exported: new Date().toISOString(), count: arr.length, quotes: arr};
+  var blob = new Blob([JSON.stringify(payload, null, 2)], {type: 'application/json'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = '新港大报价记录-' + stamp + '.json';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(function(){ URL.revokeObjectURL(url); if(a.parentNode) a.parentNode.removeChild(a); }, 200);
+  var m = document.getElementById('histMsg');
+  if(m) m.textContent = '已导出 ' + arr.length + ' 条：' + a.download;
+}
+function importHist(inp){
+  var f = inp.files && inp.files[0];
+  if(!f) return;
+  var reader = new FileReader();
+  reader.onload = function(ev){
+    var obj = null;
+    try { obj = JSON.parse(ev.target.result); } catch(e){ obj = null; }
+    var inc = obj ? (obj.quotes || (Array.isArray(obj) ? obj : null)) : null;
+    var m = document.getElementById('histMsg');
+    if(!inc || !inc.length){
+      if(m) m.textContent = '这个文件里没有可用的报价记录（需要本站导出的备份 JSON）';
+      inp.value = '';
+      return;
+    }
+    var cur = histLoad(), added = 0;
+    inc.forEach(function(r){
+      if(!r || !r.no) return;
+      for(var i = 0; i < cur.length; i++){ if(cur[i].no === r.no) return; }
+      cur.push(r);
+      added++;
+    });
+    cur.sort(function(x, y){ return String(y.ts || '').localeCompare(String(x.ts || '')); });
+    if(cur.length > 40) cur = cur.slice(0, 40);
+    histStore(cur);
+    renderHist();
+    if(m) m.textContent = '已合并 ' + added + ' 条（同单号自动跳过，最多留 40 条）';
+    inp.value = '';
+  };
+  reader.readAsText(f, 'utf-8');
+}
 function delQuote(i){
   var arr = histLoad(); arr.splice(i, 1); histStore(arr); renderHist();
 }
@@ -2319,6 +2738,7 @@ function quoteTextOf(q){
 function copyQuoteText(){
   var q = window.lastQuote;
   if(!q){ alert('请先填写货物并测算，再复制报价'); return; }
+  if(q.blocked){ alert('这票超出渠道限制或需人工确认，不能复制正式报价。请先按提示调整，或联系客服 19166290491。'); return; }
   copyText(quoteTextOf(q), '报价文字已复制，可直接粘贴到微信发送');
 }
 var PRICE_DATE = '2026-11-06';
@@ -2392,9 +2812,15 @@ function renderPrice(){
   });
   document.getElementById('priceList').innerHTML = h || '<div class="pr-empty">没找到匹配的渠道</div>';
 }
-function pwdOpen(){
+var pwdTarget = 'price';
+function pwdOpen(t){
+  pwdTarget = t || 'price';
   var o = document.getElementById('pwdOverlay');
   if(!o) return;
+  var sub = document.getElementById('pwdSub');
+  if(sub) sub.innerHTML = (pwdTarget === 'profit')
+    ? '内部利润核算只给内部人员用<br>输入管理员密码后才能查看成本和利润'
+    : '价格与规则总表仅对管理员开放<br>请输入密码后查看和修改价格';
   o.className = 'pwd-overlay show';
   var f = document.getElementById('fPwd'); if(f){ f.value = ''; setTimeout(function(){ try{ f.focus(); }catch(e){} }, 60); }
   var m = document.getElementById('pwdMsg'); if(m) m.textContent = '';
@@ -2407,7 +2833,7 @@ function pwdClose(){
 }
 function togglePrice(){
   var b = document.getElementById('priceBody');
-  if(b.style.display === 'none' && !PRICE_UNLOCKED){ pwdOpen(); return; }
+  if(b.style.display === 'none' && !PRICE_UNLOCKED){ pwdOpen('price'); return; }
   var open = b.style.display === 'none';
   b.style.display = open ? 'block' : 'none';
   document.getElementById('priceArrow').textContent = open ? '收起' : '展开';
@@ -2439,6 +2865,16 @@ function applyPriceOverride(){
     });
   });
 }
+function initProfitLock(){
+  try {
+    if(sessionStorage.getItem('xgd_profit_unlock') === '1'){
+      PROFIT_UNLOCKED = true;
+      renderProfit();
+      var b = document.getElementById('profitBody'); if(b) b.style.display = 'block';
+      var a = document.getElementById('profitArrow'); if(a) a.textContent = '收起';
+    }
+  } catch(e){}
+}
 function initPriceLock(){
   try {
     if(sessionStorage.getItem('xgd_pv_unlock') === '1'){
@@ -2452,6 +2888,17 @@ function unlockPrice(){
   var v = ((f ? f.value : '') || '').trim();
   var m = document.getElementById('pwdMsg');
   if(v !== ADMIN_PWD){ if(m) m.textContent = '密码不对，请重试'; return; }
+  if(pwdTarget === 'profit'){
+    PROFIT_UNLOCKED = true;
+    try { sessionStorage.setItem('xgd_profit_unlock', '1'); } catch(e){}
+    pwdClose();
+    renderProfit();
+    var pb2 = document.getElementById('profitBody');
+    if(pb2) pb2.style.display = 'block';
+    document.getElementById('profitArrow').textContent = '收起';
+    calcProfit();
+    return;
+  }
   PRICE_UNLOCKED = true;
   try { sessionStorage.setItem('xgd_pv_unlock', '1'); } catch(e){}
   pwdClose();
@@ -2538,12 +2985,39 @@ function afterPriceChange(){
   if(document.getElementById('priceBody').style.display !== 'none') renderPrice();
   if(document.getElementById('result').className.indexOf('show') >= 0) calc();
 }
+var VER_KEY = 'xgd_price_ver_v1';
+function verLoad(){ try { return JSON.parse(localStorage.getItem(VER_KEY) || '[]'); } catch(e){ return []; } }
+function verSave(nv, hit){
+  var arr = verLoad();
+  var dEl = document.getElementById('fPriceDate');
+  arr.unshift({
+    ts: new Date().toISOString().slice(0, 16).replace('T', ' '),
+    date: dEl ? dEl.value : '',
+    hit: hit,
+    cids: Object.keys(nv),
+    ov: nv
+  });
+  if(arr.length > 20) arr = arr.slice(0, 20);
+  try { localStorage.setItem(VER_KEY, JSON.stringify(arr)); } catch(e){}
+  return arr;
+}
+function verText(){
+  var arr = verLoad();
+  if(!arr.length) return '价格版本记录：还没有改过价（每次保存改价会自动记一条：时间 / 生效日 / 改了几处）';
+  var a = arr[0];
+  return '价格版本记录：上次改价 ' + a.ts + '（生效 ' + (a.date || '未填') + '，改了 ' + a.hit + ' 处，涉及 ' + (a.cids ? a.cids.length : 0) + ' 条渠道）｜共 ' + arr.length + ' 条可回溯';
+}
+function renderVerInfo(){
+  var el = document.getElementById('priceVerInfo');
+  if(el) el.textContent = verText();
+}
 function savePriceEdit(silent){
   if(!PRICE_UNLOCKED){ alert('请先输入管理员密码解锁'); return 0; }
-  var nv = {}, hit = 0, list = document.querySelectorAll('#priceList .pv, #priceList .pt');
+  var nv = {}, hit = 0, seen = {}, list = document.querySelectorAll('#priceList .pv, #priceList .pt');
   for(var i = 0; i < list.length; i++){
     var inp = list[i];
     var cid = inp.getAttribute('data-cid'), path = inp.getAttribute('data-path');
+    if(cid && path){ seen[cid] = seen[cid] || {}; seen[cid][path] = 1; }
     var isTxt = inp.className.indexOf('pt') >= 0 && inp.className.indexOf('pv') < 0;
     var o = ORIG_PRICE ? pGet(findChIn(ORIG_PRICE, cid) || {}, path) : null;
     if(isTxt){
@@ -2574,9 +3048,42 @@ function savePriceEdit(silent){
       nv[cid]['sur.air.notAccept'] = na.split('超' + ow + 'kg').join('超' + nv[cid]['sur.air.w'] + 'kg');
     }
   });
+  var curOv = ovLoad();
+  Object.keys(curOv).forEach(function(cid){
+    var c = curOv[cid] || {};
+    if(!seen[cid]){
+      if(!nv[cid] || !Object.keys(nv[cid]).length) nv[cid] = c;
+      return;
+    }
+    Object.keys(c).forEach(function(k){
+      if(seen[cid][k]) return;
+      nv[cid] = nv[cid] || {};
+      nv[cid][k] = c[k];
+    });
+  });
+  Object.keys(nv).forEach(function(cid){
+    if(!nv[cid] || !Object.keys(nv[cid]).length) delete nv[cid];
+  });
+  if(!silent && hit && !confirm('确认保存这 ' + hit + ' 处改动？\n保存后本机测算立刻按新价计算，并自动记一条价格版本记录（可回溯）。')) return 0;
+  if(!hit){
+    if(JSON.stringify(nv) === JSON.stringify(curOv || {})){
+      if(!silent) document.getElementById('priceSaveMsg').textContent = '没有改动（价格与原始一致），未写入本机';
+      return 0;
+    }
+    ovSave(nv);
+    applyPriceOverride();
+    if(!silent){
+      renderVerInfo();
+      document.getElementById('priceSaveMsg').textContent = '已把恢复到原始价的项从本机改价记录里去掉，当前按原始价计算';
+      afterPriceChange();
+    }
+    return 0;
+  }
   ovSave(nv);
   applyPriceOverride();
   if(!silent){
+    if(hit) verSave(nv, hit);
+    renderVerInfo();
     document.getElementById('priceSaveMsg').textContent = hit ? ('已存 ' + hit + ' 处改动到本机，先自己测算看一遍，没问题再生成新网站') : '没有改动（价格和原始一致）';
     afterPriceChange();
   }
@@ -2610,17 +3117,30 @@ function domSnapshot(){
   var pwd = document.getElementById('pwdRow'), bar = document.getElementById('priceEditBar');
   var cbm = document.getElementById('cbmResult'), sm = document.getElementById('smartResult');
   var sgi = document.getElementById('siteGenInfo'), psm = document.getElementById('priceSaveMsg');
+  var pvi = document.getElementById('priceVerInfo'), ipv = document.getElementById('importPrev');
+  var fi = document.getElementById('fileInfo'), hm = document.getElementById('histMsg'), psub = document.getElementById('pwdSub');
+  var pviTxt = pvi ? pvi.textContent : '', fiTxt = fi ? fi.textContent : '', hmTxt = hm ? hm.textContent : '';
+  var ipvD = ipv ? ipv.style.display : '';
   var st = { pb: pb ? pb.style.display : '', pr: pr ? pr.style.display : '' };
   if(res) res.className = 'result';
   if(pb) pb.style.display = 'none';
   if(pa) pa.textContent = '展开';
-  if(pr) pr.style.display = 'none';
+  var prHtml = pr ? pr.innerHTML : '';
+  if(pr){
+    pr.innerHTML = '<div class="p-out">内部模块：需管理员密码登录后使用</div>';
+    pr.style.display = 'none';
+  }
   if(pfa) pfa.textContent = '展开';
   if(bar) bar.style.display = 'none';
   if(cbm) cbm.style.display = 'none';
   if(sm) sm.style.display = 'none';
   if(sgi) sgi.textContent = '';
   if(psm) psm.textContent = '';
+  if(pvi) pvi.textContent = '';
+  if(ipv) ipv.style.display = 'none';
+  if(fi) fi.textContent = '';
+  if(hm) hm.textContent = '';
+  if(psub) psub.innerHTML = '价格与规则总表仅对管理员开放<br>请输入密码后查看和修改价格';
   var cbs = document.querySelectorAll('#countries .country-btn');
   for(var i = 0; i < cbs.length; i++) cbs[i].className = 'country-btn' + (cbs[i].getAttribute('data-c') === 'MY' ? ' active' : '');
   var html = document.documentElement.outerHTML;
@@ -2630,6 +3150,11 @@ function domSnapshot(){
   });
   if(pb) pb.style.display = st.pb;
   if(pa) pa.textContent = st.pb === 'none' ? '展开' : '收起';
+  if(pr && prHtml) pr.innerHTML = prHtml;
+  if(pvi) pvi.textContent = pviTxt;
+  if(ipv) ipv.style.display = ipvD;
+  if(fi) fi.textContent = fiTxt;
+  if(hm) hm.textContent = hmTxt;
   if(res) res.className = resCls;
   if(pr) pr.style.display = st.pr;
   if(pfa) pfa.textContent = st.pr === 'none' ? '展开' : '收起';
@@ -2680,15 +3205,29 @@ function exportPrice(){
   a.click();
   setTimeout(function(){ document.body.removeChild(a); URL.revokeObjectURL(a.href); }, 300);
 }
+var PROFIT_UNLOCKED = false;
+var PROFIT_TPL_B64 = 'PGRpdiBjbGFzcz0icC1ncmlkIj4KICAgICAgICAgIDxkaXYgY2xhc3M9ImZpZWxkIj48bGFiZWw+5a6i5oi35oql5Lu377yI5YWD77yJPC9sYWJlbD48aW5wdXQgaWQ9InBRdW90ZSIgdHlwZT0ibnVtYmVyIiByZWFkb25seSBwbGFjZWhvbGRlcj0i5YWI5rWL566XIj48L2Rpdj4KICAgICAgICAgIDxkaXYgY2xhc3M9ImZpZWxkIj48bGFiZWw+5a6e6ZmF54mp5rWB5oiQ5pys77yI5YWD77yJPC9sYWJlbD48aW5wdXQgaWQ9InBDb3N0IiB0eXBlPSJudW1iZXIiIHBsYWNlaG9sZGVyPSLmuKDpgZPnu5nkvaDnmoTmiJDmnKzku7ciIG9uaW5wdXQ9ImNhbGNQcm9maXQoKSI+PC9kaXY+CiAgICAgICAgICA8ZGl2IGNsYXNzPSJmaWVsZCI+PGxhYmVsPuWFtuS7luaIkOacrO+8iOWFg++8iTwvbGFiZWw+PGlucHV0IGlkPSJwT3RoZXIiIHR5cGU9Im51bWJlciIgcGxhY2Vob2xkZXI9IuaKpeWFsyAvIOaPkOi0pyAvIOi0tOagh+etiSIgb25pbnB1dD0iY2FsY1Byb2ZpdCgpIj48L2Rpdj4KICAgICAgICAgIDxkaXYgY2xhc3M9ImZpZWxkIj48bGFiZWw+5pyA5L2O5Yip5ram546H77yIJe+8iTwvbGFiZWw+PGlucHV0IGlkPSJwTWluIiB0eXBlPSJudW1iZXIiIHBsYWNlaG9sZGVyPSLpgInloavvvIzlpoIgOCIgb25pbnB1dD0iY2FsY1Byb2ZpdCgpIj48L2Rpdj4KICAgICAgICA8L2Rpdj4KICAgICAgICA8ZGl2IGNsYXNzPSJwLW91dCIgaWQ9InBPdXQiPuWhq+aIkOacrOWQjuiHquWKqOeul+WIqea2pjwvZGl2Pg==';
+function renderProfit(){
+  var b = document.getElementById('profitBody');
+  if(!b || document.getElementById('pQuote')) return;
+  try {
+    var bytes = Uint8Array.from(atob(PROFIT_TPL_B64), function(c){ return c.charCodeAt(0); });
+    b.innerHTML = new TextDecoder('utf-8').decode(bytes);
+  } catch(e){}
+}
 function toggleProfit(){
   var b = document.getElementById('profitBody');
+  if(b.style.display === 'none' && !PROFIT_UNLOCKED){ pwdOpen('profit'); return; }
+  if(b.style.display === 'none') renderProfit();
   var open = b.style.display === 'none';
   b.style.display = open ? 'block' : 'none';
   document.getElementById('profitArrow').textContent = open ? '收起' : '展开';
   if(open) calcProfit();
 }
 function calcProfit(){
-  var q = parseFloat(document.getElementById('pQuote').value) || 0;
+  var qEl = document.getElementById('pQuote');
+  if(!qEl) return;   // 客户版导出件里没有成本输入框
+  var q = parseFloat(qEl.value) || 0;
   var c = parseFloat(document.getElementById('pCost').value) || 0;
   var o = parseFloat(document.getElementById('pOther').value) || 0;
   var minR = parseFloat(document.getElementById('pMin').value) || 0;
@@ -2870,7 +3409,7 @@ function closeQuote(){
 <div class="pwd-overlay" id="pwdOverlay" onclick="if(event.target===this)pwdClose()">
   <div class="pwd-card">
     <div class="pwd-t">管理员验证</div>
-    <div class="pwd-s">价格与规则总表仅对管理员开放<br>请输入密码后查看和修改价格</div>
+    <div class="pwd-s" id="pwdSub">价格与规则总表仅对管理员开放<br>请输入密码后查看和修改价格</div>
     <input id="fPwd" type="password" autocomplete="off" placeholder="请输入管理员密码" onkeydown="if(event.key==='Enter')unlockPrice()">
     <div class="pwd-msg" id="pwdMsg"></div>
     <div class="pwd-acts">
