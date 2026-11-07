@@ -287,9 +287,26 @@ footer .sep{opacity:.3}
 .ddp.warn{background:#FFF8F0;color:#B54708;border-color:#F3D3A4}
 .ddp.none{background:#F2F4F7;color:#667085;border-color:#E4E7EC}
 .result .price-big .txt{font-size:26px}
-.pwd-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:#FAFBFC;border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:10px;font-size:13px;color:var(--sub)}
-.pwd-row input{border:1px solid var(--line);border-radius:6px;padding:7px 10px;font-size:13px;width:160px;background:#fff}
-.pwd-msg{color:var(--red);font-size:12.5px;font-weight:600}
+.pwd-overlay{position:fixed;inset:0;background:rgba(13,27,42,.62);display:none;align-items:center;justify-content:center;z-index:999;padding:20px}
+.pwd-overlay.show{display:flex}
+.pwd-card{background:#fff;border-radius:14px;padding:24px 22px;width:100%;max-width:360px;box-shadow:0 30px 70px rgba(9,15,24,.35)}
+.pwd-t{font-size:17px;font-weight:900;color:var(--navy);letter-spacing:.2px}
+.pwd-s{font-size:12.5px;line-height:1.7;color:var(--sub);margin:8px 0 14px}
+.pwd-card input{width:100%;border:1px solid var(--line);border-radius:8px;padding:11px 12px;font-size:15px;background:#fff;outline:none}
+.pwd-card input:focus{border-color:var(--navy2);box-shadow:0 0 0 3px rgba(13,27,42,.06)}
+.pwd-acts{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
+.pwd-cancel{background:#fff!important;color:var(--sub)!important;border:1px solid var(--line)!important;box-shadow:none!important}
+.pwd-cancel:hover{background:#F6F7F9!important;color:var(--navy)!important}
+.pwd-msg{color:var(--red);font-size:12.5px;font-weight:600;margin-top:8px;min-height:16px}
+#priceList .pv-line.pv-rule{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;width:100%;background:#FAFBFC;border:1px solid var(--line2);border-radius:6px;padding:6px 9px;margin:6px 0 0}
+#priceList .pv-rule .pv{margin:0}
+#priceList .pv-line.pv-txt{display:flex;gap:8px;align-items:center;width:100%;margin:6px 0 0}
+#priceList .pv-txt .pv-t{flex:0 0 62px;color:var(--sub);text-align:left}
+#priceList .pv-txt input{flex:1;min-width:0;height:30px;border:1px solid var(--line);border-radius:5px;padding:4px 9px;font-size:12.5px;color:var(--ink);background:#fff}
+@media (max-width:560px){
+  #priceList .pv-line.pv-txt{flex-wrap:wrap}
+  #priceList .pv-txt input{flex:1 1 100%}
+}
 .pe-bar{display:none;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
 .pe-bar label{font-size:13px;color:var(--sub);display:flex;gap:6px;align-items:center}
 .pe-bar input[type=date]{border:1px solid var(--line);border-radius:6px;padding:6px 8px;font-size:13px;background:#fff}
@@ -521,18 +538,12 @@ footer .sep{opacity:.3}
   <div class="card-inner" id="priceCard">
     <div class="ci-head" onclick="togglePrice()">
       <div>
-        <div class="ci-t">价格与规则总表 <span class="ci-tag">内部核对</span></div>
-        <div class="ci-s">39 条渠道的基础价、起算方数、义乌费、附加费、限制和派送范围，都在这张表里核对</div>
+        <div class="ci-t">价格与规则总表 <span class="ci-tag">管理员改价</span></div>
+        <div class="ci-s">39 条渠道的价格都能在这里改；改完保存、测算无误，再点「生成新网站」下载 index.html，自己上传覆盖线上文件即可，不用再等改版</div>
       </div>
       <span class="ci-arrow" id="priceArrow">展开</span>
     </div>
     <div class="ci-body" id="priceBody" style="display:none">
-      <div class="pwd-row" id="pwdRow">
-        <span>价格管理 · 需管理员密码</span>
-        <input id="fPwd" type="password" placeholder="请输入管理员密码" onkeydown="if(event.key==='Enter')unlockPrice()">
-        <button class="btn-mini" onclick="unlockPrice()">解锁编辑</button>
-        <span class="pwd-msg" id="pwdMsg"></span>
-      </div>
       <div class="pe-bar" id="priceEditBar">
         <label>价格生效日 <input id="fPriceDate" type="date" value="2026-11-06"></label>
         <button class="btn-mini" onclick="savePriceEdit()">保存改价（存本机）</button>
@@ -589,7 +600,6 @@ footer .sep{opacity:.3}
 
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script>
-window.__SITE_TPL = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
 /*XGD_PRICE_BEGIN*/
 
 var PRICE = {
@@ -872,6 +882,60 @@ function selectChannel(ch, btn){
   if(document.getElementById('result').className.indexOf('show') >= 0) calc();
 }
 
+function refPriceText(ch){
+  var s = [], i, t, lo, lab;
+  if(ch.tiers && ch.tiers.length){
+    if(ch.tiers.length === 1 && ch.tiers[0].max === Infinity && ch.tiers[0].p != null){
+      var single = ch.tiers[0].p + '/kg';
+      if(ch.addPerPcs != null) single += '+' + ch.addPerPcs + '/台';
+      return single;
+    }
+    for(i = 0; i < ch.tiers.length; i++){
+      t = ch.tiers[i];
+      lo = i ? (ch.tiers[i-1].max + 1) : 1;
+      lab = (t.max === Infinity) ? (lo + 'kg+') : (lo + '-' + t.max + 'kg');
+      if(t.first != null) s.push(lab + '|首' + t.first + '续' + t.add + '/kg');
+      else if(t.p != null) s.push(lab + '|' + t.p + '/kg');
+    }
+    if(s.length) return s.join('<br>');
+  }
+  if(ch.seaTiers && ch.seaTiers.length){
+    for(i = 0; i < ch.seaTiers.length; i++){
+      t = ch.seaTiers[i];
+      lo = i ? (Math.round((ch.seaTiers[i-1].max + 0.1) * 10) / 10) : 0.1;
+      lab = (t.max === Infinity) ? (lo + '方+') : (lo + '-' + t.max + '方');
+      if(t.p != null) s.push(lab + '|' + t.p + '/方');
+    }
+    if(s.length) return s.join('<br>');
+  }
+  if(ch.parcelTiers && ch.parcelTiers.length){
+    for(i = 0; i < ch.parcelTiers.length; i++){
+      t = ch.parcelTiers[i];
+      lo = i ? (Math.round((ch.parcelTiers[i-1].max + 0.1) * 10) / 10) : 1;
+      lab = (t.max === Infinity) ? (lo + 'kg+') : (lo + '-' + t.max + 'kg');
+      if(t.p != null) s.push(lab + '|' + t.p + (t.flat ? '/票' : '/kg'));
+    }
+    if(s.length) return s.join('<br>');
+  }
+  if(ch.type === 'parcel' && ch.first != null && ch.bulk != null){
+    var bl = Math.round((ch.bulkFrom - 0.1) * 10) / 10;
+    s.push('1-' + bl + 'kg|首' + ch.first + '续' + ch.add + '/kg');
+    s.push(ch.bulkFrom + 'kg+|' + ch.bulk + '/kg');
+    return s.join('<br>');
+  }
+  if(ch.price != null){
+    return (ch.addPerPcs != null) ? (ch.price + '+' + ch.addPerPcs + '/台') : (ch.price + ' 元/方');
+  }
+  return null;
+}
+function refCollect(chs, field, suffix){
+  var vals = [];
+  (chs || []).forEach(function(ch){
+    if(ch && ch[field] != null && vals.indexOf(ch[field]) < 0) vals.push(ch[field]);
+  });
+  vals.sort(function(a, b){ return a - b; });
+  return vals.length ? vals.join('/') + ' ' + suffix : null;
+}
 function renderRefs(){
   var g = document.getElementById('refGrid');
   g.innerHTML = '';
@@ -880,7 +944,26 @@ function renderRefs(){
     var acc = document.createElement('div');
     acc.className = 'acc' + (gi === 0 ? ' open' : '');
     var rows = '';
+    var groupChs = [];
     list.forEach(function(r){
+      var gid = (/^([A-Z]{2,3}-[A-Z0-9]+)/).exec(r[0] || '');
+      if(gid){ var gc = findCh(gid[1]); if(gc) groupChs.push(gc); }
+    });
+    list.forEach(function(r){
+      var rid = (/^([A-Z]{2,3}-[A-Z0-9]+)/).exec(r[0] || '');
+      if(rid){
+        var rc = findCh(rid[1]);
+        if(rc){
+          var pt = refPriceText(rc);
+          if(pt) r = [r[0], pt];
+        }
+      } else if(r[0] && r[0].indexOf('木箱') === 0){
+        var wv = refCollect(groupChs, 'wood', '元/方');
+        if(wv) r = [r[0], wv];
+      } else if(r[0] && r[0].indexOf('5.1方') === 0){
+        var pv5 = refCollect(groupChs, 'price5', '元/方');
+        if(pv5) r = [r[0], pv5];
+      }
       var v = r[1];
       if (v.indexOf('<br>') >= 0) {
         var chips = v.split('<br>').map(function(s){
@@ -1241,6 +1324,7 @@ function chTax(ch){
   return {label:'双清包税 DDP', warn:false};
 }
 function chArea(ch){
+  if(ch.areaText) return ch.areaText;
   var id = ch.id;
   if(id === 'MY-A1' || id === 'MY-A3') return '西马派送 · 仅限 456 开头邮编，其他区域需人工确认';
   if(id === 'MY-A2' || id === 'MY-A4' || id === 'MY-A5') return '西马全境派送';
@@ -1611,6 +1695,9 @@ function calcCbmOnly(){
 }
 
 (function init(){
+  ORIG_PRICE = JSON.parse(JSON.stringify(PRICE));
+  applyPriceOverride();
+  initPriceLock();
   var cbs = document.getElementById('countries').querySelectorAll('.country-btn');
   for(var i=0;i<cbs.length;i++){
     cbs[i].onclick = function(){
@@ -2238,7 +2325,9 @@ var PRICE_DATE = '2026-11-06';
 function tierLine(arr, unit){
   return arr.map(function(t){
     var m = (t.max === Infinity) ? '∞' : ('≤' + t.max);
-    return m + ' ' + t.p;
+    if(t.p != null) return m + ' ' + t.p;
+    if(t.first != null) return m + ' 首' + t.first + '/续' + (t.add != null ? t.add : '—');
+    return m + ' 单询';
   }).join(' / ') + ' 元/' + unit;
 }
 function priceText(ch){
@@ -2303,8 +2392,22 @@ function renderPrice(){
   });
   document.getElementById('priceList').innerHTML = h || '<div class="pr-empty">没找到匹配的渠道</div>';
 }
+function pwdOpen(){
+  var o = document.getElementById('pwdOverlay');
+  if(!o) return;
+  o.className = 'pwd-overlay show';
+  var f = document.getElementById('fPwd'); if(f){ f.value = ''; setTimeout(function(){ try{ f.focus(); }catch(e){} }, 60); }
+  var m = document.getElementById('pwdMsg'); if(m) m.textContent = '';
+}
+function pwdClose(){
+  var o = document.getElementById('pwdOverlay');
+  if(o) o.className = 'pwd-overlay';
+  var f = document.getElementById('fPwd'); if(f) f.value = '';
+  var m = document.getElementById('pwdMsg'); if(m) m.textContent = '';
+}
 function togglePrice(){
   var b = document.getElementById('priceBody');
+  if(b.style.display === 'none' && !PRICE_UNLOCKED){ pwdOpen(); return; }
   var open = b.style.display === 'none';
   b.style.display = open ? 'block' : 'none';
   document.getElementById('priceArrow').textContent = open ? '收起' : '展开';
@@ -2318,18 +2421,21 @@ function ovLoad(){ try { return JSON.parse(localStorage.getItem(PRICE_OV_KEY) ||
 function ovSave(o){ try { localStorage.setItem(PRICE_OV_KEY, JSON.stringify(o)); } catch(e){} }
 function pGet(o, path){ var a = path.replace(/\[/g, '.').replace(/\]/g, '').split('.'); for(var i = 0; i < a.length; i++){ o = o[a[i]]; } return o; }
 function pSet(o, path, v){ var a = path.replace(/\[/g, '.').replace(/\]/g, '').split('.'); for(var i = 0; i < a.length - 1; i++){ o = o[a[i]]; } o[a[a.length - 1]] = v; }
-function findCh(id){
+var ORIG_PRICE;
+function findChIn(root, id){
   var hit = null;
-  ['MY','SG','PH'].forEach(function(c){ (PRICE[c].channels || []).forEach(function(ch){ if(ch.id === id) hit = ch; }); });
+  ['MY','SG','PH'].forEach(function(c){ ((root[c] || {}).channels || []).forEach(function(ch){ if(ch.id === id) hit = ch; }); });
   return hit;
 }
+function findCh(id){ return findChIn(PRICE, id); }
 function applyPriceOverride(){
   var ov = ovLoad();
   Object.keys(ov).forEach(function(cid){
     var ch = findCh(cid); if(!ch) return;
     Object.keys(ov[cid]).forEach(function(path){
       var v = ov[cid][path];
-      if(typeof v === 'number' && isFinite(v)) pSet(ch, path, v);
+      if(typeof v === 'number'){ if(isFinite(v)) pSet(ch, path, v); }
+      else if(typeof v === 'string'){ pSet(ch, path, v); }
     });
   });
 }
@@ -2337,19 +2443,24 @@ function initPriceLock(){
   try {
     if(sessionStorage.getItem('xgd_pv_unlock') === '1'){
       PRICE_UNLOCKED = true;
-      var r = document.getElementById('pwdRow'); if(r) r.style.display = 'none';
       var b = document.getElementById('priceEditBar'); if(b) b.style.display = 'flex';
     }
   } catch(e){}
 }
 function unlockPrice(){
-  var v = (document.getElementById('fPwd').value || '').trim();
-  if(v !== ADMIN_PWD){ document.getElementById('pwdMsg').textContent = '密码不对，请重试'; return; }
+  var f = document.getElementById('fPwd');
+  var v = ((f ? f.value : '') || '').trim();
+  var m = document.getElementById('pwdMsg');
+  if(v !== ADMIN_PWD){ if(m) m.textContent = '密码不对，请重试'; return; }
   PRICE_UNLOCKED = true;
   try { sessionStorage.setItem('xgd_pv_unlock', '1'); } catch(e){}
-  document.getElementById('pwdRow').style.display = 'none';
-  document.getElementById('priceEditBar').style.display = 'flex';
-  document.getElementById('pwdMsg').textContent = '';
+  pwdClose();
+  var b = document.getElementById('priceBody'), a = document.getElementById('priceArrow');
+  var bar = document.getElementById('priceEditBar');
+  if(b) b.style.display = 'block';
+  if(a) a.textContent = '收起';
+  if(bar) bar.style.display = 'flex';
+  if(m) m.textContent = '';
   renderPrice();
 }
 function priceFieldsHtml(ch){
@@ -2374,6 +2485,51 @@ function priceFieldsHtml(ch){
   if(ch.price5 != null) f.push('<div class="pv-line"><span class="pv-t">5.1方+</span>' + inp('price5', ch.price5) + '</div>');
   if(ch.wood != null) f.push('<div class="pv-line"><span class="pv-t">木箱</span>' + inp('wood', ch.wood) + '</div>');
   if(ch.yiwu != null) f.push('<div class="pv-line"><span class="pv-t">义乌+</span>' + inp('yiwu', ch.yiwu) + '</div>');
+  var cid = ch.id;
+  function esc(x){ return String(x == null ? '' : x).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;'); }
+  function numIn(p2, label, val, suffix){
+    return '<span class="pv-t">' + label + '</span>' + inp(p2, val) + (suffix ? '<span class="pv-t">' + suffix + '</span>' : '');
+  }
+  function txtIn(p2, label, val, ph){
+    return '<div class="pv-line pv-txt"><span class="pv-t">' + label + '</span><input class="pt" data-cid="' + cid + '" data-path="' + p2 + '" value="' + esc(val) + '"' + (ph ? ' placeholder="' + esc(ph) + '"' : '') + '></div>';
+  }
+  var rg = [];
+  if(ch.minCbm != null) rg.push(numIn('minCbm', '起算', ch.minCbm, '方'));
+  if(ch.stepCbm != null) rg.push(numIn('stepCbm', '步进', ch.stepCbm, '方'));
+  if(ch.addPerPcs != null) rg.push(numIn('addPerPcs', '每台加', ch.addPerPcs, '元'));
+  if(ch.type === 'parcel' && ch.first != null){
+    rg.push(numIn('first', '首重', ch.first, '元'));
+    rg.push(numIn('add', '续重', ch.add, '元/kg'));
+    if(ch.bulk != null) rg.push(numIn('bulk', ch.bulk, '元/kg'));
+    if(ch.bulkFrom != null) rg.push(numIn('bulkFrom', '起', ch.bulkFrom, 'kg'));
+  }
+  if(ch.delMin){
+    rg.push(numIn('delMin.maxCbm', '派送门槛', ch.delMin.maxCbm, '方'));
+    rg.push(numIn('delMin.fee', '派送费', ch.delMin.fee, '元/票'));
+  }
+  if(ch.sur && ch.sur.air){
+    var a = ch.sur.air;
+    if(a.w != null) rg.push(numIn('sur.air.w', '单件限重', a.w, 'kg'));
+    if(a.lims){
+      rg.push(numIn('sur.air.lims.L', '长≤', a.lims.L, 'cm'));
+      rg.push(numIn('sur.air.lims.W', '宽≤', a.lims.W, 'cm'));
+      rg.push(numIn('sur.air.lims.H', '高≤', a.lims.H, 'cm'));
+    }
+    if(a.l != null) rg.push(numIn('sur.air.l', '单边≤', a.l, 'cm'));
+    if(a.l2 != null) rg.push(numIn('sur.air.l2', '单边≤', a.l2, 'cm'));
+    if(a.h != null) rg.push(numIn('sur.air.h', '高≤', a.h, 'cm'));
+    if(a.fee != null) rg.push(numIn('sur.air.fee', '超规费', a.fee, '元'));
+  }
+  if(ch.sur && ch.sur.sea){
+    var sx = ch.sur.sea;
+    if(sx.w != null) rg.push(numIn('sur.sea.w', '单件限重', sx.w, 'kg'));
+    if(sx.fee != null) rg.push(numIn('sur.sea.fee', '超重费', sx.fee, '元/件'));
+  }
+  if(rg.length) f.push('<div class="pv-line pv-rule">' + rg.join('') + '</div>');
+  f.push(txtIn('eta', '时效', ch.eta));
+  f.push(txtIn('areaText', '派送范围', ch.areaText, chArea(ch)));
+  f.push(txtIn('note', '规则说明', ch.note));
+  if(ch.sur && ch.sur.air && ch.sur.air.notAccept) f.push(txtIn('sur.air.notAccept', '限制说明', ch.sur.air.notAccept));
   return f.join('');
 }
 function afterPriceChange(){
@@ -2384,20 +2540,44 @@ function afterPriceChange(){
 }
 function savePriceEdit(silent){
   if(!PRICE_UNLOCKED){ alert('请先输入管理员密码解锁'); return 0; }
-  var ov = ovLoad(), hit = 0, list = document.querySelectorAll('#priceList .pv');
+  var nv = {}, hit = 0, list = document.querySelectorAll('#priceList .pv, #priceList .pt');
   for(var i = 0; i < list.length; i++){
     var inp = list[i];
     var cid = inp.getAttribute('data-cid'), path = inp.getAttribute('data-path');
+    var isTxt = inp.className.indexOf('pt') >= 0 && inp.className.indexOf('pv') < 0;
+    var o = ORIG_PRICE ? pGet(findChIn(ORIG_PRICE, cid) || {}, path) : null;
+    if(isTxt){
+      var tv = inp.value;
+      var to = (o === undefined || o === null) ? '' : String(o);
+      if(tv === to) continue;
+      nv[cid] = nv[cid] || {};
+      nv[cid][path] = tv;
+      hit++;
+      continue;
+    }
     var v = parseFloat(inp.value);
     if(isNaN(v)) continue;
-    ov[cid] = ov[cid] || {};
-    ov[cid][path] = v;
+    if(o === undefined || o === null) o = null;
+    if(o !== null && Math.abs(v - o) < 1e-9) continue;
+    nv[cid] = nv[cid] || {};
+    nv[cid][path] = v;
     hit++;
   }
-  ovSave(ov);
+  Object.keys(nv).forEach(function(cid){
+    if(nv[cid]['sur.air.w'] == null || nv[cid]['sur.air.notAccept'] != null) return;
+    var orig = ORIG_PRICE ? findChIn(ORIG_PRICE, cid) : null;
+    if(!orig || !orig.sur || !orig.sur.air || !orig.sur.air.notAccept) return;
+    var ow = orig.sur.air.w;
+    if(ow == null) return;
+    var na = orig.sur.air.notAccept;
+    if(na.indexOf('超' + ow + 'kg') >= 0){
+      nv[cid]['sur.air.notAccept'] = na.split('超' + ow + 'kg').join('超' + nv[cid]['sur.air.w'] + 'kg');
+    }
+  });
+  ovSave(nv);
   applyPriceOverride();
   if(!silent){
-    document.getElementById('priceSaveMsg').textContent = '已把 ' + hit + ' 个价格存到本机，先自己测算看一遍，没问题再生成新网站';
+    document.getElementById('priceSaveMsg').textContent = hit ? ('已存 ' + hit + ' 处改动到本机，先自己测算看一遍，没问题再生成新网站') : '没有改动（价格和原始一致）';
     afterPriceChange();
   }
   return hit;
@@ -2412,8 +2592,55 @@ function fmtCN(d){
   if(!m) return d;
   return m[1] + '年' + parseInt(m[2], 10) + '月' + parseInt(m[3], 10) + '号';
 }
+function domSnapshot(){
+  var ids = ['channels','refGrid','batchList','priceList','histList'];
+  var res = document.getElementById('result');
+  var resCls = res ? res.className : '';
+  var keep = {};
+  ids.forEach(function(id){
+    var el = document.getElementById(id);
+    if(el) keep[id] = { c: el.className, h: el.innerHTML, d: el.style.display };
+  });
+  ids.forEach(function(id){
+    var el = document.getElementById(id);
+    if(el){ el.innerHTML = ''; el.className = ''; el.style.display = ''; }
+  });
+  var pb = document.getElementById('priceBody'), pa = document.getElementById('priceArrow');
+  var pr = document.getElementById('profitBody'), pfa = document.getElementById('profitArrow');
+  var pwd = document.getElementById('pwdRow'), bar = document.getElementById('priceEditBar');
+  var cbm = document.getElementById('cbmResult'), sm = document.getElementById('smartResult');
+  var sgi = document.getElementById('siteGenInfo'), psm = document.getElementById('priceSaveMsg');
+  var st = { pb: pb ? pb.style.display : '', pr: pr ? pr.style.display : '' };
+  if(res) res.className = 'result';
+  if(pb) pb.style.display = 'none';
+  if(pa) pa.textContent = '展开';
+  if(pr) pr.style.display = 'none';
+  if(pfa) pfa.textContent = '展开';
+  if(bar) bar.style.display = 'none';
+  if(cbm) cbm.style.display = 'none';
+  if(sm) sm.style.display = 'none';
+  if(sgi) sgi.textContent = '';
+  if(psm) psm.textContent = '';
+  var cbs = document.querySelectorAll('#countries .country-btn');
+  for(var i = 0; i < cbs.length; i++) cbs[i].className = 'country-btn' + (cbs[i].getAttribute('data-c') === 'MY' ? ' active' : '');
+  var html = document.documentElement.outerHTML;
+  ids.forEach(function(id){
+    var el = document.getElementById(id);
+    if(el && keep[id]){ el.className = keep[id].c; el.innerHTML = keep[id].h; el.style.display = keep[id].d; }
+  });
+  if(pb) pb.style.display = st.pb;
+  if(pa) pa.textContent = st.pb === 'none' ? '展开' : '收起';
+  if(res) res.className = resCls;
+  if(pr) pr.style.display = st.pr;
+  if(pfa) pfa.textContent = st.pr === 'none' ? '展开' : '收起';
+  if(bar) bar.style.display = PRICE_UNLOCKED ? 'flex' : 'none';
+  if(cbs.length > 1){
+    for(var j = 0; j < cbs.length; j++) cbs[j].className = 'country-btn' + (cbs[j].getAttribute('data-c') === curC ? ' active' : '');
+  }
+  return html;
+}
 function buildSiteHtml(){
-  var tpl = window.__SITE_TPL || '';
+  var tpl = '<!DOCTYPE html>\n' + domSnapshot();
   if(!tpl) return '';
   var json = JSON.stringify(PRICE, function(k, v){ return v === Infinity ? '#INF#' : v; }, 2).replace(/"#INF#"/g, 'Infinity');
   var block = '/*XGD_PRICE_BEGIN*/\nvar PRICE = ' + json + ';\n/*XGD_PRICE_END*/';
@@ -2430,7 +2657,7 @@ function exportSite(){
   savePriceEdit(true);
   var html = buildSiteHtml();
   if(!html){ alert('生成失败：页面模板没抓到，刷新一下页面再试'); return; }
-  window.__lastSite = html;
+  try { sessionStorage.setItem('xgd_last_export', html); } catch(e){}
   var kb = Math.round(html.length / 1024);
   var d = (document.getElementById('fPriceDate').value || PRICE_DATE);
   document.getElementById('siteGenInfo').textContent = '已生成新网站：' + kb + ' KB，价格生效日 ' + d + '。把下载的 index.html 覆盖线上文件，等 1-2 分钟刷新，全站就是新价。';
@@ -2640,6 +2867,18 @@ function closeQuote(){
 }
 </script>
 <div class="wx-overlay" id="wxOverlay" onclick="hideWx()" style="display:none"><img id="wxBig" alt="微信二维码"></div>
+<div class="pwd-overlay" id="pwdOverlay" onclick="if(event.target===this)pwdClose()">
+  <div class="pwd-card">
+    <div class="pwd-t">管理员验证</div>
+    <div class="pwd-s">价格与规则总表仅对管理员开放<br>请输入密码后查看和修改价格</div>
+    <input id="fPwd" type="password" autocomplete="off" placeholder="请输入管理员密码" onkeydown="if(event.key==='Enter')unlockPrice()">
+    <div class="pwd-msg" id="pwdMsg"></div>
+    <div class="pwd-acts">
+      <button class="btn-mini pwd-cancel" onclick="pwdClose()">取消</button>
+      <button class="btn-mini btn-gen" onclick="unlockPrice()">解锁查看</button>
+    </div>
+  </div>
+</div>
 <div class="qo-overlay" id="quoteOverlay" style="display:none">
   <div class="qo-hint">长按图片保存 / 转发到微信给客户<br>电脑端可右键图片另存为</div>
   <img id="quoteImg" alt="报价单">
