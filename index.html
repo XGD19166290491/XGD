@@ -925,11 +925,10 @@ function setLang(l){
 }
 
 (function langBoot(){
-  var l = '';
-  try{ l = localStorage.getItem('xgd_lang') || ''; }catch(e){}
+  /* 默认中文：不读本地缓存的英文偏好，只有 URL 显式带 ?lang=en 才进英文 */
   var q = location.search.match(/[?&]lang=(zh|en)/);
-  if(q) l = q[1];
-  setTimeout(function(){ setLang(l || 'zh'); }, 0);
+  var l = q ? q[1] : 'zh';
+  setTimeout(function(){ setLang(l); }, 0);
 })();
 
 
