@@ -3691,16 +3691,35 @@ function submitLead(){
   setTimeout(function(){ if(typeof showWx === 'function') showWx(); }, 500);
 }
 /* 留资一键发 WhatsApp：比复制粘贴更省事，客户点一下整段消息就进 WhatsApp，按发送即可 */
+/* 留资一键发 WhatsApp：比复制粘贴省事。链接里只放精简报价（完整报价仍可复制），避免 URL 过长手机打不开 */
 var WA_NUM = "8619166290491";
-function sendLeadWa(onPhone){
-  var msg = window.__leadMsg || '';
-  if(!msg){
-    var q = window.lastQuote;
-    var lead = (document.getElementById("fLead").value || "").trim();
-    var who = (document.getElementById("fLeadName").value || "").trim();
-    if(!q || !lead){ alert(LANG === "en" ? "Calculate and fill in your contact first" : "先测算并填好联系方式"); return; }
-    msg = quoteTextOf(q) + "\\n\\n" + (LANG === "en" ? "My WeChat / phone: " : "我的微信 / 手机：") + lead + (who ? " (" + who + ")" : "") + (LANG === "en" ? "\\nPlease confirm this quote, thanks" : "\\n以上报价请帮我确认，谢谢");
+function leadBriefMsg(){
+  var q = window.lastQuote;
+  var who = (document.getElementById("fLeadName").value || "").trim();
+  var lead = (document.getElementById("fLead").value || "").trim();
+  var L = [];
+  if(LANG === "en"){
+    L.push("[Website quote] " + q.cnt + (q.dims ? " | " + q.dims : ""));
+    L.push("Channel: " + q.title + (q.eta ? " (transit " + q.eta + ")" : ""));
+    L.push("Chargeable: " + q.bill + " | Est. total: " + q.total);
+    L.push("My WeChat / phone: " + lead + (who ? " (" + who + ")" : ""));
+    L.push("Please confirm this quote, thanks");
+  } else {
+    L.push("【网站取价】" + q.cnt + (q.dims ? " ｜ " + q.dims : ""));
+    L.push("渠道：" + q.title + (q.eta ? "（参考时效 " + q.eta + "）" : ""));
+    L.push("计费：" + q.bill + " ｜ 预估总额：" + q.total);
+    L.push("我的微信/手机：" + lead + (who ? "（" + who + "）" : ""));
+    L.push("以上报价请帮我确认，谢谢");
   }
+  var m = L.join("\n");
+  if(m.length > 520){ m = m.slice(0, 520) + "…"; }
+  return m;
+}
+function sendLeadWa(onPhone){
+  var q = window.lastQuote;
+  if(!q){ alert(LANG === "en" ? "Please calculate first" : "请先填写货物并测算"); return; }
+  var msg;
+  try { msg = leadBriefMsg(); } catch(e){ msg = window.__leadMsg || ""; }
   var url = "https://wa.me/" + WA_NUM + "?text=" + encodeURIComponent(msg);
   var w = window.open(url, "_blank");
   if(!w){ location.href = url; }
