@@ -3685,12 +3685,12 @@ function submitLead(){
   var msg = (q ? quoteTextOf(q) : '') + '\n\n我的微信 / 手机：' + lead + (who ? '（' + who + '）' : '') + '\n以上报价请帮我确认，谢谢';
   window.__leadMsg = msg;
   copyText(msg, '已生成报价，粘贴发给微信 19166290491（电话同号）就行');
-  hint.innerHTML = '已把你填的 <b>' + (who ? who + ' · ' : '') + lead + '</b> 和这份报价复制好了，<span class="sb-ok">去微信粘贴发给 19166290491</span>，马上给你正式报价单。' +
-    '<div style="margin-top:10px"><button class="btn-mini wa-send" onclick="sendLeadWa()">' + (LANG === 'en' ? 'Send via WhatsApp' : '用 WhatsApp 直接发送') + '</button>' +
-    ' <button class="btn-mini" onclick="sendLeadWa(true)">' + (LANG === 'en' ? 'Send from this phone' : '在手机上打开发送') + '</button></div>';
-  setTimeout(function(){ if(typeof showWx === 'function') showWx(); }, 500);
+  hint.innerHTML = '已把你填的 <b>' + (who ? who + ' · ' : '') + lead + '</b> 和这份报价复制好了，选一条发我就行：' +
+    '<div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">' +
+    '<button class="btn-mini wa-send" onclick="sendLeadWa()">' + (LANG === 'en' ? 'Send via WhatsApp' : '用 WhatsApp 发送') + '</button>' +
+    '<button class="btn-mini" onclick="if(typeof showWx===\'function\') showWx();">' + (LANG === 'en' ? 'Send via WeChat' : '用微信发送（二维码）') + '</button>' +
+    '</div>';
 }
-/* 留资一键发 WhatsApp：比复制粘贴更省事，客户点一下整段消息就进 WhatsApp，按发送即可 */
 /* 留资一键发 WhatsApp：比复制粘贴省事。链接里只放精简报价（完整报价仍可复制），避免 URL 过长手机打不开 */
 var WA_NUM = "8619166290491";
 function leadBriefMsg(){
