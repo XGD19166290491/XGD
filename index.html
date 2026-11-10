@@ -563,7 +563,7 @@ td.k .en{display:block;font-size:10px;font-style:normal;color:#98a2b3;font-weigh
           <input id="fLead" placeholder="你的微信 / 手机号" autocomplete="off">
           <button class="btn btn-quote" onclick="submitLead()">拿到正式报价</button>
         </div>
-        <div class="sb-hint" id="leadHint">填好点按钮，会自动生成一条消息，粘贴发我就行 · 电话/微信/WhatsApp 19166290491</div>
+        <div class="sb-hint" id="leadHint">填好点按钮，会自动生成一条消息；也可以点「WhatsApp 直接发送」，一步发我 · 电话/微信/WhatsApp 19166290491</div>
       </div>
     </div>
 
@@ -950,8 +950,8 @@ I18N["业务对接（微信同号）"] = "Sales / WeChat / WhatsApp";
 I18N["业务对接（微信同号）："] = "Sales / WeChat / WhatsApp:";
 I18N["扫码加 WhatsApp："] = "Scan to add WhatsApp:";
 I18N["WhatsApp：+86 191 6629 0491"] = "WhatsApp: +86 191 6629 0491";
-I18N["填好点按钮，会自动生成一条消息，粘贴发我就行 · 电话/微信/WhatsApp 19166290491"] =
-  "Tap the button to generate a message, then paste and send it to me · Tel / WeChat / WhatsApp 19166290491";
+I18N["填好点按钮，会自动生成一条消息；也可以点「WhatsApp 直接发送」，一步发我 · 电话/微信/WhatsApp 19166290491"] =
+  "Tap to generate the message, or hit \u201cSend via WhatsApp\u201d to send it straight to me · Tel / WeChat / WhatsApp 19166290491";
 
 /* ===== 语言切换 v10 ===== */
 var I18N_RULES10 = [["WhatsApp：", "WhatsApp: "], ["扫码加 WhatsApp：", "Scan to add WhatsApp:"]]
@@ -3683,9 +3683,27 @@ function submitLead(){
              hub: (q ? q.hub : ''), addr: (q ? q.addr : '')});
   leadStore(a);
   var msg = (q ? quoteTextOf(q) : '') + '\n\n我的微信 / 手机：' + lead + (who ? '（' + who + '）' : '') + '\n以上报价请帮我确认，谢谢';
+  window.__leadMsg = msg;
   copyText(msg, '已生成报价，粘贴发给微信 19166290491（电话同号）就行');
-  hint.innerHTML = '已把你填的 <b>' + (who ? who + ' · ' : '') + lead + '</b> 和这份报价复制好了，<span class="sb-ok">去微信粘贴发给 19166290491</span>，马上给你正式报价单。';
+  hint.innerHTML = '已把你填的 <b>' + (who ? who + ' · ' : '') + lead + '</b> 和这份报价复制好了，<span class="sb-ok">去微信粘贴发给 19166290491</span>，马上给你正式报价单。' +
+    '<div style="margin-top:10px"><button class="btn-mini wa-send" onclick="sendLeadWa()">' + (LANG === 'en' ? 'Send via WhatsApp' : '用 WhatsApp 直接发送') + '</button>' +
+    ' <button class="btn-mini" onclick="sendLeadWa(true)">' + (LANG === 'en' ? 'Send from this phone' : '在手机上打开发送') + '</button></div>';
   setTimeout(function(){ if(typeof showWx === 'function') showWx(); }, 500);
+}
+/* 留资一键发 WhatsApp：比复制粘贴更省事，客户点一下整段消息就进 WhatsApp，按发送即可 */
+var WA_NUM = "8619166290491";
+function sendLeadWa(onPhone){
+  var msg = window.__leadMsg || '';
+  if(!msg){
+    var q = window.lastQuote;
+    var lead = (document.getElementById("fLead").value || "").trim();
+    var who = (document.getElementById("fLeadName").value || "").trim();
+    if(!q || !lead){ alert(LANG === "en" ? "Calculate and fill in your contact first" : "先测算并填好联系方式"); return; }
+    msg = quoteTextOf(q) + "\\n\\n" + (LANG === "en" ? "My WeChat / phone: " : "我的微信 / 手机：") + lead + (who ? " (" + who + ")" : "") + (LANG === "en" ? "\\nPlease confirm this quote, thanks" : "\\n以上报价请帮我确认，谢谢");
+  }
+  var url = "https://wa.me/" + WA_NUM + "?text=" + encodeURIComponent(msg);
+  var w = window.open(url, "_blank");
+  if(!w){ location.href = url; }
 }
 function exportLeads(){
   var a = leadLoad();
