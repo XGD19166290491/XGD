@@ -3682,6 +3682,7 @@ function submitLead(){
              ch: (q ? (q.cid || '') : ''), total: (q ? q.total : ''), cbm: (q ? q.cbm : ''),
              hub: (q ? q.hub : ''), addr: (q ? q.addr : '')});
   leadStore(a);
+  try{ pushLead(q, who, lead); }catch(e){}
   var msg = (q ? quoteTextOf(q) : '') + '\n\n我的微信 / 手机：' + lead + (who ? '（' + who + '）' : '') + '\n以上报价请帮我确认，谢谢';
   window.__leadMsg = msg;
   copyText(msg, '已生成报价，粘贴发给微信 19166290491（电话同号）就行');
@@ -3693,7 +3694,32 @@ function submitLead(){
 }
 /* 留资一键发 WhatsApp：比复制粘贴省事。链接里只放精简报价（完整报价仍可复制），避免 URL 过长手机打不开 */
 var WA_NUM = "8619166290491";
-function leadBriefMsg(){
+/* 留资提醒：客户提交后推一条到业务微信（令牌做了反转存放，不在源码里明文出现） */
+var PP_TOKEN_REV = "b77a5863f15f8259c544ce3915fa75c9";
+function ppToken(){ return PP_TOKEN_REV.split("").reverse().join(""); }
+function pushLead(q, who, lead){
+  if(!q) return;
+  var L = [];
+  L.push("客户：" + (who ? who + " · " : "") + lead);
+  L.push("渠道：" + q.title + (q.eta ? "（" + q.eta + "）" : ""));
+  L.push("货物：" + q.cnt + (q.dims ? " ｜ " + q.dims : ""));
+  L.push("实重 " + q.actual + "kg ｜ 计费 " + q.bill);
+  if(q.cbm) L.push("体积：" + q.cbm + " CBM");
+  L.push("预估总额：" + q.total);
+  L.push("交货仓：" + q.hub + (q.addr ? " ｜ 收货：" + q.addr : ""));
+  L.push("来源：网站报价页 · " + q.date);
+  var title = "新线索 " + (q.cid || "") + " " + (q.total || "");
+  var url = "https://www.pushplus.plus/send?token=" + ppToken() +
+            "&title=" + encodeURIComponent(title) +
+            "&content=" + encodeURIComponent(L.join("\n")) +
+            "&template=txt";
+  if(url.length > 1800) return;
+  try {
+    fetch(url, {method: "GET"}).then(function(r){ return r.json(); }).then(function(d){
+      window.__ppState = (d && d.code === 200) ? "ok" : ("err" + (d ? d.code : ""));
+    }).catch(function(){ window.__ppState = "neterr"; });
+  } catch(e){ window.__ppState = "ex"; }
+}function leadBriefMsg(){
   var q = window.lastQuote;
   var who = (document.getElementById("fLeadName").value || "").trim();
   var lead = (document.getElementById("fLead").value || "").trim();
