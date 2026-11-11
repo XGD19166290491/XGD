@@ -1670,7 +1670,7 @@ function calcSurcharge(ch, batches){
       return {total:0, list:list, pending:pending, blocked:true};
     }
     if(a.fee && !a.notAccept && !a.consult){
-      /* 原规则（PH-A1/A2/A3 规则说明）：单件超重、超尺寸分别加收，超长超重可叠加 */
+      /* 2026-11-11 规则：空运超长/超重费整票只收一次（超重、超尺寸都超也只收一笔） */
       var wN = 0, sN = 0, wWhy = [], sWhy = [];
       batches.forEach(function(b, i){
         if(a.w && b.WT > a.w){ wN += b.N; wWhy.push('第' + (i + 1) + '批 ' + b.WT + 'kg'); }
@@ -1687,17 +1687,13 @@ function calcSurcharge(ch, batches){
         if(a.l2 && Math.max(b.L, b.W, b.H) > a.l2) sm.push('单边长' + Math.max(b.L, b.W, b.H));
         if(sm.length){ sN += b.N; sWhy.push('第' + (i + 1) + '批 ' + sm.join('、')); }
       });
-      if(wN){
-        var wFee = a.fee * wN;
-        total += wFee;
-        list.push({t:'超重费', d:'单件超' + a.w + 'kg（' + wWhy.join('；') + '），' + a.fee + '元/件×' + wN + '件', fee:wFee});
+      if(wN || sN){
+        var why = [];
+        if(wN) why.push('超重：单件超' + a.w + 'kg（' + wWhy.join('；') + '）');
+        if(sN) why.push('超尺寸：超' + (a.lims ? (a.lims.L + '*' + a.lims.W + '*' + a.lims.H + 'cm') : '规则尺寸') + '（' + sWhy.join('；') + '）');
+        list.push({t:'超长/超重费', d:why.join('；') + '｜整票只收一次', fee:a.fee});
+        total += a.fee;
       }
-      if(sN){
-        var sFee = a.fee * sN;
-        total += sFee;
-        list.push({t:'超尺寸费', d:'尺寸超' + (a.lims ? (a.lims.L + '*' + a.lims.W + '*' + a.lims.H + 'cm') : '规则尺寸') + '（' + sWhy.join('；') + '），' + a.fee + '元/件×' + sN + '件', fee:sFee});
-      }
-      if(wN && sN) list.push({t:'叠加说明', d:'超重与超尺寸按原规则分别加收、可叠加，同一件两项都超即两笔', fee:0});
       return {total: total, list: list, pending: pending};
     }
     if(reasons.length){
@@ -1705,8 +1701,8 @@ function calcSurcharge(ch, batches){
       batches.forEach(function(b){
         if(overMsg(b).length) n += b.N;
       });
-      var fee = a.fee * (a.per === '件' ? n : 1);
-      list.push({t:'超长/超重费', d:reasons.join('；') + '，加收' + a.fee + '元/' + a.per, fee:fee});
+      var fee = a.fee;
+      list.push({t:'超长/超重费', d:reasons.join('；') + '｜整票只收一次', fee:fee});
       total += fee;
     }
     return {total:total, list:list, pending:pending};
@@ -3081,7 +3077,7 @@ function ruleText(ch){
     if(x.w) out.push('单件≤' + x.w + 'kg');
     if(x.w2) out.push('≤' + x.w2 + 'kg');
     if(x.l) out.push('单边≤' + x.l + 'cm');
-    if(x.fee) out.push('超限 +' + x.fee + ' 元/件');
+    if(x.fee) out.push('超限 +' + x.fee + ' 元/票（整票一次）');
   }
   return out;
 }
