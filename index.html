@@ -669,8 +669,8 @@ td.k .en{display:block;font-size:10px;font-style:normal;color:#98a2b3;font-weigh
     <div>马来 / 新加坡 / 菲律宾 / 印尼 / 越南 / 泰国 / 巴西 双清包税到门专线 · 海运拼箱 · 整柜</div>
     <div class="row">
       <span style="font-size:13px;color:#c8d8f2">价格表下载：</span>
-      <a class="dl-btn" href="xgd-price-2026-11-09.xlsx" download="新港大价格表-2026年11月9日.xlsx" type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">下载最新价格表（2026-11-09 执行）</a>
-      <span class="dl-note">Excel 格式，手机可直接打开；最终价以本页实时计算为准</span>
+      <a class="dl-btn" id="dlPrice" href="xgd-price.xlsx" download="新港大价格表.xlsx" type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">下载最新价格表（Excel）</a>
+      <span class="dl-note"><span>价格生效日</span> <span id="dlDate">2026-11-09</span> · <span>Excel 格式，手机可直接打开，最终价以本页实时计算为准</span></span>
     </div>
     <div class="row">
       <span>业务对接（微信同号）：<span class="tel">19166290491</span></span>
@@ -933,8 +933,9 @@ function restoreAll(root){
 
 /* ===== 语言切换 v11：价格表下载 ===== */
 I18N["价格表下载："] = "Price list:";
-I18N["下载最新价格表（2026-11-09 执行）"] = "Download latest price list (effective 2026-11-09)";
-I18N["Excel 格式，手机可直接打开；最终价以本页实时计算为准"] = "Excel file, opens on mobile; final price is the one calculated on this page";
+I18N["下载最新价格表（Excel）"] = "Download latest price list (Excel)";
+I18N["价格生效日"] = "Effective date";
+I18N["Excel 格式，手机可直接打开，最终价以本页实时计算为准"] = "Excel file, opens on mobile; final price is the one calculated on this page";
 
 
 function setLang(l){
@@ -4043,5 +4044,19 @@ document.addEventListener("click", function(e){
 });
 fabLang();
 </script>
+<script>
+/* ===== 价格表下载：文件名固定，生效日期与版本号跟随 PRICE_DATE ===== */
+function xgdDlSync(){
+  var a = document.getElementById('dlPrice');
+  if(!a) return;
+  var d = (typeof PRICE_DATE !== 'undefined' && PRICE_DATE) ? String(PRICE_DATE) : '2026-11-09';
+  a.setAttribute('href', 'xgd-price.xlsx?v=' + d.replace(/-/g, ''));
+  a.setAttribute('download', '新港大价格表-' + d + '.xlsx');
+  var el = document.getElementById('dlDate');
+  if(el) el.textContent = d;
+}
+try{ xgdDlSync(); }catch(e){}
+</script>
+
 </body>
 </html>
