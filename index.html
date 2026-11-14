@@ -415,6 +415,52 @@ td.k .en{display:block;font-size:10px;font-style:normal;color:#98a2b3;font-weigh
 .fab-ico.tel{background:var(--red)}
 .fab-ico svg{width:17px;height:17px;fill:#fff}
 }
+
+/* ========== 船期表 ========== */
+.ship-card{background:var(--card);border:1px solid var(--line);border-radius:6px;box-shadow:0 1px 2px rgba(16,24,40,.05),0 8px 28px -16px rgba(16,24,40,.18);padding:24px 26px 22px;margin-bottom:22px}
+.ship-top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.ship-top .sec-title{margin:0;font-size:16px}
+.ship-upd{font-size:12px;color:var(--sub2);font-variant-numeric:tabular-nums}
+.ship-desc{font-size:12.5px;color:var(--sub);line-height:1.72;margin:9px 0 2px;max-width:740px}
+.ship-legend{display:flex;gap:16px;flex-wrap:wrap;margin:10px 0 0;font-size:12px;color:var(--sub)}
+.ship-legend i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;vertical-align:1px}
+.ship-grp{margin-top:16px}
+.ship-grp-h{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;font-size:13.5px;font-weight:700;color:var(--navy);padding-bottom:8px;border-bottom:1px solid var(--line)}
+.ship-grp-h span{font-size:11.5px;font-weight:500;color:var(--sub2);letter-spacing:.02em}
+.ship-head{display:grid;grid-template-columns:1fr 204px 100px 108px;gap:8px;padding:9px 10px 6px;font-size:11.5px;color:var(--sub2);letter-spacing:.04em}
+.ship-row{display:grid;grid-template-columns:1fr 204px 100px 108px;gap:8px;align-items:center;padding:11px 10px;border-top:1px solid var(--line2);grid-template-areas:"main dates eta st"}
+.ship-row:first-child{border-top:0}
+.sr-main{grid-area:main;min-width:0}
+.sr-car{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.06em;color:var(--sub);background:#F2F4F7;border-radius:3px;padding:1px 6px;margin-right:7px;vertical-align:1px}
+.sr-vsl{font-size:13.5px;font-weight:600;color:var(--ink)}
+.sr-voy{font-size:12px;color:var(--sub2);margin-left:5px;font-variant-numeric:tabular-nums}
+.sr-dates{grid-area:dates;font-size:12.5px;color:var(--sub);white-space:nowrap;font-variant-numeric:tabular-nums}
+.sr-dates b{color:var(--ink);font-weight:700}
+.sr-eta{grid-area:eta;text-align:right;padding-right:8px}
+.sr-eta small{display:none;font-size:10.5px;color:var(--sub2);letter-spacing:.02em}
+.sr-eta b{font-size:15px;font-weight:800;color:var(--red);font-variant-numeric:tabular-nums}
+.sr-st{grid-area:st;text-align:right}
+.st-ok{display:inline-block;font-size:11.5px;font-weight:600;color:#067647;background:#F4FAF6;border:1px solid #D1E9DC;border-radius:20px;padding:1px 8px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.st-ok b{font-weight:800}
+.st-cut{display:inline-block;font-size:11.5px;font-weight:500;color:#98A2B3;background:#F2F4F7;border:1px solid #E4E7EC;border-radius:20px;padding:1px 8px;white-space:nowrap}
+.st-warn{display:inline-block;font-size:11.5px;font-weight:600;color:#B54708;background:#FFFAEB;border:1px solid #FDE7B0;border-radius:20px;padding:1px 8px;white-space:nowrap}
+.ship-row.off{opacity:.45}
+.ship-empty{font-size:12.5px;color:var(--sub2);padding:12px 2px}
+.ship-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:15px;padding-top:13px;border-top:1px solid var(--line)}
+.ship-foot p{font-size:11.5px;color:var(--sub2);line-height:1.7;max-width:620px}
+.ship-cta{font-size:12.5px;font-weight:700;color:#fff;background:var(--red);border-radius:4px;padding:8px 15px;text-decoration:none;white-space:nowrap;display:inline-block}
+.ship-cta:hover{background:var(--red-d)}
+@media(max-width:640px){
+.ship-card{padding:18px 16px 16px}
+.ship-head{display:none}
+.ship-row{grid-template-columns:1fr auto;grid-template-areas:"main eta" "dates st";gap:5px 10px;padding:12px 2px;align-items:center}
+.sr-eta small{display:inline;margin-right:4px;font-size:11px}
+.sr-eta b{font-size:16px}
+.sr-dates{font-size:12px}
+.sr-vsl{font-size:13px}
+.ship-foot .ship-cta{width:100%;text-align:center}
+}
+
 </style>
 </head>
 <body>
@@ -614,6 +660,20 @@ td.k .en{display:block;font-size:10px;font-style:normal;color:#98a2b3;font-weigh
       <div class="ci-body" id="profitBody" style="display:none">
         <div class="p-out" id="profitMask">内部模块：需管理员密码登录后使用（成本数据只在本机填、本机看，不会写进页面文件）</div>
       </div>
+    </div>
+  </div>
+
+  <div class="ship-card" id="shipCard">
+    <div class="ship-top">
+      <div class="sec-title" id="shipTitle">当周船期 · 南沙出港</div>
+      <div class="ship-upd" id="shipUpdLine">更新于 2026-11-12 · 每周更新</div>
+    </div>
+    <div class="ship-desc" id="shipDesc">以下为船公司预计船期，仅作交仓与订舱参考：截关日是你最迟把货送到仓的时间，到港日为预计时间，实际以订舱确认及船公司通知为准；节假日、爆仓、天气可能导致顺延。</div>
+    <div class="ship-legend" id="shipLegend"></div>
+    <div id="shipBody"></div>
+    <div class="ship-foot">
+      <p id="shipFootP">空运、整柜及东马船期请单询。要订舱或查最新船期，直接找我，当天回复当周舱位与价格。</p>
+      <a class="ship-cta" id="shipCta" href="https://wa.me/8619166290491" target="_blank" rel="noopener">订舱 / 查最新船期 19166290491</a>
     </div>
   </div>
 
@@ -947,6 +1007,7 @@ function setLang(l){
   var btns = document.querySelectorAll('.lang-btn');
   for(var i = 0; i < btns.length; i++){ btns[i].classList.toggle('on', btns[i].getAttribute('data-lang') === LANG); }
   try{ if(typeof renderChannels === 'function' && curCh) renderChannels(); }catch(e){}
+  try{ if(typeof renderShip === 'function') renderShip(); }catch(e){}
   if(LANG === 'en') translateAll(); else restoreAll();
   try{ if(typeof fabLang === "function") fabLang(); }catch(e){}
   if(typeof showShare === 'function') showShare();
@@ -1966,15 +2027,19 @@ function calc(){
 
   var totalN = 0;
   var volW = 0, actual = 0, cbm = 0;
+  var cbmC = 0, cbmW = 0, volWW = 0, actW = 0;
   batches.forEach(function(b){
     totalN += b.N;
-    volW += b.L*b.W*b.H*b.N/6000;
-    actual += b.WT*b.N;
-    cbm += b.L*b.W*b.H*b.N/1000000;
+    var vw1 = b.L*b.W*b.H*b.N/6000, cb1 = b.L*b.W*b.H*b.N/1000000, ac1 = b.WT*b.N;
+    volW += vw1;
+    actual += ac1;
+    cbm += cb1;
+    if((b.PK || '纸箱') !== '纸箱'){ cbmW += cb1; volWW += vw1; actW += ac1; }
+    else { cbmC += cb1; }
   });
   var sur = calcSurcharge(ch, batches);
   var base = 0, billText = '', rateText = '';
-  var qBillMode = '', qUnitTxt = '', qFreightExtra = [], qFreightOnly = null;
+  var qBillMode = '', qUnitTxt = '', qFreightExtra = [], qFreightOnly = null, qRateDetail = '';
 
   if(ch.type === 'fcl' || ch.type === 'quote'){
     base = 0;
@@ -2001,15 +2066,18 @@ function calc(){
     base = tierPrice(ch.tiers, kg) || 0;
     qFreightOnly = base;
     if(ch.addPerPcs) base += ch.addPerPcs * totalN;
+    var kgW = 0;
     if(pack === 'wood' && ch.woodAdd){
-      base += ch.woodAdd * kg;
-      rateText += '，木箱木架+' + ch.woodAdd + '元/kg×' + kg;
+      var chgW = (ch.free && actual <= 10 && Math.abs(volW - actual) <= 10) ? actW : ((forced || mode === 'actual') ? actW : (mode === 'half' ? (actW + volWW)/2 : Math.max(actW, volWW)));
+      kgW = Math.min(kg, Math.max(1, Math.ceil(chgW)));
+      base += ch.woodAdd * kgW;
+      rateText += '，木箱木架+' + ch.woodAdd + '元/kg×' + kgW + 'kg（只算木箱部分，纸箱 ' + Math.max(0, kg - kgW) + 'kg 不加）';
     }
     billText = kg + ' kg（计费重）';
     qBillMode = (ch.free && actual <= 10 && Math.abs(volW - actual) <= 10) ? '免泡按实重' : ((forced || mode === 'actual') ? '按实重' : (mode === 'half' ? '分半泡' : '全泡取大'));
     qUnitTxt = airUnitText(ch, kg);
     if(ch.addPerPcs) qFreightExtra.push('台数附加 ' + ch.addPerPcs + ' 元/台 × ' + totalN + ' 台 = ' + money(ch.addPerPcs * totalN) + ' 元');
-    if(pack === 'wood' && ch.woodAdd) qFreightExtra.push('木箱附加 ' + ch.woodAdd + ' 元/kg × ' + kg + ' kg = ' + money(ch.woodAdd * kg) + ' 元');
+    if(pack === 'wood' && ch.woodAdd) qFreightExtra.push('木箱附加 ' + ch.woodAdd + ' 元/kg × ' + kgW + ' kg（仅木箱部分） = ' + money(ch.woodAdd * kgW) + ' 元');
     rateText += '，单价档：' + tierLabel(ch.tiers, kg) + (ch.addPerPcs ? '，附加' + ch.addPerPcs + '元/台×' + totalN + '台' : '');
     calcQty = kg;
   }
@@ -2034,11 +2102,32 @@ function calc(){
       var unit = ch.price;
       if(ch.id === 'SG-S3' && curHub === 'gz') unit = 500;
       if(ch.price5 && cbm > 5) unit = ch.price5;
-      if(pack === 'wood' && ch.wood) unit = ch.wood;
-      base = fmt(unit * billCbm);
-      qFreightOnly = base;
-      rateText = unit + ' 元/方 × ' + fmt(billCbm) + '方' + (pack === 'wood' && ch.wood ? '（木箱木架价）' : '');
-      qUnitTxt = unit + ' 元/方' + (pack === 'wood' && ch.wood ? '（木箱木架价）' : '');
+      if(pack === 'wood' && ch.wood && cbmW > 0 && cbmC > 0){
+        /* 纸箱 + 木箱混装：两种包装各按自己的单价分开算，再相加 */
+        var unitW = ch.wood;
+        var gapC = Math.max(0, billCbm - cbm);
+        var feeC = fmt(unit * cbmC), feeW = fmt(unitW * cbmW);
+        if(gapC > 0){
+          /* 不足起方 / 不足一个计费单位：整票按最低标准收（起方数 × 最低单价），不再叠加木箱加价 */
+          base = fmt(unit * billCbm);
+          qFreightOnly = base;
+          rateText = '不足起方，整票按最低标准 ' + fmt(billCbm) + '方 × ' + unit + ' 元/方 = ' + money(fmt(unit * billCbm)) + ' 元';
+          qUnitTxt = unit + ' 元/方（不足起方按最低标准收）';
+          qRateDetail = '实际 ' + fmt(cbm) + '方（纸箱 ' + fmt(cbmC) + '方、木箱 ' + fmt(cbmW) + '方），不足 ' + fmt(billCbm) + ' 方，按最低标准 ' + fmt(billCbm) + '方 × ' + unit + ' 元/方 = ' + money(fmt(unit * billCbm)) + ' 元';
+        } else {
+          base = fmt(feeC + feeW);
+          qFreightOnly = base;
+          rateText = '纸箱货 ' + fmt(cbmC) + '方 × ' + unit + '元/方 = ' + money(feeC) + ' 元 ＋ 木箱货 ' + fmt(cbmW) + '方 × ' + unitW + '元/方 = ' + money(feeW) + ' 元';
+          qUnitTxt = '纸箱 ' + unit + ' 元/方 ｜ 木箱木架 ' + unitW + ' 元/方（分开计算）';
+          qRateDetail = '纸箱货 ' + fmt(cbmC) + '方 × ' + unit + '元/方 = ' + money(feeC) + ' 元；木箱货 ' + fmt(cbmW) + '方 × ' + unitW + '元/方 = ' + money(feeW) + ' 元';
+        }
+      } else {
+        if(pack === 'wood' && ch.wood) unit = ch.wood;
+        base = fmt(unit * billCbm);
+        qFreightOnly = base;
+        rateText = unit + ' 元/方 × ' + fmt(billCbm) + '方' + (pack === 'wood' && ch.wood ? '（木箱木架价）' : '');
+        qUnitTxt = unit + ' 元/方' + (pack === 'wood' && ch.wood ? '（木箱木架价）' : '');
+      }
     }
     if(ch.delMin && cbm < ch.delMin.maxCbm){
       var dFee = ch.delMin.fee;
@@ -2117,7 +2206,8 @@ function calc(){
   document.getElementById('rYiwu').innerHTML = yiwuTxt;
   document.getElementById('rRate').innerHTML =
     '<div>计费方式：' + escHtml(qBillMode || '—') + '（实重 ' + fmt(actual) + ' / 泡重 ' + fmt(volW) + '）</div>' +
-    '<div>单价：' + escHtml(qUnitTxt || '单询') + '</div>';
+    '<div>单价：' + escHtml(qUnitTxt || '单询') + '</div>' +
+    (qRateDetail ? '<div>运费构成：' + escHtml(qRateDetail) + '</div>' : '');
   document.getElementById('rEta').textContent = ch.eta;
   var rp = document.getElementById('rPrice');
   rp.textContent = blocked ? '需人工确认' : ((ch.type === 'fcl' || ch.type === 'quote') ? '单询' : money(total));
@@ -2180,6 +2270,7 @@ function calc(){
     freightOnly: qFreightOnly,
     billMode: qBillMode,
     unitTxt: qUnitTxt,
+    rateDetail: qRateDetail,
     freightExtra: qFreightExtra,
     title: PRICE[curC].name + ' · ' + ch.id + ' ' + ch.name,
     eta: ch.eta,
@@ -3022,6 +3113,7 @@ function quoteTextOf(q, lang){
   L.push(bl + '　' + bn + (q.billMode ? '（' + q.billMode + '）' : ''));
   L.push('单价　　　' + (q.unitTxt || '单询'));
   L.push('运费　　　' + fv);
+  if(q.rateDetail) L.push('运费明细　' + q.rateDetail);
   (q.freightExtra || []).forEach(function(x){ L.push('附加　　　' + x); });
   q.sur.forEach(function(x){ if(x.fee) L.push('附加　　　' + x.t + '　+' + money(x.fee) + ' 元'); });
   if(q.yiwu && String(q.yiwu).indexOf('已计入') > -1) L.push('义乌仓　　' + q.yiwu);
@@ -4105,6 +4197,90 @@ function xgdDlSync(){
 }
 try{ xgdDlSync(); }catch(e){}
 </script>
+<script>
+/* ===== 船期表 · 数据在 SHIP 里改，改完同步改 SHIP_UPDATED ===== */
+var SHIP_UPDATED = '2026-11-14';
+var SHIP_LANES = {
+  MY:{zh:'南沙 → 巴生北（西马）', en:'Nansha → Port Klang North (West MY)', sub:{zh:'西马主要邮编', en:'main West MY postcodes'}},
+  SG:{zh:'南沙 → 新加坡', en:'Nansha → Singapore', sub:{zh:'新加坡全境', en:'nationwide'}},
+  PH:{zh:'南沙 → 马尼拉北（菲律宾）', en:'Nansha → Manila North (Philippines)', sub:{zh:'马尼拉北港及周边', en:'Manila North & nearby'}}
+};
+var SHIP = [
+  {lane:'MY',car:'MSC',  vsl:'MSC DEVIKA IV', voy:'HB645A',    cut:'2026-11-15', etd:'2026-11-15', eta:'2026-11-20'},
+  {lane:'MY',car:'COSCO',vsl:'TOKYO TOWER',   voy:'041S',      cut:'2026-11-18', etd:'2026-11-19', eta:'2026-11-25'},
+  {lane:'MY',car:'WHL',  vsl:'WAN HAI 321',   voy:'S070',      cut:'2026-11-19', etd:'2026-11-21', eta:'2026-11-26'},
+  {lane:'MY',car:'WHL',  vsl:'WAN HAI 312',   voy:'W272',      cut:'2026-11-19', etd:'2026-11-21', eta:'2026-11-27'},
+  {lane:'MY',car:'COSCO',vsl:'IBN AL ABBAR',  voy:'382S',      cut:'2026-11-25', etd:'2026-11-26', eta:'2026-12-02'},
+  {lane:'SG',car:'EMC',  vsl:'EVERCOPE',      voy:'0082-128s', cut:'2026-11-18', etd:'2026-11-21', eta:'2026-12-01'},
+  {lane:'SG',car:'MSC',  vsl:'MSC EMILY II',  voy:'SQ646A',    cut:'2026-11-19', etd:'2026-11-24', eta:'2026-11-30'},
+  {lane:'SG',car:'WHL',  vsl:'WAN HAI 321',   voy:'S070',      cut:'2026-11-19', etd:'2026-11-21', eta:'2026-11-26'},
+  {lane:'PH',car:'TSL',  vsl:'TS TOKYO',      voy:'2623S',     cut:'2026-11-17', etd:'2026-11-20', eta:'2026-11-23'},
+  {lane:'PH',car:'WHL',  vsl:'WAN HAI 316',   voy:'S256',      cut:'2026-11-19', etd:'2026-11-21', eta:'2026-11-25'},
+  {lane:'PH',car:'TSL',  vsl:'ZHONG GU XIA MEN', voy:'2611S',  cut:'2026-11-20', etd:'2026-11-24', eta:'2026-11-27'},
+  {lane:'PH',car:'SITC', vsl:'SITC SHANGDE',  voy:'2630S',     cut:'2026-11-24', etd:'2026-11-26', eta:'2026-11-28'}
+];
+var SHIP_TXT = {
+  zh:{title:'当周船期 · 南沙出港', upd:'更新于 {d} · 每周更新',
+      desc:'以下为船公司预计船期，仅作交仓与订舱参考：截关日是你最迟把货送到仓的时间，到港日为预计时间，实际以订舱确认及船公司通知为准；节假日、爆仓、天气可能导致顺延。',
+      hMain:'船名 / 航次', hDates:'截关日 / 预计开船', hEta:'预计到港', hSt:'状态',
+      okLegend:'可订舱', cutLegend:'已截关',
+      open:'可订 · 剩', dLeft:'天', todayCut:'今日截关', closed:'已截关', warn:'时间待核对',
+      cutL:'截关', etdL:'开船', etaL:'到港',
+      empty:'本周船期已全部截关，下一水船期请微信索取。',
+      foot:'空运、整柜及东马船期请单询。要订舱或查最新船期，直接找我，当天回复当周舱位与价格。',
+      cta:'订舱 / 查最新船期 19166290491'},
+  en:{title:"This week's sailing schedule · ex Nansha", upd:'Updated {d} · refreshed weekly',
+      desc:'Carrier estimates for planning your cut-off and booking. Cut-off is the latest time to hand cargo in; arrival date is estimated and subject to booking confirmation and carrier notice. Holidays, space shortage or weather may delay.',
+      hMain:'VESSEL / VOYAGE', hDates:'CUT-OFF / ETD', hEta:'ETA', hSt:'STATUS',
+      okLegend:'Bookable', cutLegend:'Cut-off passed',
+      open:'Open ·', dLeft:'d left', todayCut:'Cut-off today', closed:'Closed', warn:'Check timing',
+      cutL:'Cut', etdL:'ETD', etaL:'ETA',
+      empty:'All sailings this week have closed. Message me for the next one.',
+      foot:'Air, FCL and East Malaysia schedules on request. Message me to book or get the latest schedule — same-day reply on space and rate.',
+      cta:'Book / latest schedule 19166290491'}
+};
+function shipFmt(d){var p=d.split('-');return p[1]+'.'+p[2];}
+function shipToday(){var d=new Date();var m=d.getMonth()+1,x=d.getDate();return d.getFullYear()+'-'+(m<10?'0'+m:''+m)+'-'+(x<10?'0'+x:''+x);}
+function shipDiff(a,b){return Math.round((new Date(a+'T00:00:00')-new Date(b+'T00:00:00'))/86400000);}
+function renderShip(){
+  var body=document.getElementById('shipBody'); if(!body) return;
+  var lg=(typeof LANG!=='undefined'&&LANG==='en')?'en':'zh';
+  var t=SHIP_TXT[lg], today=shipToday();
+  var el=document.getElementById('shipTitle'); if(el) el.textContent=t.title;
+  el=document.getElementById('shipUpdLine'); if(el) el.textContent=t.upd.replace('{d}',SHIP_UPDATED);
+  el=document.getElementById('shipDesc'); if(el) el.textContent=t.desc;
+  el=document.getElementById('shipFootP'); if(el) el.textContent=t.foot;
+  el=document.getElementById('shipCta'); if(el) el.textContent=t.cta;
+  el=document.getElementById('shipLegend');
+  if(el) el.innerHTML='<span><i style="background:#067647"></i>'+t.okLegend+'</span><span><i style="background:#98A2B3"></i>'+t.cutLegend+'</span>';
+  var html='', allOff=true;
+  ['MY','SG','PH'].forEach(function(lane){
+    var items=SHIP.filter(function(x){return x.lane===lane;}).sort(function(a,b){return a.cut<b.cut?-1:(a.cut>b.cut?1:0);});
+    if(!items.length) return;
+    var L=SHIP_LANES[lane];
+    html+='<div class="ship-grp"><div class="ship-grp-h">'+L[lg]+'<span>'+L.sub[lg]+'</span></div>';
+    html+='<div class="ship-head"><div>'+t.hMain+'</div><div>'+t.hDates+'</div><div style="text-align:right">'+t.hEta+'</div><div style="text-align:right">'+t.hSt+'</div></div>';
+    items.forEach(function(r){
+      var d=shipDiff(r.cut,today), off=d<0;
+      if(!off) allOff=false;
+      var st;
+      if(r.warn){ st='<span class="st-warn">'+t.warn+'</span>'; }
+      else if(off){ st='<span class="st-cut">'+t.closed+'</span>'; }
+      else if(d===0){ st='<span class="st-ok">'+t.todayCut+'</span>'; }
+      else { st='<span class="st-ok">'+t.open+'<b>'+d+'</b>'+t.dLeft+'</span>'; }
+      html+='<div class="ship-row'+(off?' off':'')+'">'
+        +'<div class="sr-main"><span class="sr-car">'+r.car+'</span><span class="sr-vsl">'+r.vsl+'</span><span class="sr-voy">'+r.voy+'</span></div>'
+        +'<div class="sr-dates">'+t.cutL+' <b>'+shipFmt(r.cut)+'</b>　'+t.etdL+' <b>'+shipFmt(r.etd)+'</b></div>'
+        +'<div class="sr-eta"><small>'+t.etaL+'</small><b>'+shipFmt(r.eta)+'</b></div>'
+        +'<div class="sr-st">'+st+'</div></div>';
+    });
+    html+='</div>';
+  });
+  body.innerHTML=html+(allOff?'<div class="ship-empty">'+t.empty+'</div>':'');
+}
+try{ renderShip(); }catch(e){}
+</script>
+
 
 </body>
 </html>
