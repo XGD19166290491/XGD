@@ -2106,7 +2106,6 @@ function calc(){
         /* 纸箱 + 木箱混装：两种包装各按自己的单价分开算，再相加 */
         var unitW = ch.wood;
         var gapC = Math.max(0, billCbm - cbm);
-        var feeC = fmt(unit * cbmC), feeW = fmt(unitW * cbmW);
         if(gapC > 0){
           /* 不足起方 / 不足一个计费单位：整票按最低标准收（起方数 × 最低单价），不再叠加木箱加价 */
           base = fmt(unit * billCbm);
@@ -2115,11 +2114,15 @@ function calc(){
           qUnitTxt = unit + ' 元/方（不足起方按最低标准收）';
           qRateDetail = '实际 ' + fmt(cbm) + '方（纸箱 ' + fmt(cbmC) + '方、木箱 ' + fmt(cbmW) + '方），不足 ' + fmt(billCbm) + ' 方，按最低标准 ' + fmt(billCbm) + '方 × ' + unit + ' 元/方 = ' + money(fmt(unit * billCbm)) + ' 元';
         } else {
+          /* 混装拆分后，纸箱/木箱各自也要满足最低收费单位，不足起方的按起方数计费 */
+          var bcC = cbmC < minC ? minC : cbmC;
+          var bcW = cbmW < minC ? minC : cbmW;
+          var feeC = fmt(unit * bcC), feeW = fmt(unitW * bcW);
           base = fmt(feeC + feeW);
           qFreightOnly = base;
-          rateText = '纸箱货 ' + fmt(cbmC) + '方 × ' + unit + '元/方 = ' + money(feeC) + ' 元 ＋ 木箱货 ' + fmt(cbmW) + '方 × ' + unitW + '元/方 = ' + money(feeW) + ' 元';
-          qUnitTxt = '纸箱 ' + unit + ' 元/方 ｜ 木箱木架 ' + unitW + ' 元/方（分开计算）';
-          qRateDetail = '纸箱货 ' + fmt(cbmC) + '方 × ' + unit + '元/方 = ' + money(feeC) + ' 元；木箱货 ' + fmt(cbmW) + '方 × ' + unitW + '元/方 = ' + money(feeW) + ' 元';
+          rateText = '纸箱货 ' + fmt(bcC) + '方 × ' + unit + '元/方 = ' + money(feeC) + ' 元 ＋ 木箱货 ' + fmt(bcW) + '方 × ' + unitW + '元/方 = ' + money(feeW) + ' 元';
+          qUnitTxt = '纸箱 ' + unit + ' 元/方 ｜ 木箱木架 ' + unitW + ' 元/方（分开计算，各自 ' + fmt(minC) + '方起）';
+          qRateDetail = '纸箱货 ' + (cbmC < minC ? fmt(cbmC) + '方（不足' + fmt(minC) + '方，按' + fmt(minC) + '方计）' : fmt(bcC) + '方') + ' × ' + unit + '元/方 = ' + money(feeC) + ' 元；木箱货 ' + (cbmW < minC ? fmt(cbmW) + '方（不足' + fmt(minC) + '方，按' + fmt(minC) + '方计）' : fmt(bcW) + '方') + ' × ' + unitW + '元/方 = ' + money(feeW) + ' 元';
         }
       } else {
         if(pack === 'wood' && ch.wood) unit = ch.wood;
