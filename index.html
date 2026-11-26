@@ -1960,6 +1960,7 @@ function chTax(ch){
   return {label:'双清包税 DDP', warn:false};
 }
 function chArea(ch){
+  if(typeof LANG !== 'undefined' && LANG === 'en') return chAreaEn(ch);
   if(ch.areaText) return ch.areaText;
   var id = ch.id;
   if(id === 'MY-A1' || id === 'MY-A3') return '西马派送 · 仅限 4、5、6 开头邮编（吉隆坡 / 雪兰莪等西部核心区），其他区域需人工确认';
@@ -1978,6 +1979,26 @@ function chArea(ch){
   if(id.indexOf('PH-') === 0) return '马尼拉省内派送；宿务、达沃等外省需人工确认';
   return '派送范围以客服确认为准';
 }
+function chAreaEn(ch){
+  if(ch.areaTextEn) return ch.areaTextEn;
+  if(ch.areaText) return ch.areaText;
+  var id = ch.id;
+  if(id === 'MY-A1' || id === 'MY-A3') return 'West MY delivery · postcodes starting 4/5/6 only (KUL / Selangor core); other areas on request';
+  if(id === 'MY-A2' || id === 'MY-A4' || id === 'MY-A5') return 'West MY, nationwide delivery';
+  if(id === 'MY-S1' || id === 'MY-S2') return 'Kuala Lumpur / Selangor delivery';
+  if(id === 'MY-S3' || id === 'MY-S4') return 'West MY outer states; remote delivery charged extra';
+  if(id === 'MY-S5' || id === 'MY-S6') return 'Drop off in Shenzhen / Guangzhou; delivery to West MY';
+  if(id === 'MY-S7') return 'FCL to port or door, on request';
+  if(id === 'MY-S8') return 'West MY door-to-door (one shipment, one piece)';
+  if(id.indexOf('MYE-S1') === 0 || id.indexOf('MYE-S2') === 0) return 'East MY Kuching · min 1 CBM, delivery quoted separately';
+  if(id.indexOf('MYE-S3') === 0 || id.indexOf('MYE-S4') === 0) return 'East MY Sabah · min 1 CBM, delivery quoted separately';
+  if(id.indexOf('MYE-') === 0) return 'East MY delivery (bus pickup 3-5 days / courier 6-7 days); Sabah not accepted';
+  if(id === 'SG-S4') return 'Singapore islandwide · max 2 pcs & 0.3 CBM per shipment';
+  if(id.indexOf('SG-') === 0) return 'Singapore islandwide (tax excluded)';
+  if(id === 'PH-S6' || id === 'PH-S7') return 'Cebu / Davao, delivery on request';
+  if(id.indexOf('PH-') === 0) return 'Manila metro delivery; Cebu / Davao and provinces on request';
+  return 'Delivery area confirmed by our staff';
+}
 function goodsCheck(goods){
   if(!goods || goods === '普货' || goods === '带电产品') return null;
   return '货类选的是「' + goods + '」：这类货能不能接、要不要加价需业务确认，本站不给正式总价，请把货名 / 成分 / 数量发客服 19166290491。';
@@ -1993,16 +2014,17 @@ function routeCheck(ch, dz, addrTxt){
   return r;
 }
 function chPending(ch, zip, addrTxt, country){
+  var en = (typeof LANG !== 'undefined' && LANG === 'en');
   var arr = [];
-  if(ch.id.indexOf('SG-') === 0) arr.push('GST 9%（货值超 400 新币按货值另计，需客户提供货值）');
-  if(ch.type === 'fcl' || ch.type === 'quote') arr.push('整柜 / 单询价、税费与派送费待业务确认');
-  if(ch.id === 'MY-S5' || ch.id === 'MY-S6') arr.push('进口税费按报关单实缴，金额待确认');
+  if(ch.id.indexOf('SG-') === 0) arr.push(en ? 'GST 9% (charged on value above SGD 400 — customer must declare value)' : 'GST 9%（货值超 400 新币按货值另计，需客户提供货值）');
+  if(ch.type === 'fcl' || ch.type === 'quote') arr.push(en ? 'FCL / on-request rate, tax and delivery fee to be confirmed' : '整柜 / 单询价、税费与派送费待业务确认');
+  if(ch.id === 'MY-S5' || ch.id === 'MY-S6') arr.push(en ? 'Import tax paid as per customs declaration, amount to be confirmed' : '进口税费按报关单实缴，金额待确认');
   if(ch.id.indexOf('PH-') === 0 && ch.id !== 'PH-S6' && ch.id !== 'PH-S7'){
     var pz = phZone(addrTxt || '', zip || '');
-    if(pz === 'outer') arr.push('该地址在马尼拉以外（外省），外省派送费待确认');
-    else if(pz === 'unknown') arr.push('地址没识别到马尼拉市区，是否属外省待确认（补邮编或详细地址更准）');
+    if(pz === 'outer') arr.push(en ? 'Address outside Manila (provincial), delivery fee to be confirmed' : '该地址在马尼拉以外（外省），外省派送费待确认');
+    else if(pz === 'unknown') arr.push(en ? 'Manila metro not detected — province status to be confirmed (add postcode / full address)' : '地址没识别到马尼拉市区，是否属外省待确认（补邮编或详细地址更准）');
   }
-  if(!zip) arr.push('邮编未填，偏远 / 派送范围待确认');
+  if(!zip) arr.push(en ? 'Postcode not filled, remote / delivery area to be confirmed' : '邮编未填，偏远 / 派送范围待确认');
   return arr;
 }
 
@@ -2546,19 +2568,53 @@ function calc(){
     routeMs.forEach(function(x){ sur.list.push({t:'不符合渠道要求', d:x, warn:true}); });
   }
   var blocked = !!sur.blocked || routeMs.length > 0;
-  document.getElementById('rTitle').textContent = PRICE[curC].name + ' · ' + ch.id + ' ' + ch.name;
+  var _rEn = (typeof LANG !== 'undefined' && LANG === 'en');
+  var _rNm = (_rEn && typeof CH_EN !== 'undefined' && CH_EN[ch.id]) ? CH_EN[ch.id] : ch.name;
+  var _rCt = (_rEn && PRICE[curC].en) ? PRICE[curC].en : PRICE[curC].name;
+  document.getElementById('rTitle').textContent = _rCt + ' · ' + ch.id + ' ' + _rNm;
   var ddpLabel, ddpWarn = false;
-  if(ch.type === 'fcl' || ch.type === 'quote'){ ddpLabel = '价格单询 · 税费待确认'; ddpWarn = true; }
-  else if(ch.id.indexOf('SG-') === 0){ ddpLabel = '双清不包税 · GST 9% 另计'; ddpWarn = true; }
-  else { ddpLabel = '双清包税 DDP'; }
+  if(ch.type === 'fcl' || ch.type === 'quote'){ ddpLabel = _rEn ? 'On request · tax to be confirmed' : '价格单询 · 税费待确认'; ddpWarn = true; }
+  else if(ch.id.indexOf('SG-') === 0){ ddpLabel = _rEn ? 'DDP excl. tax · GST 9% extra' : '双清不包税 · GST 9% 另计'; ddpWarn = true; }
+  else { ddpLabel = _rEn ? 'DDP (duty & tax included)' : '双清包税 DDP'; }
   var st = chTax(ch);
+  if(_rEn) st = { label: ddpLabel, warn: !!st.warn };
   var rd = document.getElementById('rDdp');
   rd.textContent = st.label;
   rd.className = 'ddp' + (st.warn ? ' warn' : '');
   var rTaxEl = document.getElementById('rTax');
   rTaxEl.textContent = st.label;
   rTaxEl.className = 'v' + (st.warn ? ' warn' : '');
+  var _rEn2 = (typeof LANG !== 'undefined' && LANG === 'en');
+  var _cnToEn = function(t){
+    return String(t || '').replace(/元\/kg/g, 'CNY/kg').replace(/元\/方/g, 'CNY/CBM').replace(/元\/台/g, 'CNY/pc')
+      .replace(/元\/票/g, 'CNY/shipment').replace(/（/g, ' (').replace(/）/g, ')');
+  };
   document.getElementById('rArea').textContent = chArea(ch);
+  if(_rEn2){
+    var _bModeEn = ({'分半泡':'half volumetric','全泡取大':'full volumetric','按实重':'actual weight','免泡按实重':'actual weight','按方计价':'per CBM','泡重/实重取大':'max of actual / volumetric'})[qBillMode] || _cnToEn(qBillMode);
+    document.getElementById('rBill').textContent = (ch.type === 'sea') ? fmt(billCbm) + ' CBM (chargeable)' : fmt(kg) + ' kg (chargeable)';
+    document.getElementById('rVolW').textContent = fmt(volW) + ' kg (volumetric total)';
+    document.getElementById('rActual').textContent = fmt(actual) + ' kg';
+    document.getElementById('rCnt').textContent = batches.length + ' batch / ' + totalN + ' pcs';
+    document.getElementById('rBase').textContent = (ch.type === 'fcl' || ch.type === 'quote' || blocked) ? '—' : money(qFreightOnly != null ? qFreightOnly : base) + ' CNY';
+    var yiwuTxt = '— (no Yiwu warehouse for this channel)';
+    var ywUnitTxt = (ch.type === 'sea') ? (ch.yiwu + ' CNY/CBM × ' + fmt(calcQty) + ' CBM') : (ch.yiwu + ' CNY/kg × ' + fmt(calcQty) + ' kg');
+    if(ch.type === 'fcl' || ch.type === 'quote'){ yiwuTxt = 'FCL / on request — contact 19166290491'; }
+    else if(ch.yiwu){
+      if(curHub === 'yw'){ yiwuTxt = '<b>' + money(ywFee) + '</b> CNY (' + ywUnitTxt + '), included in total'; }
+      else { yiwuTxt = 'Not via Yiwu · add ' + ch.yiwu + (ch.type === 'sea' ? ' CNY/CBM' : ' CNY/kg') + ' if delivered to Yiwu'; }
+    }
+    document.getElementById('rYiwu').innerHTML = yiwuTxt;
+    document.getElementById('rRate').innerHTML =
+      '<div>Basis: ' + escHtml(_bModeEn || '—') + ' (actual ' + fmt(actual) + ' / volumetric ' + fmt(volW) + ')</div>' +
+      '<div>Rate: ' + escHtml(_cnToEn(qUnitTxt) || 'on request') + '</div>' +
+      (qRateDetail ? '<div>Freight breakdown: ' + escHtml(_cnToEn(qRateDetail)) + '</div>' : '');
+    document.getElementById('rEta').textContent = ch.eta;
+    var rp2 = document.getElementById('rPrice');
+    rp2.textContent = blocked ? 'On request' : ((ch.type === 'fcl' || ch.type === 'quote') ? 'On request' : money(total));
+    rp2.className = blocked ? 'txt' : '';
+    document.getElementById('rUnit').textContent = (blocked || ch.type === 'fcl' || ch.type === 'quote') ? '' : ' CNY';
+  } else {
   document.getElementById('rBill').textContent = billText;
   document.getElementById('rVolW').textContent = fmt(volW) + ' kg（体积重合计）';
   document.getElementById('rActual').textContent = fmt(actual) + ' kg';
@@ -2581,6 +2637,7 @@ function calc(){
   rp.textContent = blocked ? '需人工确认' : ((ch.type === 'fcl' || ch.type === 'quote') ? '单询' : money(total));
   rp.className = blocked ? 'txt' : '';
   document.getElementById('rUnit').textContent = (blocked || ch.type === 'fcl' || ch.type === 'quote') ? '' : ' 元';
+  }
   var pqEl = document.getElementById('pQuote');
   if(pqEl){
     pqEl.value = (blocked || ch.type === 'fcl' || ch.type === 'quote') ? '' : Math.round(total * 100) / 100;
@@ -2597,17 +2654,30 @@ function calc(){
     document.getElementById('rSurcharge').textContent = '无';
   }
   var goods = goodsOfBatches();
-  var note = ch.note;
-  if(goods && goods !== '普货') note += '｜货类：' + goods + '，需客服确认本渠道是否接、是否加价';
-  if(pack === 'wood'){
-    if(ch.noWood) note += '｜本渠道不接木箱木架包装';
-    else if(ch.type !== 'fcl' && ch.type !== 'quote' && !((ch.type === 'sea' && ch.wood) || (ch.type === 'air' && ch.woodAdd))) note += '｜该渠道价格表未区分木箱包装价，木箱出货请咨询客服';
+  var _nEn = (typeof LANG !== 'undefined' && LANG === 'en');
+  var note = '';
+  if(_nEn){
+    note = (ch.type === 'sea' ? 'Sea rate per CBM' : 'Air rate per kg') + ' · DDP door delivery';
+    if(ch.noWood) note += ' · wooden crate not accepted';
+    else if(pack === 'wood' && ch.type !== 'fcl' && ch.type !== 'quote') note += ' · wooden crate price to be confirmed';
+    if(ch.id.indexOf('SG-') === 0) note += ' · Singapore line excludes tax; GST 9% on value above SGD 400';
+    if(ch.id === 'MY-A1' || ch.id === 'MY-A3') note += ' · postcodes starting 4/5/6 only';
+    if(ch.id === 'MY-S8' && batches.length > 1) note += ' · parcel is one shipment one piece — multi-batch result is indicative';
+    if(ch.id === 'SG-S4' && (totalN > 2 || cbm > 0.3)) note += ' · exceeds parcel limits (max 2 pcs & 0.3 CBM per shipment)';
+    note += ' · estimate only, final price confirmed by our staff 19166290491';
+  } else {
+    note = ch.note;
+    if(goods && goods !== '普货') note += '｜货类：' + goods + '，需客服确认本渠道是否接、是否加价';
+    if(pack === 'wood'){
+      if(ch.noWood) note += '｜本渠道不接木箱木架包装';
+      else if(ch.type !== 'fcl' && ch.type !== 'quote' && !((ch.type === 'sea' && ch.wood) || (ch.type === 'air' && ch.woodAdd))) note += '｜该渠道价格表未区分木箱包装价，木箱出货请咨询客服';
+    }
+    if(ch.id.indexOf('SG-A') === 0 || ch.id.indexOf('SG-S') === 0) note += '｜新加坡线不包税，货值超400新币GST按9%另计，请主动报货值';
+    if(ch.id === 'MY-A1' || ch.id === 'MY-A3') note += '｜仅限4、5、6开头邮编';
+    if(ch.id === 'MY-S8' && batches.length > 1) note += '｜小包一票一件，多批合并测算仅供参考，实际需分票计算';
+    if(ch.id === 'SG-S4' && (totalN > 2 || cbm > 0.3)) note += '｜超出小包限制（一票≤2件、≤0.3方），请拆分或改走海运';
+    note += '｜以上为估算价，最终以客服确认 19166290491 为准';
   }
-  if(ch.id.indexOf('SG-A') === 0 || ch.id.indexOf('SG-S') === 0) note += '｜新加坡线不包税，货值超400新币GST按9%另计，请主动报货值';
-  if(ch.id === 'MY-A1' || ch.id === 'MY-A3') note += '｜仅限4、5、6开头邮编';
-  if(ch.id === 'MY-S8' && batches.length > 1) note += '｜小包一票一件，多批合并测算仅供参考，实际需分票计算';
-  if(ch.id === 'SG-S4' && (totalN > 2 || cbm > 0.3)) note += '｜超出小包限制（一票≤2件、≤0.3方），请拆分或改走海运';
-  note += '｜以上为估算价，最终以客服确认 19166290491 为准';
   document.getElementById('rNote').textContent = note;
   var addrTxt = (document.getElementById('fAddr').value || '').trim();
   var dz = detectZip(addrTxt) || {zip:'', c:''};
@@ -2619,10 +2689,17 @@ function calc(){
     rpEl.className = 'v warn';
   } else if(pends.length){ rpEl.innerHTML = pends.join('；') + '　<b>' + (LANG === 'en' ? '(not included above, confirmed separately)' : '（以上未计入，需确认后另计）') + '</b>'; rpEl.className = 'v warn'; }
   else { rpEl.textContent = (LANG === 'en' ? 'None' : '无'); rpEl.className = 'v'; }
-  document.getElementById('rCheck').innerHTML = '录入口径核对：件数 ' + batches.length + ' 批 / ' + totalN + ' 件' +
-    '　｜　实重 ' + fmt(actual) + ' kg' +
-    '　｜　计费 ' + (ch.type === 'sea' ? fmt(billCbm) + ' 方' : fmt(kg) + ' kg（' + (mode === 'half' ? '分半泡' : (mode === 'actual' ? '实重' : '体积重')) + '）') +
-    '　｜　邮编 ' + zipHtml + (dz.zip ? '' : '（影响偏远判断）');
+  if(_nEn){
+    document.getElementById('rCheck').innerHTML = 'Input check: ' + batches.length + ' batch / ' + totalN + ' pcs' +
+      '　|　actual ' + fmt(actual) + ' kg' +
+      '　|　chargeable ' + (ch.type === 'sea' ? fmt(billCbm) + ' CBM' : fmt(kg) + ' kg (' + (mode === 'half' ? 'half volumetric' : (mode === 'actual' ? 'actual weight' : 'volumetric')) + ')') +
+      '　|　postcode ' + zipHtml + (dz.zip ? '' : ' (affects remote check)');
+  } else {
+    document.getElementById('rCheck').innerHTML = '录入口径核对：件数 ' + batches.length + ' 批 / ' + totalN + ' 件' +
+      '　｜　实重 ' + fmt(actual) + ' kg' +
+      '　｜　计费 ' + (ch.type === 'sea' ? fmt(billCbm) + ' 方' : fmt(kg) + ' kg（' + (mode === 'half' ? '分半泡' : (mode === 'actual' ? '实重' : '体积重')) + '）') +
+      '　｜　邮编 ' + zipHtml + (dz.zip ? '' : '（影响偏远判断）');
+  }
   /* 报价图/转发数据快照 */
   var qYiwuTxt = '';
   if(ch.type === 'fcl' || ch.type === 'quote'){ qYiwuTxt = '整柜/单询请联系客服 19166290491'; }
