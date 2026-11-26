@@ -461,6 +461,125 @@ td.k .en{display:block;font-size:10px;font-style:normal;color:#98a2b3;font-weigh
 .ship-foot .ship-cta{width:100%;text-align:center}
 }
 
+/* ===== 重量速算 v2 ===== */
+.kg-card{background:#f8fbff;border:1px solid #dbe6f7;border-radius:12px;padding:12px 14px;margin:0 0 16px}
+.kg-inline{display:flex;flex-wrap:nowrap;align-items:center;gap:6px}
+.kg-uw{display:flex;align-items:center;gap:5px;border:1px solid #d6e0ee;border-radius:9px;background:#fff;padding:0 9px;height:44px;flex:1 1 0;min-width:0;transition:border-color .15s}
+.kg-uw.s{flex:0.85 1 0}
+.kg-uw:focus-within{border-color:#1a2b3c}
+.kg-uw input{border:0;outline:0;width:100%;min-width:0;font-size:15px;font-weight:600;color:#1a2b3c;background:transparent;font-family:inherit}
+.kg-uw input::placeholder{font-weight:400;font-size:13px;color:#a2adbb}
+.kg-uw .u{flex:0 0 auto;font-size:12px;color:#8a97a8}
+.kg-eq{font-size:13px;color:#a2adbb;flex:0 0 auto}
+.kg-hint{font-size:11.5px;color:#8a97a8;margin-top:9px;line-height:1.65}
+.kg-result{margin-top:11px;background:#fff;border-radius:10px;padding:12px 13px;box-shadow:0 1px 3px rgba(16,32,56,.05);font-size:13px;line-height:1.6}
+.kg-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:12px;color:#6b7a8d;margin-bottom:9px}
+.kg-head b{font-size:13px;color:#1a2b3c;font-weight:700}
+.kg-head i{font-style:normal;color:#a2adbb;flex:0 0 auto}
+.kg-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:4px}
+.kg-tab{font:inherit;font-size:11.5px;line-height:1;padding:6px 12px;border-radius:20px;border:1px solid #e2e8f0;background:#fff;color:#7b8798;cursor:pointer;transition:all .15s}
+.kg-tab.on{background:#1a2b3c;border-color:#1a2b3c;color:#fff;font-weight:600}
+.kg-list{border-top:0;margin-top:0}
+.kg-row{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid #f3f6fa}
+.kg-rank{flex:0 0 21px;height:21px;line-height:21px;text-align:center;border-radius:6px;background:#f2f5f9;color:#8a97a8;font-size:11px;font-weight:700;margin-top:1px}
+.kg-row.top .kg-rank{background:#c8102e;color:#fff}
+.kg-main{flex:1 1 auto;min-width:0}
+.kg-title{display:flex;align-items:center;gap:6px;flex-wrap:wrap;line-height:1.4}
+.kg-title b{color:#1a2b3c;font-weight:700;font-size:13px}
+.kg-title .nm{color:#2b3a4d;font-size:13px}
+.kg-cat{flex:0 0 auto;font-style:normal;font-size:10px;line-height:16px;padding:0 5px;border-radius:4px;font-weight:700;letter-spacing:.02em}
+.kg-cat.c-gen{background:#e9f6ee;color:#1f8b4c}
+.kg-cat.c-sen{background:#fff3e2;color:#bd6a00}
+.kg-cat.c-spe{background:#f2ebfd;color:#6d3ad4}
+.kg-cat.c-dec{background:#edf1f6;color:#4a5b70}
+.kg-cat.c-tse{background:#fdeaea;color:#b93a2b}
+.kg-sub{display:flex;flex-wrap:wrap;gap:3px 6px;font-size:11.5px;color:#8a97a8;margin-top:4px;line-height:1.5}
+.kg-sub span{white-space:nowrap}
+.kg-sub .calc{color:#5b6b7d}
+.kg-warn{font-size:11px;color:#c8102e;margin-top:3px;line-height:1.5}
+.kg-price{flex:0 0 72px;text-align:right;padding-top:1px}
+.kg-price b{font-size:16px;font-weight:700;color:#c8102e;letter-spacing:-.02em;white-space:nowrap}
+.kg-price i{display:block;font-style:normal;font-size:10.5px;color:#a2adbb;margin-top:3px;white-space:nowrap}
+.kg-empty{padding:16px 0;color:#a2adbb;font-size:12.5px;text-align:center}
+.kg-foot{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px;padding-top:11px;border-top:1px solid #eef2f7}
+.kg-foot .btn{padding:7px 16px;font-size:12.5px;flex:0 0 auto}
+.kg-foot span{font-size:11px;color:#a2adbb;line-height:1.5;flex:1 1 140px}
+@media (min-width:760px){
+  .kg-result{max-width:720px;margin-left:auto;margin-right:auto}
+  .kg-row{padding:11px 0}
+  .kg-price b{font-size:17px}
+}
+@media (max-width:420px){
+  .kg-mode button{padding:0 8px;font-size:12px}
+  .kg-price{flex:0 0 70px}
+}
+
+.kg-sum{display:none;margin-top:8px;font-size:13px;font-weight:700;color:#1a2b3c}
+.kg-best{margin:9px 0 11px;padding:11px 12px;background:#fff8f8;border:1px solid #f6dede;border-radius:10px}
+.kg-best-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap;line-height:1.45}
+.kg-best-row + .kg-best-row{margin-top:7px}
+.kg-best-row em{font-style:normal;font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;background:#c8102e;color:#fff;flex:0 0 auto}
+.kg-best-row em.alt{background:#1a2b3c}
+.kg-best-row b{font-size:15px;font-weight:700;color:#c8102e;flex:0 0 auto;letter-spacing:-.02em}
+.kg-best-row span{color:#5b6b7d;font-size:12px;min-width:0;flex:1 1 120px}
+.kg-best .btn{margin-top:9px;padding:6px 14px;font-size:12px}
+
+.kg-mode{display:flex;border:1px solid #d6e0ee;border-radius:9px;overflow:hidden;background:#fff;height:44px;flex:0 0 auto}
+.kg-mode button{font:inherit;font-size:12.5px;line-height:44px;padding:0 11px;border:0;background:#fff;color:#7b8798;cursor:pointer}
+.kg-mode button.on{background:#1a2b3c;color:#fff;font-weight:600}
+
+.kg-group-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:11px 0 4px;margin-top:6px;border-top:1px solid #eef2f7;font-size:11.5px;color:#8a97a8}
+.kg-group-h b{font-size:12.5px;color:#1a2b3c;font-weight:600}
+.kg-group-h span{color:#a2adbb;font-size:11px;font-weight:400}
+.kg-group-h i{font-style:normal;color:#a2adbb;font-size:11px;flex:0 0 auto}
+
+.kg-cat-h{display:flex;align-items:center;gap:6px;padding:8px 0 2px;font-size:11.5px;color:#5b6b7d}
+.kg-cat-h span{color:#5b6b7d}
+.kg-cat-h i{font-style:normal;margin-left:auto;color:#a2adbb;font-size:11px}
+
+@media(min-width:820px){
+  .kg-best{display:flex;align-items:center;gap:20px;flex-wrap:wrap;padding:12px 16px}
+  .kg-best-row{margin:0!important;flex:0 0 auto;flex-wrap:nowrap}
+  #btnKgCopy{margin-left:auto;margin-top:0!important}
+  .kg-uw{flex:0 0 124px}
+  .kg-uw.s{flex:0 0 104px}
+  .kg-inline,.kg-sum,.kg-hint{max-width:720px;margin-left:auto;margin-right:auto}
+  .kg-inline{justify-content:flex-start}
+}
+
+.lang-en .kg-mode button{padding:0 7px;font-size:11.5px}
+.lang-en .kg-mode{gap:0}
+</style>
+
+<style id="lv2Style">
+.lv2-step{display:flex;align-items:center;gap:8px;margin:26px 0 12px}
+.lv2-step .no{flex:0 0 auto;font-size:11px;font-weight:700;color:#fff;background:#1a2b3c;padding:2px 7px;border-radius:4px}
+.lv2-step .tt{font-size:16.5px;font-weight:700;color:#1a2b3c}
+.lv2-step .ds{font-size:11.5px;color:#8a97a8;font-weight:400}
+.lv2-step .bar{flex:1 1 0;height:1px;background:#e7edf5}
+.lv2-sub{display:flex;align-items:baseline;gap:7px;margin:16px 0 9px;font-size:12.5px;color:#5b6b7d}
+.lv2-sub b{color:#1a2b3c;font-size:13px;white-space:nowrap;flex:0 0 auto}
+.lv2-sub span{color:#a2adbb;font-size:11px;min-width:0}
+.lv2-tabs{display:flex;gap:5px;margin:0 0 12px;padding:4px;background:#f1f5fa;border-radius:11px}
+.lv2-tabs button{flex:1 1 0;border:0;background:transparent;border-radius:8px;padding:9px 4px;font-size:12.5px;color:#5b6b7d;cursor:pointer;font-family:inherit;line-height:1.25;white-space:nowrap}
+.lv2-tabs button.on{background:#fff;color:#1a2b3c;font-weight:600;box-shadow:0 1px 4px rgba(16,32,54,.10)}
+.lv2-tabs button em{display:block;font-style:normal;font-size:10px;color:#a2adbb;font-weight:400;margin-top:1px}
+.lv2-tabs button.on em{color:#7b8798}
+.lv2-panel{display:none}
+.lv2-panel.on{display:block}
+.lv2-chbar{display:flex;align-items:center;gap:10px;border:1px solid #e2e9f2;border-radius:10px;padding:10px 12px;background:#f8fafd}
+.lv2-chbar .c{flex:1 1 auto;min-width:0;line-height:1.35}
+.lv2-chbar small{display:block;font-size:10.5px;color:#a2adbb;letter-spacing:.02em}
+.lv2-chbar b{display:block;font-size:13px;color:#1a2b3c;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lv2-chbar button{flex:0 0 auto;font-size:12px;color:#c8102e;background:#fff;border:1px solid #f0d5d8;border-radius:8px;padding:7px 12px;font-family:inherit;cursor:pointer}
+.lv2-nav{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-bottom:1px solid #eef2f7;margin:0 -16px 14px;padding:8px 16px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+.lv2-nav::-webkit-scrollbar{display:none}
+.lv2-nav a{flex:0 0 auto;font-size:12px;color:#5b6b7d;text-decoration:none;padding:5px 10px;border:1px solid #e2e9f2;border-radius:20px;background:#fff}
+.lv2-nav a:hover{border-color:#c8102e;color:#c8102e}
+.lv2-fold.collapsed .lv2-body{display:none}
+.lv2-fold-btn{margin-left:auto;align-self:flex-start;flex:0 0 auto;font-size:11.5px;color:#c8102e;background:#fff;border:1px solid #f0d5d8;border-radius:6px;padding:3px 9px;font-family:inherit;cursor:pointer}
+.lv2-fold-head{display:flex;align-items:center;gap:8px}
+@media(min-width:820px){ .lv2-nav{margin:0 0 16px;justify-content:center} .lv2-step{margin:30px 0 14px} }
 </style>
 </head>
 <body>
@@ -498,21 +617,19 @@ td.k .en{display:block;font-size:10px;font-style:normal;color:#98a2b3;font-weigh
       <button class="country-btn" data-c="PH"><div class="cn">菲律宾</div><div class="en">Philippines</div></button>
     </div>
 
-    <div id="kgCard" style="background:#f8fbff;border:1px solid #dbe6f7;border-radius:12px;padding:12px 14px;margin:0 0 16px">
-      <div class="sec-title" style="margin-bottom:10px"><span class="dot"></span>只知道重量？输 KG 直接出全渠道价</div>
-      <div class="grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;max-width:520px">
-        <div class="field"><label>单件重量</label>
-          <div class="unit-wrap"><input type="number" id="fKg" min="0.1" step="0.1" placeholder="如 12" oninput="kgQuote()"><span class="u">kg</span></div>
+    <div id="kgCard" class="kg-card">
+      <div class="sec-title" style="margin-bottom:11px"><span class="dot"></span>只知道重量？输 KG 直接出空运价</div>
+      <div class="kg-inline">
+        <div class="kg-mode">
+          <button id="mTotal" class="on" onclick="kgSetMode('total')">总重</button>
+          <button id="mUnit" onclick="kgSetMode('unit')">每件</button>
         </div>
-        <div class="field"><label>件数</label>
-          <div class="unit-wrap"><input type="number" id="fPcs" min="1" step="1" value="1" oninput="kgQuote()"><span class="u">件</span></div>
-        </div>
+        <div class="kg-uw"><input type="number" id="fKg" min="0.1" step="0.1" placeholder="如 240" oninput="kgQuote()"><span class="u">kg</span></div>
+        <div class="kg-uw s"><input type="number" id="fPcs" min="1" step="1" value="1" oninput="kgQuote()"><span class="u">件</span></div>
       </div>
-      <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;align-items:center">
-        <button class="btn btn-parse" id="btnKg" style="flex:0 0 auto" onclick="kgQuote()">算价</button>
-        <span style="font-size:12px;color:#6b7a8d">单件重 × 件数 = 总重（只有总重时件数填 1）；空运/小包按实重精算，海运按 500kg/方 估算，实价以尺寸方数为准</span>
-      </div>
-      <div id="kgResult" style="display:none;margin-top:10px;background:#fff;border-radius:8px;padding:10px 12px;font-size:13px;line-height:1.7"></div>
+      <div class="kg-sum" id="kgSum"></div>
+      <div class="kg-hint">空运按实重算；海运按方需尺寸，往下录入</div>
+      <div id="kgResult" class="kg-result" style="display:none"></div>
     </div>
 
     <div class="sec-title"><span class="step">02</span>选择渠道（含敏感/特货）</div>
@@ -953,7 +1070,16 @@ var pack = 'carton';
 
 /* ===== 中英切换 ===== */
 var LANG = 'zh';
-var I18N = {"XGD EXPRESS · 东南亚双清包税专线": "XGD EXPRESS · SE Asia DDP Express","东南亚专线运费速算器": "SE Asia Express Rate Calculator","新港大东南亚专线运费速算器": "SINKUNGDA SE Asia Express Rate Calculator","新港大国际物流 · 东南亚专线": "SINKUNGDA LOGISTICS · SE Asia Express","马来西亚（西马 + 东马）· 新加坡 · 菲律宾，空运 / 海派 / 整柜全渠道报价。客户发来的消息直接粘贴，自动填尺寸重量，一并算出计费重量、超长超重附加费与总运费。": "Malaysia (West + East) · Singapore · Philippines — air / sea / FCL rates for every channel. Paste a customer message and dimensions, weight, chargeable weight and oversize / overweight surcharges are calculated automatically.","马来空运低至18.5元/kg": "Malaysia air from 18.5 CNY/kg","马来海派550元/方起": "Malaysia sea from 550 CNY/CBM","菲律宾包税专线": "Philippines DDP express","新加坡空运2-5天": "Singapore air 2-5 days","选择国家": "Select country","选择渠道（含敏感/特货）": "Select channel (incl. sensitive / special cargo)","录入货物（可多批）": "Enter cargo (multiple batches)","马来西亚": "Malaysia","新加坡": "Singapore","菲律宾": "Philippines","＋ 新增一批货物": "+ Add a batch","清空重填": "Clear & refill","全部合并测算": "Combine all and calculate","计算结果": "Result","计算结果为估算参考，最终以我司客服确认为准。": "Estimate only — final price confirmed by our staff.","预估应付总额": "Estimated total","货物批数 / 件数": "Batches / pieces","计费重量 / 方数": "Chargeable weight / CBM","体积重合计（泡重）": "Total volumetric weight","实重合计": "Total actual weight","基础运费": "Base freight","义乌仓提货费": "Yiwu pickup fee","计费说明": "Charging basis","包税方式": "DDP / tax","派送范围": "Delivery area","已确认附加费": "Confirmed surcharges","待确认费用": "To be confirmed","参考时效": "Transit time","生成报价图 / 转发": "Quote image / forward","复制文字报价": "Copy quote text","保存本次报价": "Save this quote","复制报价链接": "Copy quote link","English 报价图": "English quote image","English 报价": "English quote","无": "None","单询": "On request","到港 / 到仓自提": "Self-pickup at port / warehouse","送货上门": "Door delivery","双清包税": "DDP (duty & tax included)","派送方式": "Delivery method","合计": "Total","总方数（CBM）": "Total volume (CBM)","方数直算（海运快捷 · 与下方尺寸录入互不影响）": "Direct CBM calc (sea freight shortcut · independent of the dimension inputs below)","地址 / 邮编识别（判断能不能发 · 有无额外派送费）": "Address / postcode check (serviceability & extra delivery fee)","客户名称（选填，会打印在报价单上）": "Customer name (optional, printed on the quote)","收货地址（自动识别邮编）": "Delivery address (postcode auto-detected)","支持邮编：马来西亚 5 位 / 新加坡 6 位 / 菲律宾 4 位": "Postcodes: Malaysia 5 / Singapore 6 / Philippines 4 digits","识别": "Parse","重新识别": "Parse again","客户发来的消息、Excel 复制的内容、聊天记录，直接粘进来": "Paste the customer message, spreadsheet rows or chat log directly","智能识别（粘贴客户消息 / 上传表格，自动填货物和地址）": "Smart parse (paste a customer message / upload a sheet to auto-fill cargo and address)","选择 Excel / CSV 文件": "Choose Excel / CSV file","导入预览 · 核对后再填入": "Import preview · verify before filling","确认填入": "Confirm & fill","毫米已换算成厘米，包装方式已按表里的写法识别；不要的行取消勾选。": "Millimetres converted to cm; packaging read from the rate table. Uncheck rows you do not need.","交货仓（决定是否收义乌仓费）": "Drop-off warehouse (determines Yiwu fee)","深圳福永仓 · 不收义乌费": "Shenzhen Fuyong · no Yiwu fee","深圳龙华仓 · 不收义乌费": "Shenzhen Longhua · no Yiwu fee","广州白云仓 · 不收义乌费": "Guangzhou Baiyun · no Yiwu fee","义乌仓 · 按渠道加收义乌仓费": "Yiwu warehouse · Yiwu fee applies by channel","计费方式（空运）": "Charging basis (air)","全泡（取较大者）": "Full volumetric (take the greater)","分半泡（实重+泡重）÷2": "Half volumetric: (actual + volumetric) / 2","实重计费": "Actual weight billing","要正式报价单？留个微信，我把带价格的报价图发你": "Need a formal quote? Leave your WeChat / phone and I will send the priced quote image","拿到正式报价": "Get formal quote","填好点按钮，会自动生成一条消息，粘贴发我就行 · 电话微信 19166290491": "Tap the button to generate a message, then paste and send it to me · Tel/WeChat 19166290491","这是别人发你的报价：数据已自动填入，可直接看结果，也能改重量尺寸重算。": "This quote was shared with you: data is pre-filled — read the result, or edit weight / dimensions and recalculate.","生成报价图 / 转发报价": "Quote image / forward","长按图片保存 / 转发到微信给客户": "Long-press to save / forward to WeChat","电脑端可右键图片另存为": "Right-click the image to save on desktop","关 闭": "Close","取消": "Cancel","知道了": "Got it","展开": "Expand","扫码加微信报价：": "Scan WeChat to get a quote:","报价记录（存在本机，最多 40 条；点「载入」恢复当时的货物重新算）": "Quote history (this device, max 40; load one to recalculate)","导出报价记录（备份 JSON）": "Export quote history (JSON)","导入备份恢复": "Import backup","导出客户线索（本机记录）": "Export leads (this device)","价格与规则总表": "Rate & rule reference","价格与规则总表仅对管理员开放": "Rate & rule reference — admin only","管理员改价": "Admin repricing","管理员验证": "Admin verification","请输入密码后查看和修改价格": "Enter the password to view and edit rates","解锁查看": "Unlock","价格生效日": "Effective date","保存改价（存本机）": "Save changes (this device)","恢复原价": "Restore rates","导出价格表 JSON": "Export rate table (JSON)","生成新网站 index.html": "Generate updated index.html","仅内部": "Internal only","内部利润核算": "Internal profit","内部模块：需管理员密码登录后使用（成本数据只在本机填、本机看，不会写进页面文件）": "Internal module: unlock with the admin password (cost data stays on this device and is never written into the page)","成本和利润只在这台电脑上显示，不会出现在报价单、复制文字或报价图片里": "Cost and profit are shown on this device only — never in the quote, copied text or quote image","所有人可查看 / 搜索 / 导出全站价格与规则；改价需管理员密码，每次保存二次确认并自动记录价格版本（时间 · 生效日 · 改了几处）": "Everyone can view / search / export rates and rules; repricing needs the admin password, a confirmation each save and an automatic audit record (time · effective date · changes)","改价流程：解锁 → 改数字 → 保存改价（二次确认 + 自动记一条版本，先存本机试算）→ 确认无误后点「生成新网站」，用下载的 index.html 覆盖线上文件即可。线上文件不变，客户看到的价格也不会变。": "How to reprice: unlock → edit numbers → save (confirm + version record kept on this device) → generate a new index.html and replace the online file. The live file stays untouched until you do.","粘贴后自动识别，先核对、点「确认填入」再算入。尺寸支持 50*40*35 / 50×40×35 / 长50宽40高35 / 1.2×0.8×0.6m（mm、cm、米混写都认）；件数与重量支持「3件」「共25箱」「每箱12kg」「共36kg」；Excel 复制来的表格、聊天里夹着寒暄的整段话也能挑出来。": "Auto-parsed after pasting — check it, click Confirm, then it counts. Dimensions accept 50*40*35 / 50×40×35 / L50 W40 H35 / 1.2×0.8×0.6m (mm, cm and m can mix); pieces and weight accept 3 pcs / 25 cartons / 12kg each / 36kg total; spreadsheet rows and chats with small talk are handled too.","包裹查询（输入单号看轨迹）": "Track shipment (enter the tracking number)","查询轨迹": "Track","结果在新窗口打开 · 手机端若提示网站不安全，点继续访问即可": "Opens in a new window · if your phone says the site is unsafe, tap Continue","官网：xgdexpress.com": "Website: xgdexpress.com","业务对接（微信同号）": "Sales / WeChat","业务对接（微信同号）：": "Sales / WeChat:","深圳市新港大货运代理有限公司 · Shenzhen SINKUNGDA Freight Forwarder Co., Ltd": "Shenzhen SINKUNGDA Freight Forwarder Co., Ltd","深圳仓：宝安区福永街道兴围社区兴华路21号锦文物流园": "Shenzhen: Jinwen Logistics Park, No.21 Xinghua Rd, Xingwei, Fuyong, Baoan","龙华仓：龙华清湖社区清翠路50号宏泰佑工业园B2栋": "Longhua: Bldg B2, Hongtaiyou Industrial Park, No.50 Qingcui Rd, Qinghu, Longhua","广州仓：白云区均禾街道罗岗白莲南街36号": "Guangzhou: No.36 Bailian South St, Luogang, Junhe, Baiyun","义乌仓：义乌市后宅街道起航路11号": "Yiwu: No.11 Qihang Rd, Houzhai, Yiwu","三国全渠道参考价格（2026年11月22号执行）": "All-channel reference rates (effective 2026-11-22)","马来 / 新加坡 / 菲律宾 / 印尼 / 越南 / 泰国 / 巴西 双清包税到门专线 · 海运拼箱 · 整柜": "Malaysia / Singapore / Philippines / Indonesia / Vietnam / Thailand / Brazil DDP door-to-door · LCL · FCL","元": "CNY","只知道重量？输 KG 直接出全渠道价": "Only have the weight? Enter KG for all-channel rates","单件重量": "Weight per piece","件数": "Pieces","算价": "Calculate","空运/小包按实重精算；海运按 500kg/方 估算，实价以尺寸方数为准": "Air / parcel billed on actual weight; sea estimated at 500kg per CBM — final price by measured CBM","复制全部": "Copy all","如 12": "e.g. 12","该国家当前没有可按重量出价的渠道。": "No channel in this country can be priced by weight alone.","单件重 × 件数 = 总重（只有总重时件数填 1）；空运/小包按实重精算，海运按 500kg/方 估算，实价以尺寸方数为准": "Weight per piece × pieces = total weight (set pieces to 1 if you only have the total); air / parcel billed on actual weight, sea estimated at 500kg/CBM — final by measured CBM"};
+var I18N = {"XGD EXPRESS · 东南亚双清包税专线": "XGD EXPRESS · SE Asia DDP Express","东南亚专线运费速算器": "SE Asia Express Rate Calculator","新港大东南亚专线运费速算器": "SINKUNGDA SE Asia Express Rate Calculator","新港大国际物流 · 东南亚专线": "SINKUNGDA LOGISTICS · SE Asia Express","马来西亚（西马 + 东马）· 新加坡 · 菲律宾，空运 / 海派 / 整柜全渠道报价。客户发来的消息直接粘贴，自动填尺寸重量，一并算出计费重量、超长超重附加费与总运费。": "Malaysia (West + East) · Singapore · Philippines — air / sea / FCL rates for every channel. Paste a customer message and dimensions, weight, chargeable weight and oversize / overweight surcharges are calculated automatically.","马来空运低至18.5元/kg": "Malaysia air from 18.5 CNY/kg","马来海派550元/方起": "Malaysia sea from 550 CNY/CBM","菲律宾包税专线": "Philippines DDP express","新加坡空运2-5天": "Singapore air 2-5 days","选择国家": "Select country","选择渠道（含敏感/特货）": "Select channel (incl. sensitive / special cargo)","录入货物（可多批）": "Enter cargo (multiple batches)","马来西亚": "Malaysia","新加坡": "Singapore","菲律宾": "Philippines","＋ 新增一批货物": "+ Add a batch","清空重填": "Clear & refill","全部合并测算": "Combine all and calculate","计算结果": "Result","计算结果为估算参考，最终以我司客服确认为准。": "Estimate only — final price confirmed by our staff.","预估应付总额": "Estimated total","货物批数 / 件数": "Batches / pieces","计费重量 / 方数": "Chargeable weight / CBM","体积重合计（泡重）": "Total volumetric weight","实重合计": "Total actual weight","基础运费": "Base freight","义乌仓提货费": "Yiwu pickup fee","计费说明": "Charging basis","包税方式": "DDP / tax","派送范围": "Delivery area","已确认附加费": "Confirmed surcharges","待确认费用": "To be confirmed","参考时效": "Transit time","生成报价图 / 转发": "Quote image / forward","复制文字报价": "Copy quote text","保存本次报价": "Save this quote","复制报价链接": "Copy quote link","English 报价图": "English quote image","English 报价": "English quote","无": "None","单询": "On request","到港 / 到仓自提": "Self-pickup at port / warehouse","送货上门": "Door delivery","双清包税": "DDP (duty & tax included)","派送方式": "Delivery method","合计": "Total","总方数（CBM）": "Total volume (CBM)","方数直算（海运快捷 · 与下方尺寸录入互不影响）": "Direct CBM calc (sea freight shortcut · independent of the dimension inputs below)","地址 / 邮编识别（判断能不能发 · 有无额外派送费）": "Address / postcode check (serviceability & extra delivery fee)","客户名称（选填，会打印在报价单上）": "Customer name (optional, printed on the quote)","收货地址（自动识别邮编）": "Delivery address (postcode auto-detected)","支持邮编：马来西亚 5 位 / 新加坡 6 位 / 菲律宾 4 位": "Postcodes: Malaysia 5 / Singapore 6 / Philippines 4 digits","识别": "Parse","重新识别": "Parse again","客户发来的消息、Excel 复制的内容、聊天记录，直接粘进来": "Paste the customer message, spreadsheet rows or chat log directly","智能识别（粘贴客户消息 / 上传表格，自动填货物和地址）": "Smart parse (paste a customer message / upload a sheet to auto-fill cargo and address)","选择 Excel / CSV 文件": "Choose Excel / CSV file","导入预览 · 核对后再填入": "Import preview · verify before filling","确认填入": "Confirm & fill","毫米已换算成厘米，包装方式已按表里的写法识别；不要的行取消勾选。": "Millimetres converted to cm; packaging read from the rate table. Uncheck rows you do not need.","交货仓（决定是否收义乌仓费）": "Drop-off warehouse (determines Yiwu fee)","深圳福永仓 · 不收义乌费": "Shenzhen Fuyong · no Yiwu fee","深圳龙华仓 · 不收义乌费": "Shenzhen Longhua · no Yiwu fee","广州白云仓 · 不收义乌费": "Guangzhou Baiyun · no Yiwu fee","义乌仓 · 按渠道加收义乌仓费": "Yiwu warehouse · Yiwu fee applies by channel","计费方式（空运）": "Charging basis (air)","全泡（取较大者）": "Full volumetric (take the greater)","分半泡（实重+泡重）÷2": "Half volumetric: (actual + volumetric) / 2","实重计费": "Actual weight billing","要正式报价单？留个微信，我把带价格的报价图发你": "Need a formal quote? Leave your WeChat / phone and I will send the priced quote image","拿到正式报价": "Get formal quote","填好点按钮，会自动生成一条消息，粘贴发我就行 · 电话微信 19166290491": "Tap the button to generate a message, then paste and send it to me · Tel/WeChat 19166290491","这是别人发你的报价：数据已自动填入，可直接看结果，也能改重量尺寸重算。": "This quote was shared with you: data is pre-filled — read the result, or edit weight / dimensions and recalculate.","生成报价图 / 转发报价": "Quote image / forward","长按图片保存 / 转发到微信给客户": "Long-press to save / forward to WeChat","电脑端可右键图片另存为": "Right-click the image to save on desktop","关 闭": "Close","取消": "Cancel","知道了": "Got it","展开": "Expand","扫码加微信报价：": "Scan WeChat to get a quote:","报价记录（存在本机，最多 40 条；点「载入」恢复当时的货物重新算）": "Quote history (this device, max 40; load one to recalculate)","导出报价记录（备份 JSON）": "Export quote history (JSON)","导入备份恢复": "Import backup","导出客户线索（本机记录）": "Export leads (this device)","价格与规则总表": "Rate & rule reference","价格与规则总表仅对管理员开放": "Rate & rule reference — admin only","管理员改价": "Admin repricing","管理员验证": "Admin verification","请输入密码后查看和修改价格": "Enter the password to view and edit rates","解锁查看": "Unlock","价格生效日": "Effective date","保存改价（存本机）": "Save changes (this device)","恢复原价": "Restore rates","导出价格表 JSON": "Export rate table (JSON)","生成新网站 index.html": "Generate updated index.html","仅内部": "Internal only","内部利润核算": "Internal profit","内部模块：需管理员密码登录后使用（成本数据只在本机填、本机看，不会写进页面文件）": "Internal module: unlock with the admin password (cost data stays on this device and is never written into the page)","成本和利润只在这台电脑上显示，不会出现在报价单、复制文字或报价图片里": "Cost and profit are shown on this device only — never in the quote, copied text or quote image","所有人可查看 / 搜索 / 导出全站价格与规则；改价需管理员密码，每次保存二次确认并自动记录价格版本（时间 · 生效日 · 改了几处）": "Everyone can view / search / export rates and rules; repricing needs the admin password, a confirmation each save and an automatic audit record (time · effective date · changes)","改价流程：解锁 → 改数字 → 保存改价（二次确认 + 自动记一条版本，先存本机试算）→ 确认无误后点「生成新网站」，用下载的 index.html 覆盖线上文件即可。线上文件不变，客户看到的价格也不会变。": "How to reprice: unlock → edit numbers → save (confirm + version record kept on this device) → generate a new index.html and replace the online file. The live file stays untouched until you do.","粘贴后自动识别，先核对、点「确认填入」再算入。尺寸支持 50*40*35 / 50×40×35 / 长50宽40高35 / 1.2×0.8×0.6m（mm、cm、米混写都认）；件数与重量支持「3件」「共25箱」「每箱12kg」「共36kg」；Excel 复制来的表格、聊天里夹着寒暄的整段话也能挑出来。": "Auto-parsed after pasting — check it, click Confirm, then it counts. Dimensions accept 50*40*35 / 50×40×35 / L50 W40 H35 / 1.2×0.8×0.6m (mm, cm and m can mix); pieces and weight accept 3 pcs / 25 cartons / 12kg each / 36kg total; spreadsheet rows and chats with small talk are handled too.","包裹查询（输入单号看轨迹）": "Track shipment (enter the tracking number)","查询轨迹": "Track","结果在新窗口打开 · 手机端若提示网站不安全，点继续访问即可": "Opens in a new window · if your phone says the site is unsafe, tap Continue","官网：xgdexpress.com": "Website: xgdexpress.com","业务对接（微信同号）": "Sales / WeChat","业务对接（微信同号）：": "Sales / WeChat:","深圳市新港大货运代理有限公司 · Shenzhen SINKUNGDA Freight Forwarder Co., Ltd": "Shenzhen SINKUNGDA Freight Forwarder Co., Ltd","深圳仓：宝安区福永街道兴围社区兴华路21号锦文物流园": "Shenzhen: Jinwen Logistics Park, No.21 Xinghua Rd, Xingwei, Fuyong, Baoan","龙华仓：龙华清湖社区清翠路50号宏泰佑工业园B2栋": "Longhua: Bldg B2, Hongtaiyou Industrial Park, No.50 Qingcui Rd, Qinghu, Longhua","广州仓：白云区均禾街道罗岗白莲南街36号": "Guangzhou: No.36 Bailian South St, Luogang, Junhe, Baiyun","义乌仓：义乌市后宅街道起航路11号": "Yiwu: No.11 Qihang Rd, Houzhai, Yiwu","三国全渠道参考价格（2026年11月22号执行）": "All-channel reference rates (effective 2026-11-22)","马来 / 新加坡 / 菲律宾 / 印尼 / 越南 / 泰国 / 巴西 双清包税到门专线 · 海运拼箱 · 整柜": "Malaysia / Singapore / Philippines / Indonesia / Vietnam / Thailand / Brazil DDP door-to-door · LCL · FCL","元": "CNY","只知道重量？输 KG 直接出空运价": "Only have the weight? Enter KG for air rates","单件重量": "Weight per piece","件数": "Pieces","算价": "Calculate","空运/小包按实重精算；海运按 500kg/方 估算，实价以尺寸方数为准": "Air / parcel billed on actual weight; sea estimated at 500kg per CBM — final price by measured CBM","复制全部": "Copy all","如 12": "e.g. 12","该国家当前没有可按重量出价的渠道。": "No channel in this country can be priced by weight alone",
+"总重": "Total",
+"每件": "Each",
+"如 240": "e.g. 240",
+"如 12": "e.g. 12",
+"空运按实重算；海运按方需尺寸，往下录入": "Air billed on actual weight; sea is per CBM, use the form below",
+"复制报价": "Copy quote",
+"与最省同一条": "same channel as cheapest",
+"这个重量暂时没有对应空运渠道": "No air channel for this weight","单件重 × 件数 = 总重（只有总重时填件数 1）· 空运按实重精算，西马 / 东马空运全列出来；海运按方计费，需要尺寸，走下方录入": "Weight per piece × pieces = total weight (set pieces to 1 if you only have the total) · air rates billed on actual weight, West + East Malaysia listed; sea freight is per CBM and needs dimensions — use the form below",
+"单件重 × 件数 = 总重（只有总重时件数填 1）；空运/小包按实重精算，海运按 500kg/方 估算，实价以尺寸方数为准": "Weight per piece × pieces = total weight (set pieces to 1 if you only have the total); air / parcel billed on actual weight, sea estimated at 500kg/CBM — final by measured CBM"};
 var I18N_RULES = [["计费方式：", "Basis: "],["单价：", "Rate: "],["木箱附加", "Wooden crate surcharge"],["台数附加", "Per-unit surcharge"],["（计费重·泡重/实重取大）", " (chargeable, greater of)"],["（体积重合计）", " (total volumetric)"],["（计费重）", " (chargeable)"],["（已计入总价）", " (included)"],["（已计入）", " (included)"],["（送货上门）", " (door delivery)"],["（实际", " (actual "],["元/kg", " CNY/kg"],["元/方", " CNY/CBM"],["元/票", " CNY/shipment"],["元/件", " CNY/pc"],["元/m³", " CNY/CBM"],["元/台", " CNY/unit"],["元/m", " CNY/m"],["元　", " CNY  "],["元，", " CNY, "],["元）", " CNY)"],["元。", " CNY."],["元 ", " CNY "],["泡重", "volumetric weight"],["计费重", "chargeable weight"],["实重", "actual weight"],["方数", "CBM"],["件数", "pieces"],["不含税", "tax excluded"],["含税", "tax included"],["清关", "customs clearance"],["自提", "self-pickup"],["派送", "delivery"],["附加费", "surcharge"],["最低收费", "minimum charge"],["首重", "first weight"],["续重", "addl weight"],["，", ", "],["、", " / "],["；", "; "],["（", " ("],["）", ")"]].map(function(r){ return [new RegExp(r[0], 'g'), r[1]]; });
 var CN_RE = /[\u4e00-\u9fa5]/;
 
@@ -1033,6 +1159,7 @@ function setLang(l){
   try{ if(typeof renderChannels === 'function' && curCh) renderChannels(); }catch(e){}
   try{ if(typeof renderShip === 'function') renderShip(); }catch(e){}
   if(LANG === 'en') translateAll(); else restoreAll();
+  try{ var _kr = document.getElementById('kgResult'); if(typeof kgQuote === 'function' && _kr && _kr.innerHTML.trim()) kgQuote(); }catch(e){}
   try{ if(typeof fabLang === "function") fabLang(); }catch(e){}
   if(typeof showShare === 'function') showShare();
   [120, 300, 600, 1200, 2200].forEach(function(ms){
@@ -2045,6 +2172,24 @@ function parcelLabel(ch, wkg){
 var KG_NAME = {MY:'马来西亚', SG:'新加坡', PH:'菲律宾'};
 var kgLastText = '';
 
+var kgFilter = 'all';
+
+var kgModeCur = 'total';
+
+function kgSetMode(m){
+  if(m === kgModeCur) return;
+  var elKg = document.getElementById('fKg'), elPcs = document.getElementById('fPcs');
+  var v = parseFloat(String(elKg.value).replace(/[^\d.]/g, ''));
+  var p = parseInt(String(elPcs.value).replace(/[^\d]/g, ''), 10);
+  if(!(p > 0)) p = 1;
+  if(v > 0) elKg.value = (m === 'unit') ? fmt(v / p) : fmt(v * p);
+  kgModeCur = m;
+  document.getElementById('mTotal').className = (m === 'total') ? 'on' : '';
+  document.getElementById('mUnit').className = (m === 'unit') ? 'on' : '';
+  elKg.setAttribute('placeholder', (m === 'total') ? '如 240' : '如 12');
+  kgQuote();
+}
+
 function kgQuote(){
   var box = document.getElementById('kgResult');
   if(!box) return;
@@ -2052,95 +2197,149 @@ function kgQuote(){
   var kg = parseFloat(String(elKg.value).replace(/[^\d.]/g, ''));
   var pcs = parseInt(String(elPcs.value).replace(/[^\d]/g, ''), 10);
   if(!(pcs > 0)) pcs = 1;
-  if(!(kg > 0)){ box.style.display = 'none'; box.innerHTML = ''; kgLastText = ''; return; }
-  var en = (LANG === 'en');
-  var total = fmt(kg * pcs);
-  var rows = [];
-  PRICE[curC].channels.forEach(function(ch){
-    var price = null, basis = '', warn = '', extra = '';
-    if(ch.type === 'air'){
-      price = tierPrice(ch.tiers, total);
-      if(price != null){
-        basis = (en ? 'actual ' : '实重 ') + total + 'kg';
-        if(!en){
-          var tier = null;
-          for(var ti = 0; ti < ch.tiers.length; ti++){ if(total <= ch.tiers[ti].max){ tier = ch.tiers[ti]; break; } }
-          if(tier) extra = (tier.p != null)
-            ? tier.p + ' 元/kg（' + (tier.max === Infinity ? '最高档' : tier.max + 'kg 档') + '）'
-            : '首重 ' + tier.first + ' 元 + 续重 ' + tier.add + ' 元/kg';
-        }
-        var aw = ch.sur && ch.sur.air && ch.sur.air.w;
-        if(aw && kg > aw) warn = (en ? 'over ' + aw + 'kg/pc limit — surcharge may apply' : '单件超 ' + aw + 'kg 限重，需确认附加费');
-      }
-    } else if(ch.type === 'parcel'){
-      price = parcelPrice(ch, total);
-      basis = (en ? 'actual ' : '实重 ') + total + 'kg';
-    } else if(ch.type === 'sea'){
-      var minC = ch.minCbm || 0.3;
-      var cbm = Math.max(minC, total / 500);
-      var unit = ch.price;
-      if(ch.price5 && cbm > 5) unit = ch.price5;
-      if(unit == null) return;
-      price = unit * cbm;
-      basis = (en ? '≈' + fmt(cbm) + ' CBM @500kg/CBM · ' + unit + ' CNY/CBM'
-                 : '按 ' + fmt(cbm) + ' 方（500kg/方估算）· ' + unit + ' 元/方');
-      var sw = ch.sur && ch.sur.sea && ch.sur.sea.w;
-      if(sw && kg > sw) warn = (en ? 'over ' + sw + 'kg/pc — surcharge applies' : '单件超 ' + sw + 'kg，需加收');
-    } else {
-      return;
-    }
-    if(price == null) return;
-    rows.push({id:ch.id, name:ch.name, grp:ch.grp, eta:ch.eta || '', price:fmt(price),
-               basis:basis, extra:extra, warn:warn, unitKg:fmt(price / total), showKg:(ch.type !== 'sea')});
-  });
-  rows.sort(function(a, b){ return a.price - b.price; });
-
-  if(!rows.length){
-    box.style.display = 'block';
-    box.innerHTML = (en ? 'No channel in this country can be priced by weight alone.' : '该国家当前没有可按重量出价的渠道。');
+  var sumEl = document.getElementById('kgSum');
+  if(!(kg > 0)){
+    box.style.display = 'none'; box.innerHTML = ''; kgLastText = '';
+    if(sumEl) sumEl.style.display = 'none';
     return;
   }
+  var en = (LANG === 'en');
+  var total = fmt(kgModeCur === 'total' ? kg : kg * pcs);
+  var each = fmt(total / pcs);
+
+  if(sumEl){
+    sumEl.style.display = 'block';
+    sumEl.innerHTML = '= ' + (en ? 'total ' : '合计 ') + total + 'kg' +
+      (pcs > 1 ? (en ? ' (each ' + each + 'kg × ' + pcs + ')' : '（每件 ' + each + 'kg × ' + pcs + ' 件）') : '');
+  }
+
+  var rows = [];
+  PRICE[curC].channels.forEach(function(ch){
+    if(ch.type !== 'air') return;   /* 重量速算只覆盖空运：海运按方、小包按票都要实际尺寸/件数 */
+    var price = null, detail = '', warn = '';
+    price = tierPrice(ch.tiers, total);
+    if(price == null) return;
+    var hit = null;
+    for(var ti = 0; ti < ch.tiers.length; ti++){ if(total <= ch.tiers[ti].max){ hit = ch.tiers[ti]; break; } }
+    if(hit && hit.first != null){
+      detail = (total <= 1)
+        ? (en ? 'first weight ' + price + ' CNY' : '首重 ' + price + ' 元')
+        : total + 'kg · ' + (en ? 'first ' + hit.first + ' + ' + hit.add + '/kg' : '首' + hit.first + '续' + hit.add + '元/kg');
+    } else {
+      detail = total + 'kg×' + fmt(price / total) + (en ? ' CNY/kg' : '元/kg');
+    }
+    var aw = ch.sur && ch.sur.air && ch.sur.air.w;
+    if(aw && each > aw) warn = (en ? 'over ' + aw + 'kg/pc (set pieces if split)' : '单件超 ' + aw + 'kg（分箱请填件数）');
+    rows.push({id:ch.id, name:ch.name, grp:ch.grp, cat:ch.cat || '', eta:ch.eta || '',
+               price:fmt(price), detail:detail, warn:warn, east:(ch.grp.indexOf('东马') >= 0)});
+  });
+  var CAT_ORDER = {'普货':0, '敏感':1, '特货':2, '报关':3, '特敏':4, '普/敏':0};
+  rows.sort(function(a, b){
+    if(a.east !== b.east) return a.east ? 1 : -1;
+    var ca = (CAT_ORDER[a.cat] != null) ? CAT_ORDER[a.cat] : 9;
+    var cb = (CAT_ORDER[b.cat] != null) ? CAT_ORDER[b.cat] : 9;
+    if(ca !== cb) return ca - cb;
+    return a.price - b.price;
+  });
 
   var nm = function(ch){ return (en && typeof CH_EN !== 'undefined' && CH_EN[ch.id]) ? CH_EN[ch.id] : ch.name; };
-  var gp = function(g){ return (en && typeof GRP_EN !== 'undefined' && GRP_EN[g]) ? GRP_EN[g] : g; };
+  var nmS = function(ch){
+    var v = nm(ch);
+    if(en) v = v.replace('West Malaysia ', '').replace('East Malaysia ', '').replace('Economy ', 'Eco ');
+    return v;
+  };
   var et = function(t){ return en ? String(t).replace(/约/g, '~').replace(/天/g, ' days') : t; };
+  var CATC = {'普货':['普','Gen','c-gen'], '敏感':['敏','Sens','c-sen'], '特货':['特','Spec','c-spe'],
+              '报关':['关','Decl','c-dec'], '特敏':['敏特','S-S','c-tse'], '普/敏':['普敏','G-S','c-gen']};
+  var view = rows;
 
-  var h = '<div style="font-size:12px;color:#6b7a8d;margin-bottom:8px">' +
-    (en ? (KG_NAME[curC] || curC) + ' · ' + total + 'kg total (' + kg + 'kg × ' + pcs + ') · sorted by price'
-        : (KG_NAME[curC] || curC) + ' · 总重 ' + total + 'kg（单件 ' + kg + 'kg × ' + pcs + ' 件）· 按总价从低到高') +
-    '</div>';
-
+  /* 复制文本：全部空运渠道 */
   var txtLines = [];
-  var head = (en ? '[' + (KG_NAME[curC] || curC) + ' by-weight quote] ' : '【' + (KG_NAME[curC] || curC) + ' 按重量速算】') +
-             (en ? total + 'kg total (' + kg + 'kg × ' + pcs + ')' : '总重 ' + total + 'kg（单件 ' + kg + 'kg × ' + pcs + ' 件）');
-  txtLines.push(head);
-
-  h += '<div style="border-top:1px solid #eef2f7">';
+  txtLines.push((en ? '[' + (KG_NAME[curC] || curC) + ' air quote] ' : '【' + (KG_NAME[curC] || curC) + ' 空运报价】') +
+                (en ? total + 'kg total (' + each + 'kg × ' + pcs + ')' : '总重 ' + total + 'kg（每件 ' + each + 'kg × ' + pcs + ' 件）'));
   rows.forEach(function(r){
-    var meta = gp(r.grp) + (r.eta ? ' · ' + et(r.eta) : '') + ' · ' + r.basis;
-    h += '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:9px 0;border-bottom:1px solid #f3f6fa">' +
-           '<div style="min-width:0;flex:1 1 auto">' +
-             '<div style="line-height:1.4;word-break:break-word"><b style="color:#1a2b3c">' + r.id + '</b> <span style="color:#2b3a4d">' + nm(r) + '</span></div>' +
-             '<div style="font-size:11px;color:#8a97a8;margin-top:3px;line-height:1.5">' + meta + '</div>' +
-             (r.extra ? '<div style="font-size:11px;color:#5b6b7d;margin-top:2px">' + r.extra + '</div>' : '') +
-             (r.warn ? '<div style="font-size:11px;color:#c8102e;margin-top:3px;line-height:1.5">⚠ ' + r.warn + '</div>' : '') +
-           '</div>' +
-           '<div style="flex:0 0 auto;text-align:right;padding-left:4px">' +
-             '<div style="color:#c8102e;font-size:15px;font-weight:700;white-space:nowrap">¥' + money(r.price) + '</div>' +
-             (r.showKg ? '<div style="font-size:11px;color:#8a97a8;margin-top:3px;white-space:nowrap">≈' + r.unitKg + (en ? ' /kg' : ' 元/kg') + '</div>' : '') +
-           '</div>' +
-         '</div>';
-    txtLines.push(r.id + ' ' + r.name + (r.eta ? ' ' + r.eta : '') + ' ｜ ' + r.basis + ' ｜ ¥' + money(r.price) + (r.warn ? ' ⚠' + r.warn : ''));
+    txtLines.push(r.id + ' ' + r.name + (r.eta ? ' ' + r.eta : '') + ' ｜ ' + r.detail + ' ｜ ¥' + money(r.price) + (r.warn ? ' ⚠' + r.warn : ''));
   });
-  h += '</div>';
-
-  txtLines.push(en ? 'Excludes Yiwu fee / wooden crate / remote surcharges. Formal quote based on measured dimensions.' : '以上未含义乌仓费、木箱、偏远附加费；正式报价以尺寸录入为准。');
+  txtLines.push(en ? 'Air rates only. Excludes Yiwu fee / wooden crate / remote surcharges; sea / parcel quoted by measured dimensions.'
+                   : '以上为空运参考价；未含义乌仓费、木箱、偏远附加费，海运 / 小包按方或件另报。');
   kgLastText = txtLines.join('\n');
 
-  h += '<div style="margin-top:9px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">' +
-       '<button class="btn btn-parse" id="btnKgCopy" style="flex:0 0 auto;font-size:12px;padding:7px 14px" onclick="kgCopy()">' + (en ? 'Copy all' : '复制全部') + '</button>' +
-       '<span style="font-size:11.5px;color:#8a97a8">' + (en ? 'Excludes Yiwu fee, wooden crate, remote surcharge' : '未含义乌仓费、木箱、偏远附加费；正式报价以尺寸录入为准') + '</span>' +
-       '</div>';
+  var etaStart = function(t){ var m = String(t || '').match(/(\d+)/); return m ? parseInt(m[1], 10) : 999; };
+  var byPrice = view.slice().sort(function(a, b){ return a.price - b.price; });
+  var best = byPrice.length ? byPrice[0] : null;
+  var fastest = view.length ? view.slice().sort(function(a, b){
+    var x = etaStart(a.eta), y = etaStart(b.eta);
+    if(x !== y) return x - y;
+    return a.price - b.price;
+  })[0] : null;
+
+  var headL = '<b>' + (KG_NAME[curC] || curC) + '</b> · ' +
+    (pcs > 1 ? each + 'kg × ' + pcs + (en ? ' pcs = ' : ' 件 = ') + total + 'kg' : total + 'kg');
+
+  var h = '<div class="kg-head"><span>' + headL + '</span>' +
+          '<i>' + view.length + (en ? ' ch' : ' 条') + '</i></div>';
+
+  if(best){
+    h += '<div class="kg-best">' +
+      '<div class="kg-best-row"><em>' + (en ? 'Cheapest' : '最省') + '</em><b>¥' + money(best.price) + '</b>' +
+        '<span>' + best.id + (best.east && en ? ' · E.MY' : '') + (best.eta ? ' · ' + et(best.eta) : '') + '</span></div>';
+    if(fastest && fastest.id !== best.id){
+      h += '<div class="kg-best-row"><em class="alt">' + (en ? 'Fastest' : '最快') + '</em><b>¥' + money(fastest.price) + '</b>' +
+        '<span>' + fastest.id + (fastest.east && en ? ' · E.MY' : '') + (fastest.eta ? ' · ' + et(fastest.eta) : '') + '</span></div>';
+    } else if(fastest){
+      h += '<div class="kg-best-row"><em class="alt">' + (en ? 'Fastest' : '最快') + '</em>' +
+        '<span>' + (en ? 'same channel as cheapest' : '与最省同一条') + '</span></div>';
+    }
+    h += '<button class="btn btn-parse" id="btnKgCopy" onclick="kgCopy()">' + (en ? 'Copy quote' : '复制报价') + '</button></div>';
+  }
+
+  var groupHtml = function(list, title, hint){
+    if(!list.length) return '';
+    var g = '';
+    if(title){
+      g = '<div class="kg-group-h"><span><b>' + title + '</b>' + (hint ? ' ' + hint : '') + '</span>' +
+          '<i>' + list.length + (en ? '' : ' 条') + '</i></div>';
+    }
+    g += '<div class="kg-list">';
+    var cats = [];
+    list.forEach(function(r){ if(cats.indexOf(r.cat) < 0) cats.push(r.cat); });
+    cats.sort(function(a, b){ return (CAT_ORDER[a] != null ? CAT_ORDER[a] : 9) - (CAT_ORDER[b] != null ? CAT_ORDER[b] : 9); });
+    cats.forEach(function(cn){
+      var sub2 = list.filter(function(r){ return r.cat === cn; });
+      var c = CATC[cn] || ['', '', ''];
+      if(cats.length > 1 && c[0]){
+        g += '<div class="kg-cat-h"><em class="kg-cat ' + c[2] + '">' + (en ? c[1] : c[0]) + '</em>' +
+             (en ? '' : '<span>' + cn + '</span>') + '<i>' + sub2.length + (en ? '' : ' 条') + '</i></div>';
+      }
+      sub2.forEach(function(r){
+        var s2 = (r.eta ? et(r.eta) + ' · ' : '') + r.detail;
+        g += '<div class="kg-row">' +
+               '<div class="kg-main">' +
+                 '<div class="kg-title"><b>' + r.id + '</b><span class="nm">' + nmS(r) + '</span></div>' +
+                 '<div class="kg-sub"><span class="meta">' + s2 + '</span></div>' +
+                 (r.warn ? '<div class="kg-warn">⚠ ' + r.warn + '</div>' : '') +
+               '</div>' +
+               '<div class="kg-price"><b>¥' + money(r.price) + '</b></div>' +
+             '</div>';
+      });
+    });
+    g += '</div>';
+    return g;
+  };
+
+  var west = view.filter(function(r){ return !r.east; });
+  var east = view.filter(function(r){ return r.east; });
+
+  if(!view.length){
+    h += '<div class="kg-empty">' + (en ? 'No air channel for this weight.' : '这个重量暂时没有对应空运渠道') + '</div>';
+  } else if(west.length && east.length){
+    h += groupHtml(west, en ? 'West Malaysia air' : '西马空运', en ? '<span>KUL / Selangor · 4/5/6</span>' : '<span>吉隆坡 / 雪兰莪等，邮编 4/5/6 开头</span>');
+    h += groupHtml(east, en ? 'East Malaysia air' : '东马空运', en ? '<span>Sabah / Kuching</span>' : '<span>沙巴 / 古晋 · 市区/偏远按邮编</span>');
+  } else {
+    h += groupHtml(view, '', '');
+  }
+
+  h += '<div class="kg-foot"><span>' + (en ? 'Excludes Yiwu fee, crate and remote surcharge; sea / parcel quoted by dimensions' : '未含义乌仓费 / 木箱 / 偏远附加费；海运 / 小包按尺寸另报') + '</span></div>';
 
   box.style.display = 'block';
   box.innerHTML = h;
@@ -4458,5 +4657,222 @@ try{ renderShip(); }catch(e){}
 </script>
 
 
+
+<script>
+(function(){
+  var LV_I18N = {
+    '选线路':'Select route', '先定国家，再定渠道':'Pick country, then channel',
+    '选择渠道':'Channel', '默认已选好，不确定就往下走':'Default is set — continue if unsure',
+    '当前渠道':'Current channel', '更换 ▾':'Change ▾', '收起 ▴':'Collapse ▴', '展开 ▾':'Expand ▾',
+    '录货物':'Enter cargo', '三种方式任选其一':'Pick one of three',
+    '填尺寸':'Dimensions', '知道长宽高':'if you know L×W×H',
+    '只知重量':'Weight only', '输 KG 出价':'enter KG for a price',
+    '粘客户消息':'Paste message', '自动识别':'auto-fill',
+    '计费与起运':'Billing & origin', '决定泡重口径、是否收义乌仓费':'volumetric basis & Yiwu fee',
+    '收货地址':'Delivery address', '判断能不能发、有没有偏远派送费':'serviceability & remote fee',
+    '出报价':'Get quote', '算完直接复制发客户':'copy and send to the client',
+    '参考资料':'Reference', '船期 · 价格表 · 包裹查询':'sailing · rates · tracking',
+    '地址':'Address', '看报价':'Quote', '价格表':'Rates', '船期':'Sailing'
+  };
+  try{ for(var k in LV_I18N){ if(!I18N[k]) I18N[k] = LV_I18N[k]; } }catch(e){}
+
+  function init(){
+    var cc = document.querySelector('.calc-card');
+    if(!cc || cc.dataset.lv2) return;
+    cc.dataset.lv2 = '1';
+    var kids = [].slice.call(cc.children);
+    var find = function(txt){
+      for(var i=0;i<kids.length;i++){
+        var c = kids[i];
+        if((c.className||'').indexOf('sec-title')>=0 && c.innerText.replace(/\s+/g,'').indexOf(txt)>=0) return c;
+      }
+      return null;
+    };
+    var tCountry = find('01选择国家'), tChannel = find('02选择渠道'), tEntry = find('03录入货物');
+    var nav0 = document.getElementById('countries');
+    var channels = document.getElementById('channels');
+    var kgCard = document.getElementById('kgCard');
+    var addrCard = document.getElementById('addrCard');
+    var smartCard = document.getElementById('smartCard');
+    var batchList = document.getElementById('batchList');
+    var modeRow = document.getElementById('modeRow');
+    var delivery = document.getElementById('deliveryRow');
+    var result = document.getElementById('result');
+    var hist = document.getElementById('histCard');
+    var profit = document.getElementById('profitCard');
+    var acts = [].slice.call(cc.querySelectorAll('.actions'));
+    var actAdd = acts[0] || null, actCalc = acts[acts.length-1] || null;
+    if(!tCountry || !nav0 || !channels){ return; }
+
+    var stage = document.createElement('div');
+    stage.className = 'lv2-stage';
+    cc.insertBefore(stage, tCountry);
+
+    function step(no, tt, ds){
+      var d = document.createElement('div'); d.className='lv2-step';
+      d.innerHTML = '<span class="no">'+no+'</span><span class="tt">'+tt+'</span><span class="bar"></span><span class="ds">'+ds+'</span>';
+      return d;
+    }
+    function sub(b, s2){
+      var d = document.createElement('div'); d.className='lv2-sub';
+      d.innerHTML = '<b>'+b+'</b><span>'+s2+'</span>';
+      return d;
+    }
+
+    /* 01 选线路 */
+    stage.appendChild(step('01','选线路','先定国家，再定渠道'));
+    stage.appendChild(nav0);
+    stage.appendChild(sub('选择渠道','默认已选好，不确定就往下走'));
+    var chBar = document.createElement('div'); chBar.className='lv2-chbar';
+    chBar.innerHTML = '<div class="c"><small>当前渠道</small><b id="lv2ChName">—</b></div><button id="lv2ChBtn">更换 ▾</button>';
+    stage.appendChild(chBar);
+    stage.appendChild(channels);
+    channels.style.display = 'none';
+    var updCh = function(){
+      var el = document.getElementById('lv2ChName');
+      if(!el || typeof curCh === 'undefined' || !curCh) return;
+      var isEn = (typeof LANG !== 'undefined' && LANG === 'en');
+      var nmE = (isEn && typeof CH_EN !== 'undefined' && CH_EN[curCh.id]) ? CH_EN[curCh.id] : (curCh.name || '');
+      if(isEn) nmE = nmE.replace('West Malaysia ','').replace('East Malaysia ','').replace('Economy ','Eco ');
+      el.textContent = curCh.id + ' ' + nmE + (curCh.eta ? ' · ' + curCh.eta : '');
+      var bt = document.getElementById('lv2ChBtn');
+      if(bt) bt.textContent = isEn ? 'Change ▾' : '更换 ▾';
+    };
+    window._lv2UpdCh = updCh;
+    updCh();
+    document.getElementById('lv2ChBtn').onclick = function(){
+      var open = channels.style.display !== 'none';
+      channels.style.display = open ? 'none' : 'block';
+      this.textContent = open ? '更换 ▾' : '收起 ▴';
+    };
+    channels.addEventListener('click', function(e){
+      if(!e.target.closest('.ch-btn')) return;
+      setTimeout(function(){ updCh(); channels.style.display='none'; }, 40);
+    });
+
+    /* 02 录货物 */
+    stage.appendChild(step('02','录货物','三种方式任选其一'));
+    var tabs = document.createElement('div'); tabs.className='lv2-tabs';
+    tabs.innerHTML = '<button data-m="size" class="on">填尺寸<em>知道长宽高</em></button>'+
+                     '<button data-m="kg">只知重量<em>输 KG 出价</em></button>'+
+                     '<button data-m="paste">粘客户消息<em>自动识别</em></button>';
+    stage.appendChild(tabs);
+    var pSize = document.createElement('div'); pSize.className='lv2-panel on';
+    var pKg = document.createElement('div'); pKg.className='lv2-panel';
+    var pPaste = document.createElement('div'); pPaste.className='lv2-panel';
+    stage.appendChild(pSize); stage.appendChild(pKg); stage.appendChild(pPaste);
+
+    if(batchList) pSize.appendChild(batchList);
+    if(actAdd) pSize.appendChild(actAdd);
+    if(modeRow){
+      pSize.appendChild(sub('计费与起运','决定泡重口径、是否收义乌仓费'));
+      pSize.appendChild(modeRow);
+    }
+    var cbm = document.getElementById('cbmCard');
+    if(cbm && cbm.parentNode !== pSize) pSize.insertBefore(cbm, pSize.firstChild);
+    if(kgCard){ var tk=kgCard.querySelector('.sec-title'); if(tk) tk.style.display='none'; pKg.appendChild(kgCard); }
+    if(smartCard){ var ts=smartCard.querySelector('.sec-title'); if(ts) ts.style.display='none'; pPaste.appendChild(smartCard); }
+
+    stage.appendChild(sub('收货地址','判断能不能发、有没有偏远派送费'));
+    if(addrCard){ var ta=addrCard.querySelector('.sec-title'); if(ta) ta.style.display='none'; stage.appendChild(addrCard); }
+
+    /* 03 出报价 */
+    stage.appendChild(step('03','出报价','算完直接复制发客户'));
+    [delivery, actCalc, result, hist, profit].forEach(function(el){ if(el) stage.appendChild(el); });
+    var shareTip = document.getElementById('shareTip');
+    if(shareTip && result) stage.insertBefore(shareTip, result);
+
+    /* 旧标题从页面上移除 */
+    [tCountry, tChannel, tEntry].forEach(function(el){ if(el && el.parentNode) el.parentNode.removeChild(el); });
+
+    /* 顶部锚点 */
+    var nav = document.createElement('div'); nav.className='lv2-nav';
+    nav.innerHTML = '<a href="#countries">选线路</a><a href="#batchList">填尺寸</a><a href="#kgCard">只知重量</a><a href="#addrCard">地址</a><a href="#result">看报价</a><a href="#refTable">价格表</a><a href="#shipCard">船期</a>';
+    if(cc.parentNode) cc.parentNode.insertBefore(nav, cc);
+
+    /* ---- 04 参考资料：船期 / 价格表 默认折叠 ---- */
+    var ship = document.querySelector('.ship-card');
+    var ref  = document.querySelector('.ref');
+    if(ship){ ship.id = 'shipCard'; }
+    if(ref){ ref.id = 'refTable'; }
+
+    var pushRef = document.createElement('div'); pushRef.className='lv2-step';
+    pushRef.innerHTML = '<span class="no">04</span><span class="tt">参考资料</span><span class="bar"></span><span class="ds">船期 · 价格表 · 包裹查询</span>';
+    if(ship && ship.parentNode){
+      ship.parentNode.insertBefore(pushRef, ship);
+      if(profit) ship.parentNode.insertBefore(profit, pushRef);
+    }
+
+    function foldCard(card, headSel){
+      if(!card) return;
+      var head = card.querySelector(headSel);
+      if(!head) return;
+      head.classList.add('lv2-fold-head');
+      var body = document.createElement('div'); body.className='lv2-body';
+      var n = head.nextSibling;
+      while(n){ var nx = n.nextSibling; body.appendChild(n); n = nx; }
+      card.appendChild(body);
+      card.classList.add('lv2-fold','collapsed');
+      var btn = document.createElement('button'); btn.className='lv2-fold-btn'; btn.type='button'; btn.textContent='展开 ▾';
+      head.appendChild(btn);
+      head.style.cursor = 'pointer';
+      var sync = function(){ btn.textContent = card.classList.contains('collapsed') ? '展开 ▾' : '收起 ▴'; };
+      var toggle = function(){ card.classList.toggle('collapsed'); sync(); };
+      head.addEventListener('click', toggle);
+      card._lv2Open = function(){ if(card.classList.contains('collapsed')){ card.classList.remove('collapsed'); sync(); } };
+    }
+    foldCard(ship, '.ship-top');
+    foldCard(ref, '.sec-title');
+    var rulesCard = [].slice.call(document.querySelectorAll('.card-inner')).filter(function(el){ return (el.innerText||'').indexOf('价格与规则总表') >= 0; })[0];
+    var refBody = ref && ref.querySelector('.lv2-body');
+    if(rulesCard && refBody && rulesCard.parentNode === ref.parentNode){ refBody.appendChild(rulesCard); }
+    nav.addEventListener('click', function(e){
+      var a = e.target.closest('a'); if(!a) return;
+      e.preventDefault();
+      var el = document.getElementById(a.getAttribute('href').slice(1));
+      if(!el) return;
+      var fold = el.closest && el.closest('.lv2-fold');
+      if(fold && fold._lv2Open) fold._lv2Open();
+      setTimeout(function(){
+        window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 54, behavior:'smooth' });
+      }, 60);
+    });
+
+    /* tab */
+    var panels = { size:pSize, kg:pKg, paste:pPaste };
+    tabs.addEventListener('click', function(e){
+      var b2 = e.target.closest('button'); if(!b2) return;
+      var m = b2.getAttribute('data-m');
+      [].forEach.call(tabs.children, function(x){ x.classList.toggle('on', x === b2); });
+      Object.keys(panels).forEach(function(k){ panels[k].classList.toggle('on', k === m); });
+      if(m === 'kg'){ try{ if(typeof kgQuote==='function') kgQuote(); }catch(err){} }
+    });
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function(){ setTimeout(init, 80); });
+  else setTimeout(init, 80);
+
+  /* 语言切换后，新 UI 的文案与当前渠道名重新刷一遍 */
+  function wrapSetLang(){
+    if(typeof window.setLang !== 'function' || window.setLang.__lv2) return;
+    var orig = window.setLang;
+    window.setLang = function(l){
+      orig(l);
+      setTimeout(function(){
+        if(window._lv2UpdCh) window._lv2UpdCh();
+        var en = (typeof LANG !== 'undefined' && LANG === 'en');
+        var btns = document.querySelectorAll('.lv2-fold-btn');
+        for(var i=0;i<btns.length;i++){
+          var card = btns[i].closest('.lv2-fold');
+          btns[i].textContent = (card && card.classList.contains('collapsed')) ? (en ? 'Expand ▾' : '展开 ▾') : (en ? 'Collapse ▴' : '收起 ▴');
+        }
+        if(en){ try{ translateAll(); }catch(e){} }
+      }, 160);
+    };
+    window.setLang.__lv2 = true;
+  }
+  setTimeout(wrapSetLang, 100);
+  setTimeout(wrapSetLang, 600);
+})();
+</script>
 </body>
 </html>
