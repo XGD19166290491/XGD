@@ -4866,6 +4866,8 @@ try{ renderShip(); }catch(e){}
           btns[i].textContent = (card && card.classList.contains('collapsed')) ? (en ? 'Expand ▾' : '展开 ▾') : (en ? 'Collapse ▴' : '收起 ▴');
         }
         if(en){ try{ translateAll(); }catch(e){} }
+        var rEl = document.getElementById('result');
+        if(rEl && rEl.className.indexOf('show') >= 0 && typeof calc === 'function'){ try{ calc(); }catch(e){} }
       }, 160);
     };
     window.setLang.__lv2 = true;
